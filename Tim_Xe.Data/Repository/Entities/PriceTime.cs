@@ -13,7 +13,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public int? TimeWait { get; set; }
         public double? Price { get; set; }
         public int? IdVehicleType { get; set; }
-
+        public bool? IsDeleted { get; set; }
         public virtual VehicleType IdVehicleTypeNavigation { get; set; }
     }
 }

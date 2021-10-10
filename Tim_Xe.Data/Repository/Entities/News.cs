@@ -14,7 +14,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public string Content { get; set; }
         public int? IdGroup { get; set; }
         public DateTime? CreateAt { get; set; }
-
+        public bool? IsDeleted { get; set; }
         public virtual Group IdGroupNavigation { get; set; }
     }
 }
