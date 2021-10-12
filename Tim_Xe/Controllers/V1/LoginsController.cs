@@ -49,8 +49,23 @@ namespace TimXe.Present.Controllers.V1
             {
                 return NotFound();
             }
-           
-            
+
+
+            //sign your token here here..
+            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            return userWithToken;
+        }
+        [HttpPost("loginwebwithtoken")]
+        public async Task<ActionResult<UserWithToken>> LoginWithTokenWebAsync(string token)
+        {
+
+            var userWithToken = await _loginServiceImp.LoginWithTokenWeb(token);
+            if (userWithToken == null)
+            {
+                return NotFound();
+            }
+
+
             //sign your token here here..
             userWithToken.AccessToken = GenerateAccessToken(userWithToken);
             return userWithToken;

@@ -52,8 +52,27 @@ namespace Tim_Xe.Service.LoginService
                 return userWithToken = new UserWithToken(null, existingAccount);
             }
             else return null;
-
            
         }
+
+        public async Task<UserWithToken> LoginWithTokenWeb(string token)
+        {
+            UserWithToken userWithToken;
+            Manager existingAccount = new Manager();
+            if (token != null)
+            {
+                var stream = token;
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(stream);
+                var tokenS = jsonToken as JwtSecurityToken;
+                var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
+                var role = tokenS.Claims.First(claim => claim.Type == "role").Value;
+                existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
+                return userWithToken = new UserWithToken(existingAccount, null);
+            }
+            else return null;
+
+        }
+
     }
 }
