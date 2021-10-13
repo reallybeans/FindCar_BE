@@ -84,8 +84,6 @@ namespace Tim_Xe.Service.ManagerService
             {
                 return false;
             }
-
-
         }
     }
 }

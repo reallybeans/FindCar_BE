@@ -14,8 +14,8 @@ namespace Tim_Xe.Data.Repository.Entities
         public string Address { get; set; }
         public int? PointTypeValue { get; set; }
         public int? OrderNumber { get; set; }
-        public int? IdTrip { get; set; }
+        public int? IdBooking { get; set; }
 
-        public virtual Booking IdTripNavigation { get; set; }
+        public virtual Booking IdBookingNavigation { get; set; }
     }
 }

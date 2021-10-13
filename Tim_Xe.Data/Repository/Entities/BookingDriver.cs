@@ -9,12 +9,12 @@ namespace Tim_Xe.Data.Repository.Entities
 {
     public partial class BookingDriver
     {
-        public int IdTrip { get; set; }
+        public int IdBooking { get; set; }
         public int IdDriver { get; set; }
         public string Status { get; set; }
         public string Note { get; set; }
 
+        public virtual Booking IdBookingNavigation { get; set; }
         public virtual Driver IdDriverNavigation { get; set; }
-        public virtual Booking IdTripNavigation { get; set; }
     }
 }

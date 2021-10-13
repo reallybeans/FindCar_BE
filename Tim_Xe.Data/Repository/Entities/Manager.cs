@@ -12,6 +12,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public Manager()
         {
             Drivers = new HashSet<Driver>();
+            Groups = new HashSet<Group>();
         }
 
         public int Id { get; set; }
@@ -28,5 +29,6 @@ namespace Tim_Xe.Data.Repository.Entities
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Driver> Drivers { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
     }
 }

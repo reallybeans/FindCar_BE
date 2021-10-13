@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Tim_Xe.Data\Tim_Xe.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="GroupService\" />
-  </ItemGroup>
-
 </Project>

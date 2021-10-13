@@ -8,10 +8,10 @@ using Tim_Xe.Data.Models;
 using Tim_Xe.Service.ManagerService;
 
 
-namespace Tim_Xe.API.Controllers.V1
+namespace Tim_Xe.API.Controllers.V2
 {
     [Authorize(Roles = "group, admin")]
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     [ApiController]
     public class managersController : ControllerBase
     {

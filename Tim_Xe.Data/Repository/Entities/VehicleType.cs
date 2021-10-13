@@ -22,6 +22,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public string Note { get; set; }
         public int? NumOfSeat { get; set; }
         public bool? IsDeleted { get; set; }
+
         public virtual ICollection<Booking> Bookings { get; set; }
         public virtual ICollection<PriceKm> PriceKms { get; set; }
         public virtual ICollection<PriceTime> PriceTimes { get; set; }

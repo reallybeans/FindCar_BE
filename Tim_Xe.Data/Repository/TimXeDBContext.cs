@@ -41,7 +41,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("name=DEV");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-1V9I55U\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
             }
         }
 
@@ -77,7 +77,7 @@ namespace Tim_Xe.Data.Repository
 
             modelBuilder.Entity<BookingDriver>(entity =>
             {
-                entity.HasKey(e => new { e.IdTrip, e.IdDriver });
+                entity.HasKey(e => new { e.IdBooking, e.IdDriver });
 
                 entity.ToTable("Booking_Driver");
 
@@ -85,17 +85,17 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.Status).HasMaxLength(50);
 
+                entity.HasOne(d => d.IdBookingNavigation)
+                    .WithMany(p => p.BookingDrivers)
+                    .HasForeignKey(d => d.IdBooking)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Booking_Driver_Booking");
+
                 entity.HasOne(d => d.IdDriverNavigation)
                     .WithMany(p => p.BookingDrivers)
                     .HasForeignKey(d => d.IdDriver)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Booking_Driver_Driver");
-
-                entity.HasOne(d => d.IdTripNavigation)
-                    .WithMany(p => p.BookingDrivers)
-                    .HasForeignKey(d => d.IdTrip)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Booking_Driver_Booking");
             });
 
             modelBuilder.Entity<Channel>(entity =>
@@ -201,6 +201,12 @@ namespace Tim_Xe.Data.Repository
                     .WithMany(p => p.Groups)
                     .HasForeignKey(d => d.IdCity)
                     .HasConstraintName("FK_Group_City");
+
+                entity.HasOne(d => d.IdManagerNavigation)
+                    .WithMany(p => p.Groups)
+                    .HasForeignKey(d => d.IdManager)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Group_Manager");
             });
 
             modelBuilder.Entity<Location>(entity =>
@@ -211,9 +217,9 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.LatLng).HasMaxLength(100);
 
-                entity.HasOne(d => d.IdTripNavigation)
+                entity.HasOne(d => d.IdBookingNavigation)
                     .WithMany(p => p.Locations)
-                    .HasForeignKey(d => d.IdTrip)
+                    .HasForeignKey(d => d.IdBooking)
                     .HasConstraintName("FK_Point_Trip");
             });
 

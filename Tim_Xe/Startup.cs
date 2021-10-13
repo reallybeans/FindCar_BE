@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tim_Xe.API.Shared;
+using Tim_Xe.Service.Shared;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 

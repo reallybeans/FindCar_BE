@@ -26,6 +26,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public bool? IsDeleted { get; set; }
 
         public virtual City IdCityNavigation { get; set; }
+        public virtual Manager IdManagerNavigation { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
         public virtual ICollection<Channel> Channels { get; set; }
         public virtual ICollection<News> News { get; set; }

@@ -15,6 +15,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public string Description { get; set; }
         public int? IdVehicleType { get; set; }
         public bool? IsDeleted { get; set; }
+
         public virtual VehicleType IdVehicleTypeNavigation { get; set; }
     }
 }

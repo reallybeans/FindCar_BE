@@ -5,47 +5,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
-using Tim_Xe.Service.ManagerService;
-
+using Tim_Xe.Service.GroupService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Authorize(Roles = "group, admin")]
+//    [Authorize(Roles = "group, admin")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class managersController : ControllerBase
+    public class groupsController : ControllerBase
     {
-        private readonly ManagerServiceImp _managerServiceImp;
-
-        public managersController()
+        private readonly GroupServiceImp _groupServiceImp;
+        public groupsController()
         {
-            _managerServiceImp = new ManagerServiceImp();
+            _groupServiceImp = new GroupServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<ManagerDTO>> GetAll()
+        public async Task<IEnumerable<GroupDTO>> GetAll()
         {
-            return await _managerServiceImp.GetAllManagersAsync();
+            return await _groupServiceImp.GetAllGroupsAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ManagerDTO> GetManagerById(int id)
+        public async Task<GroupDTO> GetGroupById(int id)
         {
-            return await _managerServiceImp.GetManagerByIdAsync(id);
+            return await _groupServiceImp.GetGroupByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(ManagerCreateDTO manager)
+        public async Task<ActionResult<int>> CreateAsync(GroupCreateDTO group)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data!");
-            if (await _managerServiceImp.CreateManager(manager) == 1)
+            if (await _groupServiceImp.CreateGroup(group) == 1)
                 return Ok("Create Success!");
             else return BadRequest("Create Failed!");
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(ManagerUpdateDTO manager)
+        public async Task<ActionResult<int>> UpdateAsync(GroupUpdateDTO manager)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data!");
-            if (await _managerServiceImp.UpdateManager(manager) == 1)
+            if (await _groupServiceImp.UpdateGroup(manager) == 1)
                 return Ok("Update Success!");
             else return BadRequest("Update Failed!");
         }
@@ -54,9 +52,9 @@ namespace Tim_Xe.API.Controllers.V1
         {
             if (id != 0)
             {
-            var status =  await _managerServiceImp.DeleteManagerAsync(id);
-                if(status)
-                return Ok("Delete Success!");
+                var status = await _groupServiceImp.DeleteGroupAsync(id);
+                if (status)
+                    return Ok("Delete Success!");
                 else
                     return NotFound("Delete Failed!");
             };
@@ -65,8 +63,3 @@ namespace Tim_Xe.API.Controllers.V1
         }
     }
 }
-        
-
-
-         
-        

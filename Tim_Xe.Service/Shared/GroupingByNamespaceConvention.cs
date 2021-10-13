@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Tim_Xe.API.Shared
+namespace Tim_Xe.Service.Shared
 {
     public class GroupingByNamespaceConvention : IControllerModelConvention
     {
