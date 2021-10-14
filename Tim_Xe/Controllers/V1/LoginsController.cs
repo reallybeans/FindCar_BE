@@ -81,7 +81,7 @@ namespace TimXe.Present.Controllers.V1
                     new Claim("email", Convert.ToString(accounts.Email)),
                     new Claim("role", Convert.ToString(accounts.Role))
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
             };

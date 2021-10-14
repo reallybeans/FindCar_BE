@@ -9,7 +9,6 @@ using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
 using System.Threading.Tasks;
-using RefreshToken = Tim_Xe.Data.Repository.Entities.RefreshToken;
 
 namespace Tim_Xe.Service.LoginService
 {

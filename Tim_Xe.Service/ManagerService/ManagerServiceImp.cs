@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -23,6 +24,30 @@ namespace Tim_Xe.Service.ManagerService
         {
              
             return await context.Managers.Include(m => m.Role).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+        }
+        public async Task<IEnumerable<ManagerDTO>> SearchManagersAsync(ManagerSearchDTO paging)
+        {
+            if (paging.Pagination.SortOrder == "des")
+            {
+                return await context.Managers.Include(m => m.Role)
+               .Where(m => m.Email.Contains(paging.Email))
+               .OrderByDescending(m => m.Id)
+               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+               .Take((int)paging.Pagination.Size)
+               .ProjectTo<ManagerDTO>(managerMapping.configManager)
+               .ToListAsync();
+            }
+            else
+            {
+                return await context.Managers.Include(m => m.Role)
+                               .Where(m => m.Email.Contains(paging.Email))
+                               .OrderBy(m => m.Id)
+                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                               .Take((int)paging.Pagination.Size)
+                               .ProjectTo<ManagerDTO>(managerMapping.configManager)
+                               .ToListAsync();
+            }
+           
         }
         public async Task<ManagerDTO> GetManagerByIdAsync(int id)
         {

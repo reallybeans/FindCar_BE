@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
+using Tim_Xe.Data.Repository.Entities;
 using Tim_Xe.Service.ManagerService;
 
 
@@ -63,6 +64,12 @@ namespace Tim_Xe.API.Controllers.V1
             return NotFound();
 
         }
+        [HttpPost("search")]
+        public async Task<IEnumerable<ManagerDTO>> GetManagerById(ManagerSearchDTO managerSearchDTO)
+        {
+            return await _managerServiceImp.SearchManagersAsync(managerSearchDTO);
+        }
+
     }
 }
         
