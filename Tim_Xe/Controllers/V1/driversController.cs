@@ -60,5 +60,11 @@ namespace Tim_Xe.API.Controllers.V1
             return NotFound();
 
         }
+
+        [HttpPost("search")]
+        public async Task<IEnumerable<DriverDTO>> GetDriverById(DriverSearchDTO driverSearchDTO)
+        {
+            return await _driverServiceImp.SearchDriverAsync(driverSearchDTO);
+        }
     }
 }

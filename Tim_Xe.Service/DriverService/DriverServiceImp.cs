@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -12,6 +14,7 @@ namespace Tim_Xe.Service.DriverService
     public class DriverServiceImp
     {
         private readonly TimXeDBContext context;
+        private readonly DriverMapping driverMapping;
         public DriverServiceImp()
         {
             context = new TimXeDBContext();
@@ -26,6 +29,30 @@ namespace Tim_Xe.Service.DriverService
                 driverDTO.Add(new DriverDTO(x , existingVehicle));
             }
             return driverDTO;
+        }
+        public async Task<IEnumerable<DriverDTO>> SearchDriverAsync(DriverSearchDTO paging)
+        {
+            if (paging.Pagination.SortOrder == "des")
+            {
+                return await context.Drivers
+               .Where(m => m.Name.Contains(paging.Name))
+               .OrderByDescending(m => m.Id)
+               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+               .Take((int)paging.Pagination.Size)
+               .ProjectTo<DriverDTO>(driverMapping.configDriver)
+               .ToListAsync();
+            }
+            else
+            {
+                return await context.Drivers
+                               .Where(m => m.Name.Contains(paging.Name))
+                               .OrderBy(m => m.Id)
+                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                               .Take((int)paging.Pagination.Size)
+                               .ProjectTo<DriverDTO>(driverMapping.configDriver)
+                               .ToListAsync();
+            }
+
         }
         public async Task<DriverDTO> GettDriverByIdAsync(int id)
         {
