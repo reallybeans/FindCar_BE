@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -90,7 +91,29 @@ namespace Tim_Xe.Service.CustomerService
             {
                 return false;
             }
-
+        }
+        public async Task<IEnumerable<CustomerDTO>> SearchCustomerAsync(CustomerSearchDTO paging)
+        {
+            if (paging.Pagination.SortOrder == "des")
+            {
+                return await context.Customers
+               .Where(m => m.Name.Contains(paging.Name))
+               .OrderByDescending(m => m.Id)
+               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+               .Take((int)paging.Pagination.Size)
+               .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
+               .ToListAsync();
+            }
+            else
+            {
+                return await context.Customers
+                               .Where(m => m.Name.Contains(paging.Name))
+                               .OrderBy(m => m.Id)
+                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                               .Take((int)paging.Pagination.Size)
+                               .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
+                               .ToListAsync();
+            }
 
         }
     }

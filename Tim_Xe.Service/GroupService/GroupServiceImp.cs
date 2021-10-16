@@ -15,9 +15,11 @@ namespace Tim_Xe.Service.GroupService
     public class GroupServiceImp
     {
         private readonly TimXeDBContext context;
+        private readonly GroupMapping groupMapping;
         public GroupServiceImp()
         {
             context = new TimXeDBContext();
+            groupMapping = new GroupMapping();
         }
         public async Task<IEnumerable<GroupDTO>> GetAllGroupsAsync()
         {
@@ -95,6 +97,30 @@ namespace Tim_Xe.Service.GroupService
             {
                 return false;
             }
+        }
+        public async Task<IEnumerable<GroupDTO>> SearchGroupAsync(GroupSearchDTO paging)
+        {
+            if (paging.Pagination.SortOrder == "des")
+            {
+                return await context.Groups
+               .Where(m => m.Name.Contains(paging.Name))
+               .OrderByDescending(m => m.Id)
+               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+               .Take((int)paging.Pagination.Size)
+               .ProjectTo<GroupDTO>(groupMapping.configManager)
+               .ToListAsync();
+            }
+            else
+            {
+                return await context.Groups
+                               .Where(m => m.Name.Contains(paging.Name))
+                               .OrderBy(m => m.Id)
+                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                               .Take((int)paging.Pagination.Size)
+                               .ProjectTo<GroupDTO>(groupMapping.configManager)
+                               .ToListAsync();
+            }
+
         }
     }
 }

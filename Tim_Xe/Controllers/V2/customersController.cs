@@ -61,5 +61,10 @@ namespace Tim_Xe.API.Controllers.V2
             return NotFound();
 
         }
+        [HttpPost("search")]
+        public async Task<IEnumerable<CustomerDTO>> GetCustomerPagingAsync(CustomerSearchDTO customerSearchDTO)
+        {
+            return await _customerServiceImp.SearchCustomerAsync(customerSearchDTO);
+        }
     }
 }
