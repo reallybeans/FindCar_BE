@@ -10,6 +10,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public bool Mode { get; set; }
         public int? TimeWait { get; set; }
         public int Km { get; set; }
-        public string origin { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
     }
 }

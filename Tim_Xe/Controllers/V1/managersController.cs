@@ -11,7 +11,7 @@ using Tim_Xe.Service.ManagerService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Authorize(Roles = "group, admin")]
+    //[Authorize(Roles = "group, admin")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class managersController : ControllerBase

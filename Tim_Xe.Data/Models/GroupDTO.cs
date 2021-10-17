@@ -13,7 +13,7 @@ namespace Tim_Xe.Data.Models
             this.Id = group.Id;
             this.Name = group.Name;
             this.Address = group.Address;
-            this.CityName = group.IdCityNavigation.Name;
+            this.CityName = group.IdCityNavigation.CityName;
             this.IdManager = group.IdManager;
             this.Status = group.Status;
             this.PriceCoefficient = group.PriceCoefficient;

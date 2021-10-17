@@ -13,6 +13,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public int IdDriver { get; set; }
         public string Status { get; set; }
         public string Note { get; set; }
+        public bool? Notificatied { get; set; }
 
         public virtual Booking IdBookingNavigation { get; set; }
         public virtual Driver IdDriverNavigation { get; set; }

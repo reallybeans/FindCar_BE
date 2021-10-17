@@ -22,16 +22,15 @@ namespace Tim_Xe.Service.ManagerService
         }
         public async Task<IEnumerable<ManagerDTO>> GetAllManagersAsync()
         {
-             
-            return await context.Managers.Include(m => m.Role).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+            return await context.Managers.Include(m => m.Role).Where(m => m.RoleId == 2).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
         }
         public async Task<IEnumerable<ManagerDTO>> SearchManagersAsync(ManagerSearchDTO paging)
         {
             if (paging.Pagination.SortOrder == "des")
             {
                 return await context.Managers.Include(m => m.Role)
-               .Where(m => m.Email.Contains(paging.Email))
-               .OrderByDescending(m => m.Id)
+               .Where(m => m.Email.Contains(paging.Name)) // like
+               .OrderByDescending(m => m.Id) // search for descending with Softfield id
                .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                .Take((int)paging.Pagination.Size)
                .ProjectTo<ManagerDTO>(managerMapping.configManager)
@@ -40,7 +39,7 @@ namespace Tim_Xe.Service.ManagerService
             else
             {
                 return await context.Managers.Include(m => m.Role)
-                               .Where(m => m.Email.Contains(paging.Email))
+                               .Where(m => m.Email.Contains(paging.Name))
                                .OrderBy(m => m.Id)
                                .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                                .Take((int)paging.Pagination.Size)

@@ -65,7 +65,6 @@ namespace Tim_Xe.Service.LoginService
                 var jsonToken = handler.ReadToken(stream);
                 var tokenS = jsonToken as JwtSecurityToken;
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
-                var role = tokenS.Claims.First(claim => claim.Type == "role").Value;
                 existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
                 return userWithToken = new UserWithToken(existingAccount, null);
             }

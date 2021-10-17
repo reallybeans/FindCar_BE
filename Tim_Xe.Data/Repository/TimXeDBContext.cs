@@ -41,7 +41,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-1V9I55U\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.PhoneCustomer).HasMaxLength(15);
 
-                entity.Property(e => e.StartAt).HasColumnType("date");
+                entity.Property(e => e.StartAt).HasColumnType("datetime");
 
                 entity.HasOne(d => d.IdCustomerNavigation)
                     .WithMany(p => p.Bookings)
@@ -130,7 +130,8 @@ namespace Tim_Xe.Data.Repository
             {
                 entity.ToTable("City");
 
-                entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(e => e.CityName).HasMaxLength(50);
+                entity.Property(e => e.District).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Customer>(entity =>

@@ -41,7 +41,7 @@ namespace Tim_Xe.Service.GroupService
         }
         public async Task<int> CreateGroup(GroupCreateDTO group)
         {
-            var city = await context.Cities.FirstOrDefaultAsync(c => c.Name == group.City);
+            var city = await context.Cities.FirstOrDefaultAsync(c => c.CityName == group.City);
             try {
                 context.Groups.Add(new Group()
                 {

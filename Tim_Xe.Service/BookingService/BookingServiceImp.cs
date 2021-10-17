@@ -98,16 +98,19 @@ namespace Tim_Xe.Service.BookingService
         }
         public async Task<double> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO)
         {
-            var origin = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.origin);
+            bookingCreatePriceDTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.City);
+            bookingCreatePriceDTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.District);
                 
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => bookingCreatePriceDTO.origin.ToLower().Contains(g.IdCityNavigation.Name.ToLower())).ToListAsync();
+                .Where(g => bookingCreatePriceDTO.City.ToLower().Contains(g.IdCityNavigation.CityName.ToLower())
+                && bookingCreatePriceDTO.District.ToLower().Contains(g.IdCityNavigation.District.ToLower())).ToListAsync();
             int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ?  1 : 2;
             var priceKm = await context.PriceKms.Where(p => p.IdVehicleType == vehicleType).ToArrayAsync();
             if (bookingCreatePriceDTO.Mode)
             {
                 var timeWait = await context.PriceTimes.Where(p => p.IdVehicleType == vehicleType).FirstOrDefaultAsync();
             }
+
             return 0;
         }
     }
