@@ -45,6 +45,7 @@ namespace Tim_Xe.Service.BookingService
 
                     
                     AddressDTO address = new AddressDTO();
+                    address.Waypoint = new List<string>();
                     LatlngDTO latlng = new LatlngDTO();
                     foreach (Location y in x.Locations)
                     {
@@ -63,7 +64,7 @@ namespace Tim_Xe.Service.BookingService
                         }
                         if (waypoint != null)
                         {
-                            address.Waypoint +=  waypoint + "|";
+                            address.Waypoint.Add(waypoint);
                         }
 
                         //LatLng
@@ -84,7 +85,6 @@ namespace Tim_Xe.Service.BookingService
                             latlng.Waypoint += waypoints + "|";
                         }
                     }
-                    address.Waypoint = address.Waypoint.Remove(address.Waypoint.Length - 1);
                     latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
                     bookingDTO.Schedule.Address.Add(address);
                     bookingDTO.Schedule.Latlng.Add(latlng);
