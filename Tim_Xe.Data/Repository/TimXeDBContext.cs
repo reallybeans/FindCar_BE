@@ -41,7 +41,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
             }
         }
 
@@ -131,7 +131,6 @@ namespace Tim_Xe.Data.Repository
                 entity.ToTable("City");
 
                 entity.Property(e => e.CityName).HasMaxLength(50);
-                entity.Property(e => e.District).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -197,6 +196,8 @@ namespace Tim_Xe.Data.Repository
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.Property(e => e.District).HasMaxLength(50);
 
                 entity.HasOne(d => d.IdCityNavigation)
                     .WithMany(p => p.Groups)

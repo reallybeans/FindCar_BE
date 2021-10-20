@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.VehicleTypeService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/vehicle-types")]
     [ApiController]
-    public class vehicleTypesController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class VehicleTypesController : ControllerBase
     {
         private readonly VehicleTypeServiceImp _vehicleTypeServiceImp;
-        public vehicleTypesController()
+        public VehicleTypesController()
         {
             _vehicleTypeServiceImp = new VehicleTypeServiceImp();
         }

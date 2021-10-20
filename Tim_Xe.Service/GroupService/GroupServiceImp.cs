@@ -49,8 +49,9 @@ namespace Tim_Xe.Service.GroupService
                     Address = group.Address,
                     IdManager = group.IdManager,
                     IdCity = city.Id,
+                    District = group.District,
                     Status = group.Status,
-                    PriceCoefficient = group.PriceCoefficient,
+                    PriceCoefficient = (double)group.PriceCoefficient,
                     IsDeleted = false
                 });
             } catch (Exception e)
@@ -70,7 +71,7 @@ namespace Tim_Xe.Service.GroupService
                     existingGroup.Address = group.Address;
                     existingGroup.IdManager = group.IdManager;
                     existingGroup.Status = group.Status;
-                    existingGroup.PriceCoefficient = group.PriceCoefficient;
+                    existingGroup.PriceCoefficient = (double)group.PriceCoefficient;
             }
             else
                 return 0;

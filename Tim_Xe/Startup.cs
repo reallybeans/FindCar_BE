@@ -45,7 +45,7 @@ namespace Tim_Xe
 
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
             }));
 
 
@@ -130,10 +130,7 @@ namespace Tim_Xe
 
             app.UseRouting();
 
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors("ApiCorsPolicy");
 
             app.UseAuthentication();
 

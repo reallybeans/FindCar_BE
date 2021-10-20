@@ -9,7 +9,7 @@ using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
 using System.Threading.Tasks;
-
+using BCryptNet = BCrypt.Net.BCrypt;
 namespace Tim_Xe.Service.LoginService
 {
     public class LoginServiceImp
@@ -21,8 +21,7 @@ namespace Tim_Xe.Service.LoginService
         }
         public async Task<UserWithToken> LoginAsync(Login account)
         {
-            var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email
-                       && a.Password == account.Password);
+            var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email);
             UserWithToken userWithToken = new UserWithToken(existingAccount, null);
            
             return userWithToken;

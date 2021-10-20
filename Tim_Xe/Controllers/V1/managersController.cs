@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,14 @@ using Tim_Xe.Service.ManagerService;
 namespace Tim_Xe.API.Controllers.V1
 {
     //[Authorize(Roles = "group, admin")]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/managers")]
     [ApiController]
-    public class managersController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class ManagersController : ControllerBase
     {
         private readonly ManagerServiceImp _managerServiceImp;
 
-        public managersController()
+        public ManagersController()
         {
             _managerServiceImp = new ManagerServiceImp();
         }

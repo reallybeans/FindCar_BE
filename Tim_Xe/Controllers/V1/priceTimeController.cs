@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.PriceTimeService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/price-time")]
     [ApiController]
-    public class priceTimeController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class PriceTimeController : ControllerBase
     {
         private readonly PriceTimeServiceImp _priceTimeServiceImp;
-        public priceTimeController()
+        public PriceTimeController()
         {
             _priceTimeServiceImp = new PriceTimeServiceImp();
         }

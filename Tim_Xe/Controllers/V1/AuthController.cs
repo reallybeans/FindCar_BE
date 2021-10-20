@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,20 +16,21 @@ using Tim_Xe.Service.LoginService;
 
 namespace TimXe.Present.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [EnableCors("ApiCorsPolicy")]
+    [Route("api/v1/auth")]
     [ApiController]
-    public class loginsController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly LoginServiceImp _loginServiceImp;
 
         private readonly JWTSettings _jwtsettings;
-        public loginsController(IOptions<JWTSettings> jwtsettings)
+        public AuthController(IOptions<JWTSettings> jwtsettings)
         {
             _loginServiceImp = new LoginServiceImp();
             _jwtsettings = jwtsettings.Value;
         }
         //POST: api/Accounts
-        [HttpPost("loginweb")]
+        [HttpPost("login-web")]
         public async Task<ActionResult<UserWithToken>> LoginAsync([FromBody] Login login)
         {
            // UserWithToken userWithToken = new UserWithToken(null);
@@ -41,7 +43,7 @@ namespace TimXe.Present.Controllers.V1
             userWithToken.AccessToken = GenerateAccessToken(userWithToken);
             return userWithToken;
         }
-        [HttpPost("logindriver")]
+        [HttpPost("login-driver")]
         public async Task<ActionResult<UserWithToken>> LoginDriverAsync([FromBody] LoginDriverDTO login)
         {
             var userWithToken = await _loginServiceImp.LoginDriverAsync(login);
@@ -55,7 +57,7 @@ namespace TimXe.Present.Controllers.V1
             userWithToken.AccessToken = GenerateAccessToken(userWithToken);
             return userWithToken;
         }
-        [HttpPost("loginwebwithtoken")]
+        [HttpPost("login-web-with-token")]
         public async Task<ActionResult<UserWithToken>> LoginWithTokenWebAsync(string token)
         {
 

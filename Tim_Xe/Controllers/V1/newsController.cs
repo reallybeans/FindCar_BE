@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.NewsService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/news")]
     [ApiController]
-    public class newsController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class NewsController : ControllerBase
     {
         private readonly NewsSeviceImp _newsServiceImp;
-        public newsController()
+        public NewsController()
         {
             _newsServiceImp = new NewsSeviceImp();
         }

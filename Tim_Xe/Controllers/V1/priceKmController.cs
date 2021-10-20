@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.PriceKmService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/price-km")]
     [ApiController]
-    public class priceKmController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class PriceKmController : ControllerBase
     {
         private readonly PriceKmServiceImp _priceKmServiceImp;
-        public priceKmController()
+        public PriceKmController()
         {
             _priceKmServiceImp = new PriceKmServiceImp();
         }

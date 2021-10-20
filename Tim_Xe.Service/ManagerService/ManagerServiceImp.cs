@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.ManagerService
 {
@@ -61,7 +62,7 @@ namespace Tim_Xe.Service.ManagerService
             {
                 Name = manager.Name,
                 Phone = manager.Phone,
-                Password = manager.Password,
+                Password = BCryptNet.HashPassword(manager.Password),
                 Email = manager.Email,
                 RoleId = Int32.Parse(manager.Role),
                 Status = manager.Status,

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using Tim_Xe.Data.Repository.Models;
 using Tim_Xe.Service.Shared;
 
 namespace Tim_Xe.Service.BookingService
@@ -32,8 +33,8 @@ namespace Tim_Xe.Service.BookingService
                 {
                     BookingDTO bookingDTO = new BookingDTO();
                     bookingDTO.Schedule = new ScheduleDTO();
-                    bookingDTO.Schedule.Address = new List<AddressDTO>();
-                    bookingDTO.Schedule.Latlng = new List<LatlngDTO>();
+                    bookingDTO.Schedule.Address = new AddressDTO();
+                    bookingDTO.Schedule.Latlng = new LatlngDTO();
                     bookingDTO.Id = x.Id;
                     bookingDTO.NameCustomer = x.NameCustomer;
                     bookingDTO.PhoneCustomer = x.PhoneCustomer;
@@ -86,8 +87,8 @@ namespace Tim_Xe.Service.BookingService
                         }
                     }
                     latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
-                    bookingDTO.Schedule.Address.Add(address);
-                    bookingDTO.Schedule.Latlng.Add(latlng);
+                    bookingDTO.Schedule.Address = address;
+                    bookingDTO.Schedule.Latlng = latlng;
                     bookingDTOs.Add(bookingDTO);
                 }
             } 
@@ -100,18 +101,47 @@ namespace Tim_Xe.Service.BookingService
         {
             bookingCreatePriceDTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.City);
             bookingCreatePriceDTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.District);
-                
+            var totalKm = bookingCreatePriceDTO.Km;
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => bookingCreatePriceDTO.City.ToLower().Contains(g.IdCityNavigation.CityName.ToLower())
-                && bookingCreatePriceDTO.District.ToLower().Contains(g.IdCityNavigation.District.ToLower())).ToListAsync();
+                .Where(g=> g.District == bookingCreatePriceDTO.District && g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
+                .FirstOrDefaultAsync();
             int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ?  1 : 2;
             var priceKm = await context.PriceKms.Where(p => p.IdVehicleType == vehicleType).ToArrayAsync();
+            double priceTotal = 0;
+            foreach(PriceKm x in priceKm)
+            {
+                var pricePerKm = (groupExisted.PriceCoefficient * x.Price) / 100 + x.Price;
+                if (totalKm == 0)
+                {
+                    break;
+                }
+                if (x.Km > totalKm)
+                {
+                    priceTotal += totalKm * pricePerKm;
+                    totalKm -= totalKm;
+                }else if(x.Km <= totalKm)
+                {
+                    double km = Convert.ToDouble(x.Km);
+                    priceTotal += km * pricePerKm;
+                    totalKm -= km;
+                }
+            }
+            if(totalKm > 0)
+                priceTotal += totalKm * (((groupExisted.PriceCoefficient * priceKm[priceKm.Length - 1].Price) / 100 + priceKm[priceKm.Length - 1].Price) - 1000);
             if (bookingCreatePriceDTO.Mode)
             {
                 var timeWait = await context.PriceTimes.Where(p => p.IdVehicleType == vehicleType).FirstOrDefaultAsync();
+                double time = Convert.ToDouble(bookingCreatePriceDTO.TimeWait);
+                priceTotal += (double)(timeWait.Price * (time * 24));
             }
+            return priceTotal;
+        }
+        public async Task<bool> CreateBooking(BookingCreateDTO bookingCreateTO) {
+            var existingGroup = await context.Groups.Include(g => g.IdCityNavigation)
+                .Where(g => bookingCreateTO.Schedule.Address.Origin.ToLower().Contains(g.IdCityNavigation.CityName))
+                .FirstOrDefaultAsync();
 
-            return 0;
+            return true; 
         }
     }
 }

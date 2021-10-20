@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,13 @@ using Tim_Xe.Service.GroupService;
 namespace Tim_Xe.API.Controllers.V1
 {
 //    [Authorize(Roles = "group, admin")]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/groups")]
     [ApiController]
-    public class groupsController : ControllerBase
+    [EnableCors("ApiCorsPolicy")]
+    public class GroupsController : ControllerBase
     {
         private readonly GroupServiceImp _groupServiceImp;
-        public groupsController()
+        public GroupsController()
         {
             _groupServiceImp = new GroupServiceImp();
         }

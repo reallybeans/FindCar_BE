@@ -21,8 +21,9 @@ namespace Tim_Xe.Data.Repository.Entities
         public string Address { get; set; }
         public int IdManager { get; set; }
         public int? IdCity { get; set; }
+        public string? District { get; set; }
         public string Status { get; set; }
-        public double? PriceCoefficient { get; set; }
+        public double PriceCoefficient { get; set; }
         public bool? IsDeleted { get; set; }
 
         public virtual City IdCityNavigation { get; set; }

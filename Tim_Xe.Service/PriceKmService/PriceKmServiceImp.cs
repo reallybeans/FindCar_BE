@@ -41,8 +41,8 @@ namespace Tim_Xe.Service.PriceKmService
                 {
                     context.PriceKms.Add(new PriceKm()
                     {
-                        Km = priceKm.Km,
-                        Price = priceKm.Price,
+                        Km = (int)priceKm.Km,
+                        Price = (double)priceKm.Price,
                         Description = priceKm.Description,
                         IdVehicleType = priceKm.IdVehicleType,
                         IsDeleted = false,
@@ -67,8 +67,8 @@ namespace Tim_Xe.Service.PriceKmService
                 }
                 if (existingPriceKm != null)
                 {
-                    existingPriceKm.Km = priceKm.Km;
-                    existingPriceKm.Price = priceKm.Price;
+                    existingPriceKm.Km = (int)priceKm.Km;
+                    existingPriceKm.Price = (double)priceKm.Price;
                     existingPriceKm.Description = priceKm.Description;
                     existingPriceKm.IdVehicleType = priceKm.IdVehicleType;
                     existingPriceKm.IsDeleted = priceKm.IsDeleted;

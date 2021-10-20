@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.ChannelTypeService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [EnableCors("ApiCorsPolicy")]
+    [Route("api/v1/channelTypes")]
     [ApiController]
-    public class channelTypesController : ControllerBase
+    public class ChannelTypesController : ControllerBase
     {
         private readonly ChannelTypeServiceImp _channelTypeServiceImp;
-        public channelTypesController()
+        public ChannelTypesController()
         {
             _channelTypeServiceImp = new ChannelTypeServiceImp();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,14 @@ using Tim_Xe.Service.DriverService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [EnableCors("ApiCorsPolicy")]
+    [Route("api/v1/drivers")]
     [ApiController]
-    public class driversController : ControllerBase
+    public class DriversController : ControllerBase
     {
         private readonly DriverServiceImp _driverServiceImp;
 
-        public driversController()
+        public DriversController()
         {
             _driverServiceImp = new DriverServiceImp();
         }

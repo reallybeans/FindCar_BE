@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ using Tim_Xe.Service.CustomerService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [EnableCors("ApiCorsPolicy")]
+    [Route("api/v1/customers")]
     [ApiController]
-    public class customersController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly CustomerServiceImp _customerServiceImp;
-        public customersController()
+        public CustomersController()
         {
             _customerServiceImp = new CustomerServiceImp();
         }
