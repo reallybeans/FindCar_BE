@@ -43,12 +43,6 @@ namespace Tim_Xe
             //Register DBcontext for migration
             services.AddDbContext<TimXeDBContext>(options => options.UseSqlServer(dbConnectionString));
 
-            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
-            {
-                builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-            }));
-
-
             services.AddControllers(options =>
             {
                 options.Conventions.Add(new GroupingByNamespaceConvention());
@@ -79,10 +73,7 @@ namespace Tim_Xe
                 c.AddSecurityRequirement(securityRequirement);
             });
 
-            services.AddCors(options =>
-                options.AddDefaultPolicy(
-                builder => builder.AllowAnyOrigin()
-            ));
+            services.AddCors();
             var jwtSection = Configuration.GetSection("JWTSettings");
             services.Configure<JWTSettings>(jwtSection);
 
@@ -130,7 +121,10 @@ namespace Tim_Xe
 
             app.UseRouting();
 
-            app.UseCors("ApiCorsPolicy");
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthentication();
 

@@ -10,7 +10,6 @@ using Tim_Xe.Service.CustomerService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [EnableCors("ApiCorsPolicy")]
     [Route("api/v1/customers")]
     [ApiController]
     public class CustomersController : ControllerBase

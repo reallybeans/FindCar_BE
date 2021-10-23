@@ -12,7 +12,6 @@ namespace Tim_Xe.API.Controllers.V1
 {
     [Route("api/v1/price-time")]
     [ApiController]
-    [EnableCors("ApiCorsPolicy")]
     public class PriceTimeController : ControllerBase
     {
         private readonly PriceTimeServiceImp _priceTimeServiceImp;

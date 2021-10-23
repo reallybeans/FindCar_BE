@@ -12,7 +12,6 @@ namespace Tim_Xe.API.Controllers.V1
 {
     [Route("api/v1/price-km")]
     [ApiController]
-    [EnableCors("ApiCorsPolicy")]
     public class PriceKmController : ControllerBase
     {
         private readonly PriceKmServiceImp _priceKmServiceImp;

@@ -15,7 +15,6 @@ namespace Tim_Xe.API.Controllers.V1
     //[Authorize(Roles = "group, admin")]
     [Route("api/v1/managers")]
     [ApiController]
-    [EnableCors("ApiCorsPolicy")]
     public class ManagersController : ControllerBase
     {
         private readonly ManagerServiceImp _managerServiceImp;

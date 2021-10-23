@@ -10,7 +10,6 @@ using Tim_Xe.Service.ChannelTypeService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [EnableCors("ApiCorsPolicy")]
     [Route("api/v1/channelTypes")]
     [ApiController]
     public class ChannelTypesController : ControllerBase

@@ -13,7 +13,6 @@ namespace Tim_Xe.API.Controllers.V1
 //    [Authorize(Roles = "group, admin")]
     [Route("api/v1/groups")]
     [ApiController]
-    [EnableCors("ApiCorsPolicy")]
     public class GroupsController : ControllerBase
     {
         private readonly GroupServiceImp _groupServiceImp;

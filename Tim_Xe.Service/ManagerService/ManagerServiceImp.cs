@@ -56,13 +56,13 @@ namespace Tim_Xe.Service.ManagerService
 
         }
         public async Task<int> CreateManager(ManagerCreateDTO manager)
-        {
+        { var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             context.Managers.Add(new Manager()
             {
                 Name = manager.Name,
                 Phone = manager.Phone,
-                Password = BCryptNet.HashPassword(manager.Password),
+                Password = pwd,
                 Email = manager.Email,
                 RoleId = Int32.Parse(manager.Role),
                 Status = manager.Status,

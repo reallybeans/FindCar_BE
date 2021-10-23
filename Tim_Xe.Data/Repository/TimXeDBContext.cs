@@ -41,7 +41,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
             }
         }
 
@@ -152,6 +152,8 @@ namespace Tim_Xe.Data.Repository
                 entity.Property(e => e.Phone).HasMaxLength(12);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.Property(e => e.Password).HasMaxLength(150);
             });
 
             modelBuilder.Entity<Driver>(entity =>
@@ -180,7 +182,7 @@ namespace Tim_Xe.Data.Repository
                 entity.Property(e => e.Phone).HasMaxLength(12);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
-
+                  
                 entity.HasOne(d => d.CreateBy)
                     .WithMany(p => p.Drivers)
                     .HasForeignKey(d => d.CreateById)
@@ -191,13 +193,13 @@ namespace Tim_Xe.Data.Repository
             {
                 entity.ToTable("Group");
 
+
+
                 entity.Property(e => e.Address).HasMaxLength(200);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
-
-                entity.Property(e => e.District).HasMaxLength(50);
 
                 entity.HasOne(d => d.IdCityNavigation)
                     .WithMany(p => p.Groups)
@@ -245,7 +247,7 @@ namespace Tim_Xe.Data.Repository
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Password).HasMaxLength(50);
+                entity.Property(e => e.Password).HasMaxLength(150);
 
                 entity.Property(e => e.Phone).HasMaxLength(50);
 

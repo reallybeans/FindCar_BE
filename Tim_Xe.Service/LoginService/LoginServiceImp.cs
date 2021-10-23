@@ -21,10 +21,19 @@ namespace Tim_Xe.Service.LoginService
         }
         public async Task<UserWithToken> LoginAsync(Login account)
         {
-            var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email);
-            UserWithToken userWithToken = new UserWithToken(existingAccount, null);
-           
-            return userWithToken;
+            try {
+                var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email);
+                bool verified = BCrypt.Net.BCrypt.Verify(account.Password, existingAccount.Password);
+                if (!verified) return null;
+                UserWithToken userWithToken = new UserWithToken(existingAccount, null);
+
+                return userWithToken;
+            } catch (Exception e)
+            {
+                return null;
+            }
+
+            
         }
 
 

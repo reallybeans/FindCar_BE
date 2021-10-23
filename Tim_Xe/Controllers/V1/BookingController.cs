@@ -10,8 +10,6 @@ using Tim_Xe.Service.BookingService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-
-    [EnableCors("ApiCorsPolicy")]
     [Route("api/v1/booking")]
     [ApiController]
     public class BookingController: ControllerBase

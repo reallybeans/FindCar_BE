@@ -9,7 +9,6 @@ using Tim_Xe.Service.DriverService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [EnableCors("ApiCorsPolicy")]
     [Route("api/v1/drivers")]
     [ApiController]
     public class DriversController : ControllerBase

@@ -103,7 +103,7 @@ namespace Tim_Xe.Service.BookingService
             bookingCreatePriceDTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.District);
             var totalKm = bookingCreatePriceDTO.Km;
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g=> g.District == bookingCreatePriceDTO.District && g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
+                .Where(g=> g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
                 .FirstOrDefaultAsync();
             int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ?  1 : 2;
             var priceKm = await context.PriceKms.Where(p => p.IdVehicleType == vehicleType).ToArrayAsync();

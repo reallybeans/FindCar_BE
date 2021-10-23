@@ -17,3 +17,4 @@ namespace Tim_Xe.Data.Models
         public ScheduleDTO Schedule { get; set; }
     }
 }
+ 

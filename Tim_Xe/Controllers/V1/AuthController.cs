@@ -16,7 +16,6 @@ using Tim_Xe.Service.LoginService;
 
 namespace TimXe.Present.Controllers.V1
 {
-    [EnableCors("ApiCorsPolicy")]
     [Route("api/v1/auth")]
     [ApiController]
     public class AuthController : ControllerBase

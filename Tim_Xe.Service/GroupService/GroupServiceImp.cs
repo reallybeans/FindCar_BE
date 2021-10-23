@@ -49,7 +49,6 @@ namespace Tim_Xe.Service.GroupService
                     Address = group.Address,
                     IdManager = group.IdManager,
                     IdCity = city.Id,
-                    District = group.District,
                     Status = group.Status,
                     PriceCoefficient = (double)group.PriceCoefficient,
                     IsDeleted = false

@@ -12,7 +12,6 @@ namespace Tim_Xe.API.Controllers.V1
 {
     [Route("api/v1/vehicle-types")]
     [ApiController]
-    [EnableCors("ApiCorsPolicy")]
     public class VehicleTypesController : ControllerBase
     {
         private readonly VehicleTypeServiceImp _vehicleTypeServiceImp;
