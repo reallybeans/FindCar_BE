@@ -25,27 +25,19 @@ namespace Tim_Xe.API.Controllers.V1
             return await _driverServiceImp.GetAllDriversAsync();
         }
         [HttpGet("{id}")]
-        public async Task<DriverDTO> GetDriverById(int id)
+        public async Task<DriverDataDTO> GetDriverById(int id)
         {
             return await _driverServiceImp.GettDriverByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateAsync(DriverCreateDTO driver)
+        public async Task<DriverCreateDataDTO> CreateAsync(DriverCreateDTO driver)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _driverServiceImp.CreateDriver(driver))
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _driverServiceImp.CreateDriver(driver);
         }
         [HttpPut]
-        public async Task<ActionResult<bool>> UpdateAsync(DriverUpdateDTO driver)
+        public async Task<DriverUpdateDataDTO> UpdateAsync(DriverUpdateDTO driver)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _driverServiceImp.UpdateDriver(driver))
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _driverServiceImp.UpdateDriver(driver);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

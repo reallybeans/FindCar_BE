@@ -15,8 +15,9 @@ namespace Tim_Xe.Data.Models
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number.")]
         public string Phone { get; set; }
         [Required(ErrorMessage = "Field can't be empty")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]       
         public string Email { get; set; }
+        public string Password { get; set; }
         public string Img { get; set; }
         public string Status { get; set; }
         [DataType(DataType.DateTime)]

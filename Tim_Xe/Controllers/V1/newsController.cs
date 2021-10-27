@@ -25,27 +25,19 @@ namespace Tim_Xe.API.Controllers.V1
             return await _newsServiceImp.GetAllNewsAsync();
         }
         [HttpGet("{id}")]
-        public async Task<NewsDTO> GetNewsById(int id)
+        public async Task<NewsDataDTO> GetNewsById(int id)
         {
             return await _newsServiceImp.GetNewsByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(NewsCreateDTO news)
+        public async Task<NewsCreateDataDTO> CreateAsync(NewsCreateDTO news)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _newsServiceImp.CreateNews(news) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _newsServiceImp.CreateNews(news);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(NewsUpdateDTO news)
+        public async Task<NewsUpdateDataDTO> UpdateAsync(NewsUpdateDTO news)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _newsServiceImp.UpdateNews(news) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _newsServiceImp.UpdateNews(news);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

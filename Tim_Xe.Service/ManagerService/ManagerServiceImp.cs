@@ -49,14 +49,22 @@ namespace Tim_Xe.Service.ManagerService
             }
            
         }
-        public async Task<ManagerDTO> GetManagerByIdAsync(int id)
+        public async Task<ManagerDataDTO> GetManagerByIdAsync(int id)
         {
             var result = await context.Managers.Include(m => m.Role).ProjectTo<ManagerDTO>(managerMapping.configManager).FirstOrDefaultAsync(m => m.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new ManagerDataDTO("fail", null, "not available");
+            }
+            else
+            {
+                return new ManagerDataDTO("success", result, result.Status);
+            }
 
         }
-        public async Task<int> CreateManager(ManagerCreateDTO manager)
-        { var pwd = BCryptNet.HashPassword(manager.Password); // hash password
+        public async Task<ManagerCreateDataDTO> CreateManager(ManagerCreateDTO manager)
+        {
+            var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             context.Managers.Add(new Manager()
             {
@@ -70,11 +78,11 @@ namespace Tim_Xe.Service.ManagerService
                 CreateAt = DateTime.Now,
                 IsDeleted = false,
                 Img = manager.Img
-            }); 
-
-            return await context.SaveChangesAsync();
-        }
-        public async Task<int> UpdateManager(ManagerUpdateDTO manager)
+            });
+            await context.SaveChangesAsync();
+            return new ManagerCreateDataDTO("create success", manager, "success");
+        }        
+        public async Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager)
         {
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             var existingAccount = await context.Managers.FirstOrDefaultAsync(a => a.Id == manager.Id);
@@ -86,13 +94,14 @@ namespace Tim_Xe.Service.ManagerService
                 existingAccount.RoleId = Int32.Parse(manager.Role);
                 existingAccount.Status = manager.Status;
                 existingAccount.Img = manager.Img;
+                context.Managers.Update(existingAccount);
+                await context.SaveChangesAsync();
+                return new ManagerUpdateDataDTO("update success", manager, "success");
             }
             else
             {
-                return 0;
+                return new ManagerUpdateDataDTO("update fail", null, "fail");
             }
-
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeleteManagerAsync(int id)
         {

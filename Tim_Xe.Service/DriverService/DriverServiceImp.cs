@@ -63,14 +63,21 @@ namespace Tim_Xe.Service.DriverService
             }
             return driverDTO;
         }
-        public async Task<DriverDTO> GettDriverByIdAsync(int id)
+        public async Task<DriverDataDTO> GettDriverByIdAsync(int id)
         {
             var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);
-                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
+            var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
             DriverDTO driverDTO = new DriverDTO(driverExisted, existingVehicle);
-            return driverDTO;
+            if (driverExisted == null)
+            {
+                return new DriverDataDTO("fail", null, "not available");
+            }
+            else
+            {
+                return new DriverDataDTO("success", driverDTO, driverExisted.Status);
+            }
         }
-        public async Task<bool> CreateDriver(DriverCreateDTO driver)
+        public async Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver)
         {
             try {
                 Driver drivers = new Driver();
@@ -90,22 +97,27 @@ namespace Tim_Xe.Service.DriverService
                 vehicle.Status = driver.StatusVehicle;
                 var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
                 vehicle.IdVehicleType = VehicleType.Id;
-                
-                drivers.Vehicles.Add(vehicle);
-                context.Drivers.Add(drivers);
-                await context.SaveChangesAsync();
-                
+
+                if (VehicleType == null)
+                {
+                    return new DriverCreateDataDTO("create fail", null, "fail");
+                }
+                else
+                {
+                    drivers.Vehicles.Add(vehicle);
+                    context.Drivers.Add(drivers);
+                    await context.SaveChangesAsync();
+                    return new DriverCreateDataDTO("create success", driver, "success");
+                }                                
             } catch (Exception e) {
-                return false;
+                return new DriverCreateDataDTO("create fail", null, "fail");
             }
-            
-            return true;
         }
-        public async Task<bool> UpdateDriver(DriverUpdateDTO driver)
+        public async Task<DriverUpdateDataDTO> UpdateDriver(DriverUpdateDTO driver)
         {
             try
             {
-                var existingdrivers = await context.Drivers.FirstOrDefaultAsync(d => d.Id == driver.Id);
+                var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
                 if (existingdrivers != null)
                 {
                     existingdrivers.Name = driver.Name;
@@ -120,14 +132,23 @@ namespace Tim_Xe.Service.DriverService
                         vehicle.LicensePlate = driver.LicensePlate;
                         vehicle.Status = driver.StatusVehicle;
                         var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
-                        vehicle.IdVehicleType = VehicleType.Id;
+                        if(VehicleType == null)
+                        {
+                            return new DriverUpdateDataDTO("update fail", null, "fail");
+                        }
+                        else
+                        {
+                            vehicle.IdVehicleType = VehicleType.Id;
+                            context.Vehicles.Update(vehicle);
+                        }
                     }
                 }
+                context.Drivers.Update(existingdrivers);
                 await context.SaveChangesAsync();
-                return true;
+                return new DriverUpdateDataDTO("update succes",driver,"success");
             }
             catch (Exception e) {
-                return false;
+                return new DriverUpdateDataDTO("update fail", null, "fail");
             }
         }
         public async Task<bool> DeleteDriverAsync(int id)

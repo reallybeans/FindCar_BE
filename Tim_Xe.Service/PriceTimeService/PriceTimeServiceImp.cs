@@ -23,19 +23,26 @@ namespace Tim_Xe.Service.PriceTimeService
         {
             return await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).ToListAsync();
         }
-        public async Task<PriceTimeDTO> GetPriceTimeByIdAsync(int id)
+        public async Task<PriceTimeDataDTO> GetPriceTimeByIdAsync(int id)
         {
             var result = await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new PriceTimeDataDTO("fail", result, "not available");
+            }
+            else
+            {
+                return new PriceTimeDataDTO("success", result, "available");
+            }
         }
-        public async Task<int> CreatePriceTime(PriceTimeCreateDTO priceTime)
+        public async Task<PriceTimeCreateDataDTO> CreatePriceTime(PriceTimeCreateDTO priceTime)
         {
             try
             {
                 var existingVehicleType = await context.VehicleTypes.FindAsync(priceTime.IdVehicleType);
                 if (existingVehicleType == null)
                 {
-                    return 0;
+                    return new PriceTimeCreateDataDTO("fail", null,"create fail");
                 }
                 else
                 {
@@ -46,14 +53,15 @@ namespace Tim_Xe.Service.PriceTimeService
                         IdVehicleType = priceTime.IdVehicleType,
                         IsDeleted = false,
                     });
+                    await context.SaveChangesAsync();
+                    return new PriceTimeCreateDataDTO("success", priceTime, "create success");
                 }
             }
             catch(Exception e) {
-                return 0;
+                return new PriceTimeCreateDataDTO("fail", null, "create fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdatePriceTime(PriceTimeUpdateDTO priceTime)
+        public async Task<PriceTimeUpdateDataDTO> UpdatePriceTime(PriceTimeUpdateDTO priceTime)
         {
             try
             {
@@ -61,7 +69,7 @@ namespace Tim_Xe.Service.PriceTimeService
                 var extstingVehicleType = await context.VehicleTypes.FindAsync(priceTime.IdVehicleType);
                 if (extstingVehicleType == null)
                 {
-                    return 0;
+                    return new PriceTimeUpdateDataDTO("fail", null, "update fail");
                 }
                 if (existingPriceTime != null)
                 {
@@ -69,18 +77,20 @@ namespace Tim_Xe.Service.PriceTimeService
                     existingPriceTime.Price = priceTime.Price;
                     existingPriceTime.IdVehicleType = priceTime.IdVehicleType;
                     existingPriceTime.IsDeleted = priceTime.IsDeleted;
+                    context.PriceTimes.Update(existingPriceTime);
+                    await context.SaveChangesAsync();
+                    return new PriceTimeUpdateDataDTO("success", priceTime, "update success");                  
                 }
                 else
                 {
-                    return 0;
+                    return new PriceTimeUpdateDataDTO("fail", null, "update fail");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new PriceTimeUpdateDataDTO("fail", null, "update fail");
             }
 
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeletePriceTimeAsync(int id)
         {

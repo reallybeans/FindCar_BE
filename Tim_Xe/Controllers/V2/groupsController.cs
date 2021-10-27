@@ -25,27 +25,19 @@ namespace Tim_Xe.API.Controllers.V2
             return await _groupServiceImp.GetAllGroupsAsync();
         }
         [HttpGet("{id}")]
-        public async Task<GroupDTO> GetGroupById(int id)
+        public async Task<GroupDataDTO> GetGroupById(int id)
         {
             return await _groupServiceImp.GetGroupByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(GroupCreateDTO group)
+        public async Task<GroupCreateDataDTO> CreateAsync(GroupCreateDTO group)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _groupServiceImp.CreateGroup(group) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _groupServiceImp.CreateGroup(group);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(GroupUpdateDTO manager)
+        public async Task<GroupUpdateDataDTO> UpdateAsync(GroupUpdateDTO group)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _groupServiceImp.UpdateGroup(manager) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _groupServiceImp.UpdateGroup(group);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

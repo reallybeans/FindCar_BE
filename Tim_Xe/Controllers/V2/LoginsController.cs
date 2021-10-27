@@ -28,31 +28,27 @@ namespace TimXe.Present.Controllers.V2
             _jwtsettings = jwtsettings.Value;
         }
         //POST: api/Accounts
-        [HttpPost("loginweb")]
-        public async Task<ActionResult<UserWithToken>> LoginAsync([FromBody] Login login)
+        [HttpPost("login-web")]
+        public async Task<UserWithTokenDataDTO> LoginAsync([FromBody] Login login)
         {
-           // UserWithToken userWithToken = new UserWithToken(null);
+            // UserWithToken userWithToken = new UserWithToken(null);
             var userWithToken = await _loginServiceImp.LoginAsync(login);
-            if (userWithToken == null)
-            {
-                return NotFound();
-            }
             //sign your token here here..
-            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
             return userWithToken;
         }
-        [HttpPost("logindriver")]
-        public async Task<ActionResult<UserWithToken>> LoginDriverAsync([FromBody] LoginDriverDTO login)
+        [HttpPost("login-driver")]
+        public async Task<UserWithTokenDataDTO> LoginDriverAsync([FromBody] LoginDriverDTO login)
         {
             var userWithToken = await _loginServiceImp.LoginDriverAsync(login);
-            if (userWithToken == null)
-            {
-                return NotFound();
-            }
-           
-            
             //sign your token here here..
-            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
             return userWithToken;
         }
         private string GenerateAccessToken(UserWithToken accounts)

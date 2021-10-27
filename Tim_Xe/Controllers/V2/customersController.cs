@@ -24,27 +24,19 @@ namespace Tim_Xe.API.Controllers.V2
             return await _customerServiceImp.GetAllCustomersAsync();
         }
         [HttpGet("{id}")]
-        public async Task<CustomerDTO> GetCustomerById(int id)
+        public async Task<CustomerDataDTO> GetCustomerById(int id)
         {
             return await _customerServiceImp.GetCustomerByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(CustomerCreateDTO customer)
+        public async Task<CustomerCreateDataDTO> CreateAsync(CustomerCreateDTO customer)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _customerServiceImp.CreateCustomer(customer) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _customerServiceImp.CreateCustomer(customer);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(CustomerUpdateDTO customer)
+        public async Task<CustomerUpdateDataDTO> UpdateAsync(CustomerUpdateDTO customer)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _customerServiceImp.UpdateCustomer(customer) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _customerServiceImp.UpdateCustomer(customer);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

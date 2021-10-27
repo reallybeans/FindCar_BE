@@ -23,19 +23,23 @@ namespace Tim_Xe.Service.PriceKmService
         {
             return await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).ToListAsync();
         }
-        public async Task<PriceKmDTO> GetPriceKmByIdAsync(int id)
+        public async Task<PriceKmDataDTO> GetPriceKmByIdAsync(int id)
         {
             var result = await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new PriceKmDataDTO("fail", null, "not Available");
+            }
+            else return new PriceKmDataDTO("success", result, "available");
         }
-        public async Task<int> CreatePriceKm(PriceKmCreateDTO priceKm)
+        public async Task<PriceKmCreateDataDTO> CreatePriceKm(PriceKmCreateDTO priceKm)
         {
             try
             {
                 var existingVehicleType = await context.VehicleTypes.FindAsync(priceKm.IdVehicleType);
                 if (existingVehicleType == null)
                 {
-                    return 0;
+                    return new PriceKmCreateDataDTO("fail", null, "create fail");
                 }
                 else
                 {
@@ -47,15 +51,16 @@ namespace Tim_Xe.Service.PriceKmService
                         IdVehicleType = priceKm.IdVehicleType,
                         IsDeleted = false,
                     });
+                    await context.SaveChangesAsync();
+                    return new PriceKmCreateDataDTO("success", priceKm, "create success");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new PriceKmCreateDataDTO("fail", null, "create fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdatePriceKm(PriceKmUpdateDTO priceKm)
+        public async Task<PriceKmUpdateDataDTO> UpdatePriceKm(PriceKmUpdateDTO priceKm)
         {
             try
             {
@@ -63,7 +68,7 @@ namespace Tim_Xe.Service.PriceKmService
                 var extstingVehicleType = await context.VehicleTypes.FindAsync(priceKm.IdVehicleType);
                 if (extstingVehicleType == null)
                 {
-                    return 0;
+                    return new PriceKmUpdateDataDTO("fail", null, "update fail");
                 }
                 if (existingPriceKm != null)
                 {
@@ -72,18 +77,19 @@ namespace Tim_Xe.Service.PriceKmService
                     existingPriceKm.Description = priceKm.Description;
                     existingPriceKm.IdVehicleType = priceKm.IdVehicleType;
                     existingPriceKm.IsDeleted = priceKm.IsDeleted;
+                    context.PriceKms.Update(existingPriceKm);
+                    await context.SaveChangesAsync();
+                    return new PriceKmUpdateDataDTO("success", priceKm, "update success");
                 }
                 else
                 {
-                    return 0;
+                    return new PriceKmUpdateDataDTO("fail", null, "update fail");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new PriceKmUpdateDataDTO("fail", null, "update fail");
             }
-
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeletePriceKmAsync(int id)
         {

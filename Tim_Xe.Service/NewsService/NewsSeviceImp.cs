@@ -23,19 +23,35 @@ namespace Tim_Xe.Service.NewsService
         {
             return await context.News.ProjectTo<NewsDTO>(newsMapping.configNews).ToListAsync();
         }
-        public async Task<NewsDTO> GetNewsByIdAsync(int id)
+        public async Task<NewsDataDTO> GetNewsByIdAsync(int id)
         {
             var result = await context.News.ProjectTo<NewsDTO>(newsMapping.configNews).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new NewsDataDTO("fail", result, "not available");
+            }
+            else
+            {
+                String status;
+                if (result.IsDeleted == true)
+                {
+                    status = "inActive";
+                }
+                else
+                {
+                    status = "active";
+                }
+                return new NewsDataDTO("success", result, status);
+            }
         }
-        public async Task<int> CreateNews(NewsCreateDTO news)
+        public async Task<NewsCreateDataDTO> CreateNews(NewsCreateDTO news)
         {
             try
             {
                 var extstingGroup = await context.Groups.FindAsync(news.IdGroup);
                 if (extstingGroup == null)
                 {
-                    return 0;
+                    return new NewsCreateDataDTO("create fail", null, "fail");
                 }
                 else
                 {
@@ -46,21 +62,22 @@ namespace Tim_Xe.Service.NewsService
                         IdGroup = news.IdGroup,
                         IsDeleted = false,
                     });
+                    await context.SaveChangesAsync();
+                    return new NewsCreateDataDTO("create success", news, "success");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new NewsCreateDataDTO("create fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdateNews(NewsUpdateDTO news)
+        public async Task<NewsUpdateDataDTO> UpdateNews(NewsUpdateDTO news)
         {
             var existingNews = await context.News.FirstOrDefaultAsync(c => c.Id == news.Id);
             var extstingGroup = await context.Groups.FindAsync(news.IdGroup);
             if (extstingGroup == null)
             {
-                return 0;
+                return new NewsUpdateDataDTO("update fail", null, "fail");
             }
             if (existingNews != null)
             {
@@ -68,13 +85,14 @@ namespace Tim_Xe.Service.NewsService
                 existingNews.Content = news.Content;
                 existingNews.IdGroup = news.IdGroup;
                 existingNews.IsDeleted = news.IsDeleted;
+                context.News.Update(existingNews);
+                await context.SaveChangesAsync();
+                return new NewsUpdateDataDTO("update success", news, "success");
             }
             else
             {
-                return 0;
+                return new NewsUpdateDataDTO("update fail", null, "fail");
             }
-
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeleteNewsAsync(int id)
         {

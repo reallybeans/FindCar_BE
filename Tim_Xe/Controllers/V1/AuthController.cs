@@ -30,45 +30,39 @@ namespace TimXe.Present.Controllers.V1
         }
         //POST: api/Accounts
         [HttpPost("login-web")]
-        public async Task<ActionResult<UserWithToken>> LoginAsync([FromBody] Login login)
+        public async Task<UserWithTokenDataDTO> LoginAsync([FromBody] Login login)
         {
            // UserWithToken userWithToken = new UserWithToken(null);
             var userWithToken = await _loginServiceImp.LoginAsync(login);
-            if (userWithToken == null)
-            {
-                return NotFound();
-            }
             //sign your token here here..
-            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
             return userWithToken;
         }
         [HttpPost("login-driver")]
-        public async Task<ActionResult<UserWithToken>> LoginDriverAsync([FromBody] LoginDriverDTO login)
+        public async Task<UserWithTokenDataDTO> LoginDriverAsync([FromBody] LoginDriverDTO login)
         {
             var userWithToken = await _loginServiceImp.LoginDriverAsync(login);
-            if (userWithToken == null)
-            {
-                return NotFound();
-            }
-
-
             //sign your token here here..
-            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
             return userWithToken;
         }
         [HttpPost("login-web-with-token")]
-        public async Task<ActionResult<UserWithToken>> LoginWithTokenWebAsync(string token)
+        public async Task<UserWithTokenDataDTO> LoginWithTokenWebAsync(string token)
         {
 
             var userWithToken = await _loginServiceImp.LoginWithTokenWeb(token);
-            if (userWithToken == null)
+            if (userWithToken != null)
             {
-                return NotFound();
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
             }
-
-
             //sign your token here here..
-            userWithToken.AccessToken = GenerateAccessToken(userWithToken);
+            
             return userWithToken;
         }
         private string GenerateAccessToken(UserWithToken accounts)

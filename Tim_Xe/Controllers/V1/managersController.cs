@@ -29,27 +29,19 @@ namespace Tim_Xe.API.Controllers.V1
             return await _managerServiceImp.GetAllManagersAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ManagerDTO> GetManagerById(int id)
+        public async Task<ManagerDataDTO> GetManagerById(int id)
         {
             return await _managerServiceImp.GetManagerByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(ManagerCreateDTO manager)
+        public async Task<ManagerCreateDataDTO> CreateAsync(ManagerCreateDTO manager)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _managerServiceImp.CreateManager(manager) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _managerServiceImp.CreateManager(manager);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(ManagerUpdateDTO manager)
+        public async Task<ManagerUpdateDataDTO> UpdateAsync(ManagerUpdateDTO manager)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _managerServiceImp.UpdateManager(manager) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _managerServiceImp.UpdateManager(manager);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

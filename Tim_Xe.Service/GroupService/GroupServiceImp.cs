@@ -31,17 +31,27 @@ namespace Tim_Xe.Service.GroupService
             }
             return groupDTO;
         }
-        public async Task<GroupDTO> GetGroupByIdAsync(int id)
+        public async Task<GroupDataDTO> GetGroupByIdAsync(int id)
         {
             var result = await context.Groups.Include(g => g.IdCityNavigation)
                 .FirstOrDefaultAsync(g => g.Id == id);
-            GroupDTO groupDTO = new GroupDTO(result);
-            return groupDTO;
-
+            if (result == null)
+            {
+                return new GroupDataDTO("fail", null, "not Available");
+            }
+            else
+            {
+                GroupDTO groupDTO = new GroupDTO(result);
+                return new GroupDataDTO("success", groupDTO, groupDTO.Status);
+            }
         }
-        public async Task<int> CreateGroup(GroupCreateDTO group)
+        public async Task<GroupCreateDataDTO> CreateGroup(GroupCreateDTO group)
         {
             var city = await context.Cities.FirstOrDefaultAsync(c => c.CityName == group.City);
+            if(city == null)
+            {
+                return new GroupCreateDataDTO("create fail", null, "fail");
+            }
             try {
                 context.Groups.Add(new Group()
                 {
@@ -53,13 +63,14 @@ namespace Tim_Xe.Service.GroupService
                     PriceCoefficient = (double)group.PriceCoefficient,
                     IsDeleted = false
                 });
+                await context.SaveChangesAsync();
+                return new GroupCreateDataDTO("create success", group, "success");
             } catch (Exception e)
             {
-                return 0;
+                return new GroupCreateDataDTO("create fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdateGroup(GroupUpdateDTO group)
+        public async Task<GroupUpdateDataDTO> UpdateGroup(GroupUpdateDTO group)
         {
             try
             {
@@ -71,16 +82,17 @@ namespace Tim_Xe.Service.GroupService
                     existingGroup.IdManager = group.IdManager;
                     existingGroup.Status = group.Status;
                     existingGroup.PriceCoefficient = (double)group.PriceCoefficient;
-            }
+                    context.Update(existingGroup);
+                    await context.SaveChangesAsync();
+                    return new GroupUpdateDataDTO("update success", group, "success");
+                }
             else
-                return 0;
+                    return new GroupUpdateDataDTO("update fail", null, "fail");
             }
             catch (Exception e)
             {
-                return 0;
+                return new GroupUpdateDataDTO("update fail", null, "fail");
             }
-
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeleteGroupAsync(int id)
         {

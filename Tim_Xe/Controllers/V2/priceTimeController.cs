@@ -24,27 +24,19 @@ namespace Tim_Xe.API.Controllers.V2
             return await _priceTimeServiceImp.GetAllPriceTimesAsync();
         }
         [HttpGet("{id}")]
-        public async Task<PriceTimeDTO> GetPriceTimeById(int id)
+        public async Task<PriceTimeDataDTO> GetPriceTimeById(int id)
         {
             return await _priceTimeServiceImp.GetPriceTimeByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(PriceTimeCreateDTO priceTime)
+        public async Task<PriceTimeCreateDataDTO> CreateAsync(PriceTimeCreateDTO priceTime)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _priceTimeServiceImp.CreatePriceTime(priceTime) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _priceTimeServiceImp.CreatePriceTime(priceTime);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(PriceTimeUpdateDTO priceTime)
+        public async Task<PriceTimeUpdateDataDTO> UpdateAsync(PriceTimeUpdateDTO priceTime)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _priceTimeServiceImp.UpdatePriceTime(priceTime) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _priceTimeServiceImp.UpdatePriceTime(priceTime);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

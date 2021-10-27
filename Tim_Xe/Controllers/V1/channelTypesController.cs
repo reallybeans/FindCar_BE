@@ -25,27 +25,19 @@ namespace Tim_Xe.API.Controllers.V1
             return await _channelTypeServiceImp.GetAllChannelTypesAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ChannelTypeDTO> GetChannelTypeById(int id)
+        public async Task<ChannelTypesDataDTO> GetChannelTypeById(int id)
         {
             return await _channelTypeServiceImp.GetChannelTypeByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(ChannelTypeCreateDTO channelType)
+        public async Task<ChannelTypeCreateDataDTO> CreateAsync(ChannelTypeCreateDTO channelType)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _channelTypeServiceImp.CreateChannelType(channelType) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _channelTypeServiceImp.CreateChannelType(channelType);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(ChannelTypeUpdateDTO channel)
+        public async Task<ChannelTypeUpdateDataDTO> UpdateAsync(ChannelTypeUpdateDTO channel)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _channelTypeServiceImp.UpdateChannelType(channel) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _channelTypeServiceImp.UpdateChannelType(channel);
         }
     }
 }

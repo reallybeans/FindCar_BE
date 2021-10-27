@@ -23,12 +23,19 @@ namespace Tim_Xe.Service.ChannelService
         {
             return await context.Channels.ProjectTo<ChannelDTO>(channelMapping.configChannel).ToListAsync();
         }
-        public async Task<ChannelDTO> GetChannelByIdAsync(int id)
+        public async Task<ChannelDataDTO> GetChannelByIdAsync(int id)
         {
             var result = await context.Channels.ProjectTo<ChannelDTO>(channelMapping.configChannel).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new ChannelDataDTO("fail", null, "not available");
+            }
+            else
+            {
+                return new ChannelDataDTO("success", result, result.Status);
+            }
         }
-        public async Task<int> CreateChannel(ChannelCreateDTO channel)
+        public async Task<ChannelCreateDataDTO> CreateChannel(ChannelCreateDTO channel)
         {
             try
             {
@@ -36,11 +43,11 @@ namespace Tim_Xe.Service.ChannelService
                 var extstingGroup = await context.Groups.FindAsync(channel.IdGroup);
                 if (extstingGroup == null)
                 {
-                    return 0;
+                    return new ChannelCreateDataDTO("create fail", null, "fail");
                 }
                 if (existingChannelType == null)
                 {
-                    return 0;
+                    return new ChannelCreateDataDTO("create fail", null, "fail");
                 }
                 else
                 {
@@ -53,15 +60,16 @@ namespace Tim_Xe.Service.ChannelService
                         IsDeleted = false,
                         Status = channel.Status,
                     });
+                    await context.SaveChangesAsync();
+                    return new ChannelCreateDataDTO("create success", channel, "success");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new ChannelCreateDataDTO("create fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdateChannel(ChannelUpdateDTO channel)
+        public async Task<ChannelUpdateDataDTO> UpdateChannel(ChannelUpdateDTO channel)
         {
             try
             {
@@ -69,7 +77,7 @@ namespace Tim_Xe.Service.ChannelService
                 var extstingGroup = await context.Groups.FindAsync(channel.IdGroup);
                 if (extstingGroup == null)
                 {
-                    return 0;
+                    return new ChannelUpdateDataDTO("update fail", null, "fail");
                 }
                 if (existingChannel != null)
                 {
@@ -79,18 +87,19 @@ namespace Tim_Xe.Service.ChannelService
                     existingChannel.IdGroup = channel.IdGroup;
                     existingChannel.IsDeleted = channel.IsDeleted;
                     existingChannel.Status = channel.Status;
+                    context.Channels.Update(existingChannel);
+                    await context.SaveChangesAsync();
+                    return new ChannelUpdateDataDTO("update success", channel, "success");
                 }
                 else
                 {
-                    return 0;
+                    return new ChannelUpdateDataDTO("update fail", null, "fail");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new ChannelUpdateDataDTO("update fail", null, "fail");
             }
-
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeleteChannelAsync(int id)
         {

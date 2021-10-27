@@ -24,12 +24,16 @@ namespace Tim_Xe.Service.CustomerService
         {
             return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).ToListAsync();
         }
-        public async Task<CustomerDTO> GetCustomerByIdAsync(int id)
+        public async Task<CustomerDataDTO> GetCustomerByIdAsync(int id)
         {
             var result = await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result == null)
+            {
+                return new CustomerDataDTO("fail", null, "not available");
+            }
+            else return new CustomerDataDTO("success", result, result.Status);
         }
-        public async Task<int> CreateCustomer(CustomerCreateDTO customer)
+        public async Task<CustomerCreateDataDTO> CreateCustomer(CustomerCreateDTO customer)
         {
             try
             {
@@ -38,20 +42,21 @@ namespace Tim_Xe.Service.CustomerService
                     Name = customer.Name,
                     Phone = customer.Phone,
                     Email = customer.Email,
+                    Password = customer.Password,
                     Img = customer.Img,
                     Status = customer.Status,
                     CreateAt = DateTime.Now,
                     IsDeleted = false,
-                });
+                }); ;
+                await context.SaveChangesAsync();
+                return new CustomerCreateDataDTO("create success", customer, "success");
             }
-            
-            catch(Exception e)
+            catch (Exception e)
             {
-                return 0;
+                return new CustomerCreateDataDTO("create fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdateCustomer(CustomerUpdateDTO customer)
+        public async Task<CustomerUpdateDataDTO> UpdateCustomer(CustomerUpdateDTO customer)
         {
             try
             {
@@ -60,21 +65,24 @@ namespace Tim_Xe.Service.CustomerService
                 {
                     existingCustomer.Name = customer.Name;
                     existingCustomer.Phone = customer.Phone;
+                    existingCustomer.Password = customer.Password;
                     existingCustomer.Email = customer.Email;
                     existingCustomer.Img = customer.Img;
                     existingCustomer.Status = customer.Status;
                     existingCustomer.IsDeleted = customer.IsDeleted;
+                    context.Customers.Update(existingCustomer);
+                    await context.SaveChangesAsync();
+                    return new CustomerUpdateDataDTO("update success", customer, "success");
                 }
                 else
                 {
-                    return 0;
+                    return new CustomerUpdateDataDTO("update fail", null,"fail");
                 }
             }           
             catch(Exception e)
             {
-                return 0;
+                return new CustomerUpdateDataDTO("update fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
         public async Task<bool> DeleteCustomerAsync(int id)
         {

@@ -24,12 +24,16 @@ namespace Tim_Xe.Service.ChannelTypeService
         {
             return await context.ChannelTypes.ProjectTo<ChannelTypeDTO>(channelTypeMapping.configChannelType).ToListAsync();
         }
-        public async Task<ChannelTypeDTO> GetChannelTypeByIdAsync(int id)
+        public async Task<ChannelTypesDataDTO> GetChannelTypeByIdAsync(int id)
         {
             var result = await context.ChannelTypes.ProjectTo<ChannelTypeDTO>(channelTypeMapping.configChannelType).FirstOrDefaultAsync(c => c.Id == id);
-            return result;
+            if (result != null)
+            {
+                return new ChannelTypesDataDTO("success", result, "available");
+            }
+            else return new ChannelTypesDataDTO("fail", null, "not available");
         }
-        public async Task<int> CreateChannelType(ChannelTypeCreateDTO channelType)
+        public async Task<ChannelTypeCreateDataDTO> CreateChannelType(ChannelTypeCreateDTO channelType)
         {
             try
             {
@@ -37,14 +41,15 @@ namespace Tim_Xe.Service.ChannelTypeService
                 {
                     Name = channelType.Name,
                 });
+                await context.SaveChangesAsync();
+                return new ChannelTypeCreateDataDTO("create success", channelType, "success");
             }
             catch(Exception e)
             {
-                return 0;
+                return new ChannelTypeCreateDataDTO("create fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
-        public async Task<int> UpdateChannelType (ChannelTypeUpdateDTO channelType)
+        public async Task<ChannelTypeUpdateDataDTO> UpdateChannelType (ChannelTypeUpdateDTO channelType)
         {
             try
             {
@@ -52,17 +57,19 @@ namespace Tim_Xe.Service.ChannelTypeService
                 if (existingChannelType != null)
                 {
                     existingChannelType.Name = channelType.Name;
+                    context.ChannelTypes.Update(existingChannelType);
+                    await context.SaveChangesAsync();
+                    return new ChannelTypeUpdateDataDTO("update success", channelType, "success");
                 }
                 else
                 {
-                    return 0;
+                    return new ChannelTypeUpdateDataDTO("update fail", null, "fail");
                 }
             }
             catch(Exception e)
             {
-                return 0;
+                return new ChannelTypeUpdateDataDTO("update fail", null, "fail");
             }
-            return await context.SaveChangesAsync();
         }
     }
 }

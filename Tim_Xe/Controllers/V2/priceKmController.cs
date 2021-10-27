@@ -24,27 +24,19 @@ namespace Tim_Xe.API.Controllers.V2
             return await _priceKmServiceImp.GetAllPriceKmsAsync();
         }
         [HttpGet("{id}")]
-        public async Task<PriceKmDTO> GetPriceKmById(int id)
+        public async Task<PriceKmDataDTO> GetPriceKmById(int id)
         {
             return await _priceKmServiceImp.GetPriceKmByIdAsync(id);
         }
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAsync(PriceKmCreateDTO priceKm)
+        public async Task<PriceKmCreateDataDTO> CreateAsync(PriceKmCreateDTO priceKm)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _priceKmServiceImp.CreatePriceKm(priceKm) == 1)
-                return Ok("Create Success!");
-            else return BadRequest("Create Failed!");
+            return await _priceKmServiceImp.CreatePriceKm(priceKm);
         }
         [HttpPut]
-        public async Task<ActionResult<int>> UpdateAsync(PriceKmUpdateDTO priceKm)
+        public async Task<PriceKmUpdateDataDTO> UpdateAsync(PriceKmUpdateDTO priceKm)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data!");
-            if (await _priceKmServiceImp.UpdatePriceKm(priceKm) == 1)
-                return Ok("Update Success!");
-            else return BadRequest("Update Failed!");
+            return await _priceKmServiceImp.UpdatePriceKm(priceKm);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)

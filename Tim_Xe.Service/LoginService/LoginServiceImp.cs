@@ -19,25 +19,34 @@ namespace Tim_Xe.Service.LoginService
         {
             context = new TimXeDBContext();
         }
-        public async Task<UserWithToken> LoginAsync(Login account)
+        public async Task<UserWithTokenDataDTO> LoginAsync(Login account)
         {
             try {
-                var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email);
-                bool verified = BCrypt.Net.BCrypt.Verify(account.Password, existingAccount.Password);
-                if (!verified) return null;
-                UserWithToken userWithToken = new UserWithToken(existingAccount, null);
-
-                return userWithToken;
+                var existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == account.Email);                
+                if(existingAccount == null)
+                {
+                    return new UserWithTokenDataDTO("login fail", null, "fail");
+                }
+                else
+                {
+                    bool verified = BCrypt.Net.BCrypt.Verify(account.Password, existingAccount.Password);
+                    if (!verified) return new UserWithTokenDataDTO("login fail", null, "fail");
+                    else
+                    {
+                        UserWithToken userWithToken = new UserWithToken(existingAccount, null);
+                        return new UserWithTokenDataDTO("login success", userWithToken, "success");
+                    }                   
+                }                
             } catch (Exception e)
             {
-                return null;
+                return new UserWithTokenDataDTO("login fail", null, "fail");
             }
 
             
         }
 
 
-        public async Task<UserWithToken> LoginDriverAsync(LoginDriverDTO loginDriver)
+        public async Task<UserWithTokenDataDTO> LoginDriverAsync(LoginDriverDTO loginDriver)
         {
             Driver existingAccount = new Driver();
             UserWithToken userWithToken ;
@@ -50,19 +59,27 @@ namespace Tim_Xe.Service.LoginService
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
                 existingAccount = await context.Drivers.FirstOrDefaultAsync(d => d.Email == email
                       && d.IsDeleted == false);
-                return userWithToken = new UserWithToken(null,existingAccount) ;
+                userWithToken = new UserWithToken(null,existingAccount) ;
+                return new UserWithTokenDataDTO("login success", userWithToken, "success");
             }
             else if (loginDriver.Phone != null)
             {
                 existingAccount = await context.Drivers.FirstOrDefaultAsync(d => d.Phone == loginDriver.Phone
                       && d.IsDeleted == false);
-                return userWithToken = new UserWithToken(null, existingAccount);
+                if(existingAccount == null){
+                    return new UserWithTokenDataDTO("login fail", null, "fail");
+                }
+                else
+                {
+                    userWithToken = new UserWithToken(null, existingAccount);
+                    return new UserWithTokenDataDTO("login success", userWithToken, "success");
+                }
             }
-            else return null;
-           
+            else return new UserWithTokenDataDTO("login fail", null, "fail");
+
         }
 
-        public async Task<UserWithToken> LoginWithTokenWeb(string token)
+        public async Task<UserWithTokenDataDTO> LoginWithTokenWeb(string token)
         {
             UserWithToken userWithToken;
             Manager existingAccount = new Manager();
@@ -74,9 +91,10 @@ namespace Tim_Xe.Service.LoginService
                 var tokenS = jsonToken as JwtSecurityToken;
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
                 existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
-                return userWithToken = new UserWithToken(existingAccount, null);
+                userWithToken = new UserWithToken(existingAccount, null);
+                return new UserWithTokenDataDTO("login success", userWithToken, "success");
             }
-            else return null;
+            else return new UserWithTokenDataDTO("login fail", null, "fail");
 
         }
 
