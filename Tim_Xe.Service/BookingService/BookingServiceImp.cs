@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
-using Tim_Xe.Data.Repository.Models;
 using Tim_Xe.Service.Shared;
 
 namespace Tim_Xe.Service.BookingService
 {
-    public class BookingServiceImp
+    public class BookingServiceImp : IBookingService
     {
         private readonly TimXeDBContext context;
         private readonly RemoveUnicode removeUnicode;
@@ -28,7 +28,7 @@ namespace Tim_Xe.Service.BookingService
             {
                 var bookingExisted = await context.Bookings.Include(b => b.Locations)
                     .Include(b => b.BookingDrivers)
-                    .Where(b=> b.Status == status && b.BookingDrivers.Any(c=> c.IdDriver == iddriver)).ToListAsync();
+                    .Where(b => b.Status == status && b.BookingDrivers.Any(c => c.IdDriver == iddriver)).ToListAsync();
                 foreach (Booking x in bookingExisted)
                 {
                     BookingDTO bookingDTO = new BookingDTO();
@@ -44,14 +44,14 @@ namespace Tim_Xe.Service.BookingService
                     bookingDTO.Status = x.Status;
                     bookingDTO.Schedule.Total = x.Locations.Count;
 
-                    
+
                     AddressDTO address = new AddressDTO();
                     address.Waypoint = new List<string>();
                     LatlngDTO latlng = new LatlngDTO();
                     foreach (Location y in x.Locations)
                     {
                         //Address
-                        
+
                         var origin = y.PointTypeValue == 1 ? y.Address : null;
                         var destination = y.PointTypeValue == 3 ? y.Address : null;
                         var waypoint = y.PointTypeValue == 2 ? y.Address : null;
@@ -91,8 +91,9 @@ namespace Tim_Xe.Service.BookingService
                     bookingDTO.Schedule.Latlng = latlng;
                     bookingDTOs.Add(bookingDTO);
                 }
-            } 
-            catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return null;
             }
             return bookingDTOs;
@@ -103,12 +104,26 @@ namespace Tim_Xe.Service.BookingService
             bookingCreatePriceDTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.District);
             var totalKm = bookingCreatePriceDTO.Km;
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g=> g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
+                .Where(g => g.IdCityNavigation.CityName.Contains(bookingCreatePriceDTO.City)
+                && g.Address.ToLower().Contains(bookingCreatePriceDTO.District.ToLower()))
                 .FirstOrDefaultAsync();
-            int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ?  1 : 2;
+            // random Group to have booking
+            if (groupExisted == null)
+            {
+                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
+.Where(g => g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
+.ToListAsync();
+                //check lỗi ở đây
+                if (listGroupExisted == null) return 0;
+                var random = new Random();
+                int index = random.Next(listGroupExisted.Count);
+                groupExisted = listGroupExisted[index];
+            }
+
+            int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ? 1 : 2;
             var priceKm = await context.PriceKms.Where(p => p.IdVehicleType == vehicleType).ToArrayAsync();
             double priceTotal = 0;
-            foreach(PriceKm x in priceKm)
+            foreach (PriceKm x in priceKm)
             {
                 var pricePerKm = (groupExisted.PriceCoefficient * x.Price) / 100 + x.Price;
                 if (totalKm == 0)
@@ -119,16 +134,19 @@ namespace Tim_Xe.Service.BookingService
                 {
                     priceTotal += totalKm * pricePerKm;
                     totalKm -= totalKm;
-                }else if(x.Km <= totalKm)
+                }
+                else if (x.Km <= totalKm)
                 {
                     double km = Convert.ToDouble(x.Km);
                     priceTotal += km * pricePerKm;
                     totalKm -= km;
                 }
             }
-            if(totalKm > 0)
-                priceTotal += totalKm * (((groupExisted.PriceCoefficient * priceKm[priceKm.Length - 1].Price) / 100 + priceKm[priceKm.Length - 1].Price) - 1000);
-            if (bookingCreatePriceDTO.Mode)
+            if (groupExisted != null)
+                if (totalKm > 0)
+                    priceTotal += totalKm * (((groupExisted.PriceCoefficient * priceKm[priceKm.Length - 1].Price) / 100 + priceKm[priceKm.Length - 1].Price) - 1000);
+
+            if (bookingCreatePriceDTO.Mode == true)
             {
                 var timeWait = await context.PriceTimes.Where(p => p.IdVehicleType == vehicleType).FirstOrDefaultAsync();
                 double time = Convert.ToDouble(bookingCreatePriceDTO.TimeWait);
@@ -136,12 +154,29 @@ namespace Tim_Xe.Service.BookingService
             }
             return priceTotal;
         }
-        public async Task<bool> CreateBooking(BookingCreateDTO bookingCreateTO) {
-            var existingGroup = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => bookingCreateTO.Schedule.Address.Origin.ToLower().Contains(g.IdCityNavigation.CityName))
-                .FirstOrDefaultAsync();
+        public async Task<bool> CreateBooking(BookingCreateDTO bookingCreateTO)
+        {
+            //Find group Existed 
+            bookingCreateTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreateTO.City);
+            bookingCreateTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreateTO.District);
 
-            return true; 
+            var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
+                .Where(g => g.IdCityNavigation.CityName == bookingCreateTO.City
+                && g.Address.ToLower().Contains(bookingCreateTO.District.ToLower()))
+                .FirstOrDefaultAsync();
+            // random Group to have booking
+            if (groupExisted == null)
+            {
+                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
+                                       .Where(g => g.IdCityNavigation.CityName == bookingCreateTO.City)
+                                       .ToListAsync();
+                //check lỗi ở đây
+                if (listGroupExisted == null) return false;
+                var random = new Random();
+                int index = random.Next(listGroupExisted.Count);
+                groupExisted = listGroupExisted[index];
+            }
+            return true;
         }
     }
 }
