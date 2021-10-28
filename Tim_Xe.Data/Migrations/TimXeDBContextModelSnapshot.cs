@@ -194,8 +194,7 @@ namespace Tim_Xe.Data.Migrations
                         .HasMaxLength(50);
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("text");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(12)")
@@ -207,6 +206,15 @@ namespace Tim_Xe.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasName("unique_email2");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasName("unique_phone2")
+                        .HasFilter("[Phone] IS NOT NULL");
+
                     b.ToTable("Customer");
                 });
 
@@ -216,6 +224,10 @@ namespace Tim_Xe.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(150)")
+                        .HasMaxLength(150);
 
                     b.Property<string>("CardId")
                         .HasColumnName("CardID")
@@ -241,7 +253,6 @@ namespace Tim_Xe.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValueSql("((0))")
@@ -251,15 +262,72 @@ namespace Tim_Xe.Data.Migrations
                         .HasColumnType("nvarchar(12)")
                         .HasMaxLength(12);
 
+                    b.Property<double?>("Revenue")
+                        .HasColumnType("float");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CardId")
+                        .IsUnique()
+                        .HasName("unique_cardid1")
+                        .HasFilter("[CardID] IS NOT NULL");
+
                     b.HasIndex("CreateById");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasName("unique_email1")
+                        .HasFilter("[Email] IS NOT NULL");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasName("unique_phone1")
+                        .HasFilter("[Phone] IS NOT NULL");
+
                     b.ToTable("Driver");
+                });
+
+            modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(200)
+                        .IsUnicode(false);
+
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("PostDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<double>("Ratting")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DriverId");
+
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Group", b =>
@@ -365,8 +433,7 @@ namespace Tim_Xe.Data.Migrations
                         .HasMaxLength(50);
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasColumnType("text");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(50)")
@@ -380,6 +447,21 @@ namespace Tim_Xe.Data.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CardId")
+                        .IsUnique()
+                        .HasName("unique_cardid")
+                        .HasFilter("[CardID] IS NOT NULL");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasName("unique_email")
+                        .HasFilter("[Email] IS NOT NULL");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasName("unique_phone")
+                        .HasFilter("[Phone] IS NOT NULL");
 
                     b.HasIndex("RoleId");
 
@@ -546,6 +628,11 @@ namespace Tim_Xe.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NameType")
+                        .IsUnique()
+                        .HasName("unique_nameTypes")
+                        .HasFilter("[NameType] IS NOT NULL");
+
                     b.ToTable("VehicleType");
                 });
 
@@ -601,6 +688,21 @@ namespace Tim_Xe.Data.Migrations
                         .WithMany("Drivers")
                         .HasForeignKey("CreateById")
                         .HasConstraintName("FK_Driver_Manager");
+                });
+
+            modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Feedback", b =>
+                {
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Customer", "Customer")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("CustomerId")
+                        .HasConstraintName("FK_Feedbacks_Customer")
+                        .IsRequired();
+
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Driver", "Driver")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("DriverId")
+                        .HasConstraintName("FK_Feedbacks_Driver")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Group", b =>

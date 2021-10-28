@@ -8,7 +8,7 @@ namespace Tim_Xe.Data.Models
     public class UserWithToken : LoginDTO
     {
         public string AccessToken { get; set; }
-        public UserWithToken(Manager manager, Driver driver)
+        public UserWithToken(Manager manager, Driver driver,Customer customer)
         {
             if (manager != null)
             {
@@ -21,6 +21,16 @@ namespace Tim_Xe.Data.Models
                 this.Status = manager.Status;
 
                 this.Role = manager.Role.Name;
+            }else if (customer != null)
+            {
+                this.Id = customer.Id;
+                this.Email = customer.Email;
+                this.Name = customer.Name;
+                this.Phone = customer.Phone;
+                this.Img = customer.Img;
+                this.Status = customer.Status;
+
+                this.Role = "customer";
             }
             else
             {

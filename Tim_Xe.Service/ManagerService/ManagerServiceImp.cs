@@ -84,12 +84,13 @@ namespace Tim_Xe.Service.ManagerService
         }        
         public async Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager)
         {
+            var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             var existingAccount = await context.Managers.FirstOrDefaultAsync(a => a.Id == manager.Id);
             if (existingAccount != null)
             {
                 existingAccount.Name = manager.Name;
-                existingAccount.Password = manager.Password;
+                existingAccount.Password = pwd;
                 existingAccount.Phone = manager.Phone;
                 existingAccount.RoleId = Int32.Parse(manager.Role);
                 existingAccount.Status = manager.Status;

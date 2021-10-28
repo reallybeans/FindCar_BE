@@ -21,14 +21,14 @@ namespace Tim_Xe.Service.BookingService
             context = new TimXeDBContext();
             removeUnicode = new RemoveUnicode();
         }
-        public async Task<IEnumerable<BookingDTO>> GetAllBookingsAsync(int iddriver, int status)
+        public async Task<IEnumerable<BookingDTO>> GetAllBookingsAsync(int id, int status)
         {
             List<BookingDTO> bookingDTOs = new List<BookingDTO>();
             try
             {
                 var bookingExisted = await context.Bookings.Include(b => b.Locations)
                     .Include(b => b.BookingDrivers)
-                    .Where(b => b.Status == status && b.BookingDrivers.Any(c => c.IdDriver == iddriver)).ToListAsync();
+                    .Where(b => b.Status == status && b.BookingDrivers.Any(c => c.IdDriver == id)).ToListAsync();
                 foreach (Booking x in bookingExisted)
                 {
                     BookingDTO bookingDTO = new BookingDTO();
@@ -101,27 +101,29 @@ namespace Tim_Xe.Service.BookingService
         public async Task<double> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO)
         {
             bookingCreatePriceDTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.City);
-            bookingCreatePriceDTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.District);
+            bookingCreatePriceDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(bookingCreatePriceDTO.VehicleType);
+
             var totalKm = bookingCreatePriceDTO.Km;
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => g.IdCityNavigation.CityName.Contains(bookingCreatePriceDTO.City)
-                && g.Address.ToLower().Contains(bookingCreatePriceDTO.District.ToLower()))
+                .Where(g => g.IdCityNavigation.CityName.Contains(bookingCreatePriceDTO.City))
                 .FirstOrDefaultAsync();
-            // random Group to have booking
-            if (groupExisted == null)
-            {
-                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-.Where(g => g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
-.ToListAsync();
-                //check lỗi ở đây
-                if (listGroupExisted == null) return 0;
-                var random = new Random();
-                int index = random.Next(listGroupExisted.Count);
-                groupExisted = listGroupExisted[index];
-            }
+            if (groupExisted == null) return 0;
+            //            random Group to have booking
+            //            if (groupExisted == null)
+            //            {
+            //                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
+            //.Where(g => g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
+            //.ToListAsync();
+            //                check lỗi ở đây
+            //                if (listGroupExisted == null) return 0;
+            //                var random = new Random();
+            //                int index = random.Next(listGroupExisted.Count);
+            //                groupExisted = listGroupExisted[index];
+            //            }
 
-            int vehicleType = bookingCreatePriceDTO.VehicleType == "4 chỗ" ? 1 : 2;
-            var priceKm = await context.PriceKms.Where(p => p.IdVehicleType == vehicleType).ToArrayAsync();
+            string vehicleType = bookingCreatePriceDTO.VehicleType;
+            var vehicleTypes = await context.VehicleTypes.Include(v => v.PriceKms).Where(v => v.NameType == vehicleType).FirstOrDefaultAsync();
+            var priceKm = await context.PriceKms.Where(v => v.IdVehicleType == vehicleTypes.Id).ToArrayAsync();
             double priceTotal = 0;
             foreach (PriceKm x in priceKm)
             {
@@ -148,34 +150,79 @@ namespace Tim_Xe.Service.BookingService
 
             if (bookingCreatePriceDTO.Mode == true)
             {
-                var timeWait = await context.PriceTimes.Where(p => p.IdVehicleType == vehicleType).FirstOrDefaultAsync();
+                var timeWait = await context.PriceTimes.Where(p => p.IdVehicleType == vehicleTypes.Id).FirstOrDefaultAsync();
                 double time = Convert.ToDouble(bookingCreatePriceDTO.TimeWait);
                 priceTotal += (double)(timeWait.Price * (time * 24));
             }
             return priceTotal;
         }
-        public async Task<bool> CreateBooking(BookingCreateDTO bookingCreateTO)
+        public async Task<bool> CreateBooking(BookingCreateDTO bookingCreateDTO)
         {
             //Find group Existed 
-            bookingCreateTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreateTO.City);
-            bookingCreateTO.District = removeUnicode.RemoveSign4VietnameseString(bookingCreateTO.District);
+            bookingCreateDTO.City = removeUnicode.RemoveSign4VietnameseString(bookingCreateDTO.City);
 
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => g.IdCityNavigation.CityName == bookingCreateTO.City
-                && g.Address.ToLower().Contains(bookingCreateTO.District.ToLower()))
-                .FirstOrDefaultAsync();
-            // random Group to have booking
-            if (groupExisted == null)
+                .Where(g => g.IdCityNavigation.CityName == bookingCreateDTO.City)
+                .FirstOrDefaultAsync(); 
+            
+            if (groupExisted == null) return false; 
+
+            string vehicleType = bookingCreateDTO.VehicleType;
+            var vehicleTypes = await context.VehicleTypes.Where(v => v.NameType == vehicleType).FirstOrDefaultAsync();
+
+            if (bookingCreateDTO.Mode == false)
+                bookingCreateDTO.TimeWait = 0;
+
+            try
             {
-                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                                       .Where(g => g.IdCityNavigation.CityName == bookingCreateTO.City)
-                                       .ToListAsync();
-                //check lỗi ở đây
-                if (listGroupExisted == null) return false;
-                var random = new Random();
-                int index = random.Next(listGroupExisted.Count);
-                groupExisted = listGroupExisted[index];
-            }
+                int count = 0;
+                Booking booking = new Booking();
+                booking.IdGroup = groupExisted.Id;
+                booking.IdCustomer = bookingCreateDTO.IdCustomer;
+                booking.NameCustomer = bookingCreateDTO.NameCustomer;
+                booking.PhoneCustomer = bookingCreateDTO.PhoneCustomer;
+                booking.IdVehicleType = vehicleTypes.Id;
+                booking.StartAt = DateTime.Now;
+                booking.TimeWait = bookingCreateDTO.TimeWait;
+                booking.PriceBooking = bookingCreateDTO.PriceBooking;
+                booking.CreateAt = DateTime.Now;
+                booking.Status = 0;
+                booking.Mode = true ;
+                List<Location> location = new List<Location>();
+                location.Add(new Location()
+                {
+                    LatLng = bookingCreateDTO.Schedule.Latlng.Origin,
+                    Address = bookingCreateDTO.Schedule.Address.Origin,
+                    PointTypeValue = 1,
+                    OrderNumber = ++count,
+                });
+                var wayadd = bookingCreateDTO.Schedule.Address.Waypoint;
+                var wayll = bookingCreateDTO.Schedule.Latlng.ListWaypoint;
+                //foreach (string wayPoints in bookingCreateDTO.Schedule.Address.Waypoint)
+                    if (bookingCreateDTO.Schedule.Address.Waypoint != null)
+                    for (var i = 0; i < bookingCreateDTO.Schedule.Address.Waypoint.Count; i++)
+                        location.Add(new Location()
+                        {
+                            LatLng = wayll[i],
+                            Address = wayadd[i],
+                            PointTypeValue = 2,
+                            IdBooking = booking.Id,
+                            OrderNumber = ++count,
+                        });
+                location.Add(new Location()
+                {
+                    LatLng = bookingCreateDTO.Schedule.Latlng.Destination,
+                    Address = bookingCreateDTO.Schedule.Address.Destination,
+                    PointTypeValue = 3,
+                    IdBooking = booking.Id,
+                    OrderNumber = ++count,
+                });
+                foreach(Location x in location)
+                    booking.Locations.Add(x);
+
+            } 
+            catch (Exception e) 
+            { return false; }
             return true;
         }
     }

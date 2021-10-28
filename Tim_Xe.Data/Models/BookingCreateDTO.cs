@@ -10,7 +10,6 @@ namespace Tim_Xe.Data.Models
         public string NameCustomer { get; set; }
         public string PhoneCustomer { get; set; }
         public string City { get; set; }
-        public string District { get; set; }
         public DateTime StartAt { get; set; }
         public int TimeWait { get; set; }
         public bool Mode { get; set; }

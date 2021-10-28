@@ -40,6 +40,19 @@ namespace TimXe.Present.Controllers.V1
                 userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
             }
             return userWithToken;
+        } 
+        //POST: api/Accounts
+        [HttpPost("login-web-customer")]
+        public async Task<UserWithTokenDataDTO> LoginCustomerAsync([FromBody] Login login)
+        {
+           // UserWithToken userWithToken = new UserWithToken(null);
+            var userWithToken = await _loginServiceImp.LoginCustomerAsync(login);
+            //sign your token here here..
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
+            return userWithToken;
         }
         [HttpPost("login-driver")]
         public async Task<UserWithTokenDataDTO> LoginDriverAsync([FromBody] LoginDriverDTO login)

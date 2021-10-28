@@ -27,6 +27,7 @@ namespace Tim_Xe.Data.Repository
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Driver> Drivers { get; set; }
+        public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Manager> Managers { get; set; }
@@ -41,7 +42,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
             }
         }
 
@@ -50,6 +51,12 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<Booking>(entity =>
             {
                 entity.ToTable("Booking");
+
+                entity.HasIndex(e => e.IdCustomer);
+
+                entity.HasIndex(e => e.IdGroup);
+
+                entity.HasIndex(e => e.IdVehicleType);
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
@@ -81,6 +88,8 @@ namespace Tim_Xe.Data.Repository
 
                 entity.ToTable("Booking_Driver");
 
+                entity.HasIndex(e => e.IdDriver);
+
                 entity.Property(e => e.Note).HasMaxLength(200);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
@@ -101,6 +110,10 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<Channel>(entity =>
             {
                 entity.ToTable("Channel");
+
+                entity.HasIndex(e => e.IdChannelType);
+
+                entity.HasIndex(e => e.IdGroup);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
@@ -137,6 +150,14 @@ namespace Tim_Xe.Data.Repository
             {
                 entity.ToTable("Customer");
 
+                entity.HasIndex(e => e.Email)
+                    .HasName("unique_email2")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Phone)
+                    .HasName("unique_phone2")
+                    .IsUnique();
+
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
@@ -149,16 +170,32 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
+                entity.Property(e => e.Password).HasColumnType("text");
+
                 entity.Property(e => e.Phone).HasMaxLength(12);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
-
-                entity.Property(e => e.Password).HasMaxLength(150);
             });
 
             modelBuilder.Entity<Driver>(entity =>
             {
                 entity.ToTable("Driver");
+
+                entity.HasIndex(e => e.CardId)
+                    .HasName("unique_cardid1")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.CreateById);
+
+                entity.HasIndex(e => e.Email)
+                    .HasName("unique_email1")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Phone)
+                    .HasName("unique_phone1")
+                    .IsUnique();
+
+                entity.Property(e => e.Address).HasMaxLength(150);
 
                 entity.Property(e => e.CardId)
                     .HasColumnName("CardID")
@@ -175,25 +212,47 @@ namespace Tim_Xe.Data.Repository
                     .HasColumnType("text");
 
                 entity.Property(e => e.Name)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Phone).HasMaxLength(12);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
-                  
+
                 entity.HasOne(d => d.CreateBy)
                     .WithMany(p => p.Drivers)
                     .HasForeignKey(d => d.CreateById)
                     .HasConstraintName("FK_Driver_Manager");
             });
 
+            modelBuilder.Entity<Feedback>(entity =>
+            {
+                entity.Property(e => e.Description)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PostDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Feedbacks_Customer");
+
+                entity.HasOne(d => d.Driver)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.DriverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Feedbacks_Driver");
+            });
+
             modelBuilder.Entity<Group>(entity =>
             {
                 entity.ToTable("Group");
 
+                entity.HasIndex(e => e.IdCity);
 
+                entity.HasIndex(e => e.IdManager);
 
                 entity.Property(e => e.Address).HasMaxLength(200);
 
@@ -217,6 +276,8 @@ namespace Tim_Xe.Data.Repository
             {
                 entity.ToTable("Location");
 
+                entity.HasIndex(e => e.IdBooking);
+
                 entity.Property(e => e.Address).HasMaxLength(150);
 
                 entity.Property(e => e.LatLng).HasMaxLength(100);
@@ -230,6 +291,20 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<Manager>(entity =>
             {
                 entity.ToTable("Manager");
+
+                entity.HasIndex(e => e.CardId)
+                    .HasName("unique_cardid")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Email)
+                    .HasName("unique_email")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Phone)
+                    .HasName("unique_phone")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.RoleId);
 
                 entity.Property(e => e.CardId)
                     .HasColumnName("CardID")
@@ -247,7 +322,7 @@ namespace Tim_Xe.Data.Repository
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Password).HasMaxLength(150);
+                entity.Property(e => e.Password).HasColumnType("text");
 
                 entity.Property(e => e.Phone).HasMaxLength(50);
 
@@ -262,6 +337,8 @@ namespace Tim_Xe.Data.Repository
 
             modelBuilder.Entity<News>(entity =>
             {
+                entity.HasIndex(e => e.IdGroup);
+
                 entity.Property(e => e.Content).HasMaxLength(200);
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
@@ -278,6 +355,8 @@ namespace Tim_Xe.Data.Repository
             {
                 entity.ToTable("PriceKm");
 
+                entity.HasIndex(e => e.IdVehicleType);
+
                 entity.Property(e => e.Description).HasMaxLength(200);
 
                 entity.HasOne(d => d.IdVehicleTypeNavigation)
@@ -289,6 +368,8 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<PriceTime>(entity =>
             {
                 entity.ToTable("PriceTime");
+
+                entity.HasIndex(e => e.IdVehicleType);
 
                 entity.HasOne(d => d.IdVehicleTypeNavigation)
                     .WithMany(p => p.PriceTimes)
@@ -306,6 +387,10 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<Vehicle>(entity =>
             {
                 entity.ToTable("Vehicle");
+
+                entity.HasIndex(e => e.IdDriver);
+
+                entity.HasIndex(e => e.IdVehicleType);
 
                 entity.Property(e => e.LicensePlate).HasMaxLength(50);
 
@@ -327,6 +412,10 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<VehicleType>(entity =>
             {
                 entity.ToTable("VehicleType");
+
+                entity.HasIndex(e => e.NameType)
+                    .HasName("unique_nameTypes")
+                    .IsUnique();
 
                 entity.Property(e => e.NameType).HasMaxLength(50);
 

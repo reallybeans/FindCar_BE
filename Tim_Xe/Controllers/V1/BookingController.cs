@@ -15,10 +15,10 @@ namespace Tim_Xe.API.Controllers.V1
         {
             _bookingServiceImp = new BookingServiceImp();
         }
-        [HttpGet("{iddriver}/{status}")]
-        public async Task<IEnumerable<BookingDTO>> GetBooking(int iddriver, int status)
+        [HttpGet("{id}/{status}")]
+        public async Task<IEnumerable<BookingDTO>> GetBooking(int id, int status)
         {
-            return await _bookingServiceImp.GetAllBookingsAsync(iddriver, status);
+            return await _bookingServiceImp.GetAllBookingsAsync(id, status);
         }
 
         [HttpPost("caculator-price")]

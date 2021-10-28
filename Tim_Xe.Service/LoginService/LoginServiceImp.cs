@@ -19,6 +19,31 @@ namespace Tim_Xe.Service.LoginService
         {
             context = new TimXeDBContext();
         }
+        public async Task<UserWithTokenDataDTO> LoginCustomerAsync(Login account)
+        {
+            try {
+                var existingAccount = await context.Customers.FirstOrDefaultAsync(a => a.Email == account.Email);                
+                if(existingAccount == null)
+                {
+                    return new UserWithTokenDataDTO("login fail", null, "fail");
+                }
+                else
+                {
+                    bool verified = BCrypt.Net.BCrypt.Verify(account.Password, existingAccount.Password);
+                    if (!verified) return new UserWithTokenDataDTO("login fail", null, "fail");
+                    else
+                    {
+                        UserWithToken userWithToken = new UserWithToken(null, null, existingAccount);
+                        return new UserWithTokenDataDTO("login success", userWithToken, "success");
+                    }                   
+                }                
+            } catch (Exception e)
+            {
+                return new UserWithTokenDataDTO("login fail", null, "fail");
+            }
+
+            
+        }
         public async Task<UserWithTokenDataDTO> LoginAsync(Login account)
         {
             try {
@@ -33,7 +58,7 @@ namespace Tim_Xe.Service.LoginService
                     if (!verified) return new UserWithTokenDataDTO("login fail", null, "fail");
                     else
                     {
-                        UserWithToken userWithToken = new UserWithToken(existingAccount, null);
+                        UserWithToken userWithToken = new UserWithToken(existingAccount,null, null);
                         return new UserWithTokenDataDTO("login success", userWithToken, "success");
                     }                   
                 }                
@@ -59,7 +84,7 @@ namespace Tim_Xe.Service.LoginService
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
                 existingAccount = await context.Drivers.FirstOrDefaultAsync(d => d.Email == email
                       && d.IsDeleted == false);
-                userWithToken = new UserWithToken(null,existingAccount) ;
+                userWithToken = new UserWithToken(null, existingAccount, null); ; ;
                 return new UserWithTokenDataDTO("login success", userWithToken, "success");
             }
             else if (loginDriver.Phone != null)
@@ -71,7 +96,7 @@ namespace Tim_Xe.Service.LoginService
                 }
                 else
                 {
-                    userWithToken = new UserWithToken(null, existingAccount);
+                    userWithToken = new UserWithToken(null, existingAccount,null);
                     return new UserWithTokenDataDTO("login success", userWithToken, "success");
                 }
             }
@@ -91,7 +116,7 @@ namespace Tim_Xe.Service.LoginService
                 var tokenS = jsonToken as JwtSecurityToken;
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
                 existingAccount = await context.Managers.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
-                userWithToken = new UserWithToken(existingAccount, null);
+                userWithToken = new UserWithToken(existingAccount, null,null);
                 return new UserWithTokenDataDTO("login success", userWithToken, "success");
             }
             else return new UserWithTokenDataDTO("login fail", null, "fail");

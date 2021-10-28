@@ -11,6 +11,5 @@ namespace Tim_Xe.Data.Models
         public int? TimeWait { get; set; }
         public double Km { get; set; }
         public string City { get; set; }
-        public string District { get; set; }
     }
 }

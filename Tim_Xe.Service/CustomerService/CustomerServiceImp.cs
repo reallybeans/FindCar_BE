@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.CustomerService
 {
@@ -35,14 +36,16 @@ namespace Tim_Xe.Service.CustomerService
         }
         public async Task<CustomerCreateDataDTO> CreateCustomer(CustomerCreateDTO customer)
         {
+            
             try
             {
+                var pwd = BCryptNet.HashPassword(customer.Password); // hash password
                 context.Customers.Add(new Customer()
                 {
                     Name = customer.Name,
                     Phone = customer.Phone,
                     Email = customer.Email,
-                    Password = customer.Password,
+                    Password = pwd,
                     Img = customer.Img,
                     Status = customer.Status,
                     CreateAt = DateTime.Now,
@@ -60,12 +63,13 @@ namespace Tim_Xe.Service.CustomerService
         {
             try
             {
+                var pwd = BCryptNet.HashPassword(customer.Password); // hash password
                 var existingCustomer = await context.Customers.FirstOrDefaultAsync(c => c.Id == customer.Id);
                 if (existingCustomer != null)
                 {
                     existingCustomer.Name = customer.Name;
                     existingCustomer.Phone = customer.Phone;
-                    existingCustomer.Password = customer.Password;
+                    existingCustomer.Password = pwd;
                     existingCustomer.Email = customer.Email;
                     existingCustomer.Img = customer.Img;
                     existingCustomer.Status = customer.Status;
