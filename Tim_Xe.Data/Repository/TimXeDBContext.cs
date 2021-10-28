@@ -42,7 +42,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
             }
         }
 

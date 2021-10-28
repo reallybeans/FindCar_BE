@@ -10,5 +10,6 @@ namespace Tim_Xe.Service.BookingService
     {
         Task<IEnumerable<BookingDTO>> GetAllBookingsAsync(int idDriver, int status);
         Task<double> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO);
+        Task<bool> CreateBooking(BookingCreateDTO bookingCreateDTO);
     }
 }

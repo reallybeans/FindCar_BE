@@ -19,6 +19,7 @@ namespace Tim_Xe.Data.Models
                 Status = driver.Status;
                 CreateAt = driver.CreateAt;
                 CreateById = driver.CreateById;
+                Address = driver.Address;
             //foreach (Vehicle x in vehicle)
             //{
             //    Vehicles.Add(new VehicleDTO(x.Id, x.Name, x.LicensePlate,x.IdVehicleType, x.Status));
@@ -42,5 +43,6 @@ namespace Tim_Xe.Data.Models
         public string Status { get; set; }
         public DateTime? CreateAt { get; set; }
         public int? CreateById { get; set; }
+        public string Address { get; set; }
     }
 }

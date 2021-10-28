@@ -88,6 +88,7 @@ namespace Tim_Xe.Service.DriverService
                 drivers.Img = driver.Img;
                 drivers.IsDeleted = true;
                 drivers.Status = driver.Status;
+                drivers.Address = driver.Address;
                 drivers.IsDeleted = true;
                 drivers.CreateAt = DateTime.Now;
                 drivers.CreateById = driver.CreateById;
@@ -126,6 +127,7 @@ namespace Tim_Xe.Service.DriverService
                     existingdrivers.CardId = driver.CardId;
                     existingdrivers.Img = driver.Img;
                     existingdrivers.Status = driver.Status;
+                    existingdrivers.Address = driver.Address;
                     foreach (Vehicle vehicle in existingdrivers.Vehicles)
                     {
                         vehicle.Name = driver.NameVehicle;
