@@ -13,6 +13,8 @@ namespace Tim_Xe.Data.Repository.Entities
         {
             Bookings = new HashSet<Booking>();
             Channels = new HashSet<Channel>();
+            Drivers = new HashSet<Driver>();
+            Feedbacks = new HashSet<Feedback>();
             News = new HashSet<News>();
         }
 
@@ -29,6 +31,8 @@ namespace Tim_Xe.Data.Repository.Entities
         public virtual Manager IdManagerNavigation { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
         public virtual ICollection<Channel> Channels { get; set; }
+        public virtual ICollection<Driver> Drivers { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<News> News { get; set; }
     }
 }

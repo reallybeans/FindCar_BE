@@ -18,7 +18,7 @@ namespace Tim_Xe.Data.Models
                 IsDeleted = driver.IsDeleted;
                 Status = driver.Status;
                 CreateAt = driver.CreateAt;
-                CreateById = driver.CreateById;
+                GroupId = driver.GroupId;
                 Address = driver.Address;
             //foreach (Vehicle x in vehicle)
             //{
@@ -42,7 +42,7 @@ namespace Tim_Xe.Data.Models
         public bool? IsDeleted { get; set; }
         public string Status { get; set; }
         public DateTime? CreateAt { get; set; }
-        public int? CreateById { get; set; }
+        public int? GroupId { get; set; }
         public string Address { get; set; }
     }
 }

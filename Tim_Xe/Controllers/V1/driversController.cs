@@ -27,7 +27,12 @@ namespace Tim_Xe.API.Controllers.V1
         [HttpGet("{id}")]
         public async Task<DriverDataDTO> GetDriverById(int id)
         {
-            return await _driverServiceImp.GettDriverByIdAsync(id);
+            return await _driverServiceImp.GetDriverByIdAsync(id);
+        }
+        [HttpGet("drivers-in-group/{id}")]
+        public async Task<DriverListDataDTO> GetAllDriversByIdManagerAsync(int id)
+        {
+            return await _driverServiceImp.GetAllDriversByIdManagerAsync(id);
         }
         [HttpPost]
         public async Task<DriverCreateDataDTO> CreateAsync(DriverCreateDTO driver)

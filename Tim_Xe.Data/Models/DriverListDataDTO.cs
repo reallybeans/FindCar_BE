@@ -7,7 +7,7 @@ namespace Tim_Xe.Data.Models
     public class DriverListDataDTO
     {
         public string Message { get; set; }
-        public IEnumerable<DriverDTO> Data{get;set;}
+        public IEnumerable<DriverDTO> Data { get; set; }
         public string Status { get; set; }
 
         public DriverListDataDTO(string message, IEnumerable<DriverDTO> data, string status)

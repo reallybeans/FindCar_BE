@@ -42,7 +42,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
             }
         }
 
@@ -156,7 +156,8 @@ namespace Tim_Xe.Data.Repository
 
                 entity.HasIndex(e => e.Phone)
                     .HasName("unique_phone2")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([Phone] IS NOT NULL)");
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
@@ -183,17 +184,21 @@ namespace Tim_Xe.Data.Repository
 
                 entity.HasIndex(e => e.CardId)
                     .HasName("unique_cardid1")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.CreateById);
+                    .IsUnique()
+                    .HasFilter("([CardID] IS NOT NULL)");
 
                 entity.HasIndex(e => e.Email)
                     .HasName("unique_email1")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([Email] IS NOT NULL)");
+
+                entity.HasIndex(e => e.GroupId)
+                    .HasName("IX_Driver_CreateByID");
 
                 entity.HasIndex(e => e.Phone)
                     .HasName("unique_phone1")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([Phone] IS NOT NULL)");
 
                 entity.Property(e => e.Address).HasMaxLength(150);
 
@@ -203,13 +208,15 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
-                entity.Property(e => e.CreateById).HasColumnName("CreateByID");
+                entity.Property(e => e.DiviceId).HasMaxLength(50);
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.Img)
                     .HasColumnName("img")
                     .HasColumnType("text");
+
+                entity.Property(e => e.Latlng).HasMaxLength(100);
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
@@ -219,19 +226,30 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.Status).HasMaxLength(50);
 
-                entity.HasOne(d => d.CreateBy)
+                entity.HasOne(d => d.Group)
                     .WithMany(p => p.Drivers)
-                    .HasForeignKey(d => d.CreateById)
-                    .HasConstraintName("FK_Driver_Manager");
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("FK_Driver_Group");
             });
 
             modelBuilder.Entity<Feedback>(entity =>
             {
+                entity.HasIndex(e => e.CustomerId);
+
+                entity.HasIndex(e => e.GroupId)
+                    .HasName("IX_Feedbacks_DriverId");
+
                 entity.Property(e => e.Description)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PostDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Booking)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.BookingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Feedbacks_Booking");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Feedbacks)
@@ -239,11 +257,11 @@ namespace Tim_Xe.Data.Repository
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Feedbacks_Customer");
 
-                entity.HasOne(d => d.Driver)
+                entity.HasOne(d => d.Group)
                     .WithMany(p => p.Feedbacks)
-                    .HasForeignKey(d => d.DriverId)
+                    .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Feedbacks_Driver");
+                    .HasConstraintName("FK_Feedbacks_Group");
             });
 
             modelBuilder.Entity<Group>(entity =>
@@ -294,15 +312,18 @@ namespace Tim_Xe.Data.Repository
 
                 entity.HasIndex(e => e.CardId)
                     .HasName("unique_cardid")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([CardID] IS NOT NULL)");
 
                 entity.HasIndex(e => e.Email)
                     .HasName("unique_email")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([Email] IS NOT NULL)");
 
                 entity.HasIndex(e => e.Phone)
                     .HasName("unique_phone")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([Phone] IS NOT NULL)");
 
                 entity.HasIndex(e => e.RoleId);
 
@@ -415,7 +436,8 @@ namespace Tim_Xe.Data.Repository
 
                 entity.HasIndex(e => e.NameType)
                     .HasName("unique_nameTypes")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([NameType] IS NOT NULL)");
 
                 entity.Property(e => e.NameType).HasMaxLength(50);
 

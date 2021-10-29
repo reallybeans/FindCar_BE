@@ -37,6 +37,24 @@ namespace Tim_Xe.Service.DriverService
             }
             else return new DriverListDataDTO("success", driverDTO, "success");
         }
+        public async Task<DriverListDataDTO> GetAllDriversByIdManagerAsync(int id)
+        {
+            var groupExisted = context.Groups.FirstOrDefault(g => g.IdManager == id);
+            if (groupExisted == null) return new DriverListDataDTO("list is empty", null, "empty");
+            var driverExisted = await context.Drivers.Where(d => d.GroupId == groupExisted.Id).ToListAsync();
+            List<DriverDTO> driverDTO = new List<DriverDTO>();
+            foreach (Driver x in driverExisted)
+            {
+                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == x.Id);
+                if (existingVehicle != null)
+                    driverDTO.Add(new DriverDTO(x, existingVehicle));
+            }
+            if (driverDTO.Count() == 0)
+            {
+                return new DriverListDataDTO("list is empty", null, "empty");
+            }
+            else return new DriverListDataDTO("success", driverDTO, "success");
+        }
         public async Task<IEnumerable<DriverDTO>> SearchDriverAsync(DriverSearchDTO paging)
         {
             var driverExisted = new List<Driver>();
@@ -67,7 +85,7 @@ namespace Tim_Xe.Service.DriverService
             }
             return driverDTO;
         }
-        public async Task<DriverDataDTO> GettDriverByIdAsync(int id)
+        public async Task<DriverDataDTO> GetDriverByIdAsync(int id)
         {
             var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);
             var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
@@ -84,6 +102,8 @@ namespace Tim_Xe.Service.DriverService
         public async Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver)
         {
             try {
+                var groupExisted = context.Groups.FirstOrDefault(g => g.IdManager == driver.CreateById);
+                if (groupExisted == null) return new DriverCreateDataDTO("create fail", null, "fail");
                 Driver drivers = new Driver();
                 drivers.Name = driver.Name;
                 drivers.Phone = driver.Phone;
@@ -93,9 +113,10 @@ namespace Tim_Xe.Service.DriverService
                 drivers.IsDeleted = true;
                 drivers.Status = driver.Status;
                 drivers.Address = driver.Address;
+                drivers.Latlng = driver.Latlng;
                 drivers.IsDeleted = true;
                 drivers.CreateAt = DateTime.Now;
-                drivers.CreateById = driver.CreateById;
+                drivers.GroupId = groupExisted.Id;
                 Vehicle vehicle = new Vehicle();
                 vehicle.Name = driver.NameVehicle;
                 vehicle.LicensePlate = driver.LicensePlate;
@@ -132,6 +153,7 @@ namespace Tim_Xe.Service.DriverService
                     existingdrivers.Img = driver.Img;
                     existingdrivers.Status = driver.Status;
                     existingdrivers.Address = driver.Address;
+                    existingdrivers.Latlng = driver.Latlng;
                     foreach (Vehicle vehicle in existingdrivers.Vehicles)
                     {
                         vehicle.Name = driver.NameVehicle;

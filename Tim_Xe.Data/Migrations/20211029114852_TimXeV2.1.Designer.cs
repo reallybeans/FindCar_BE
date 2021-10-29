@@ -10,7 +10,7 @@ using Tim_Xe.Data.Repository;
 namespace Tim_Xe.Data.Migrations
 {
     [DbContext(typeof(TimXeDBContext))]
-    [Migration("20211028111217_TimXeV2.1")]
+    [Migration("20211029114852_TimXeV2.1")]
     partial class TimXeV21
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,9 @@ namespace Tim_Xe.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("City");
@@ -215,7 +218,7 @@ namespace Tim_Xe.Data.Migrations
                     b.HasIndex("Phone")
                         .IsUnique()
                         .HasName("unique_phone2")
-                        .HasFilter("[Phone] IS NOT NULL");
+                        .HasFilter("([Phone] IS NOT NULL)");
 
                     b.ToTable("Customer");
                 });
@@ -239,13 +242,16 @@ namespace Tim_Xe.Data.Migrations
                     b.Property<DateTime?>("CreateAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("CreateById")
-                        .HasColumnName("CreateByID")
-                        .HasColumnType("int");
+                    b.Property<string>("DiviceId")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Img")
                         .HasColumnName("img")
@@ -253,6 +259,10 @@ namespace Tim_Xe.Data.Migrations
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Latlng")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Name")
                         .ValueGeneratedOnAdd()
@@ -276,19 +286,20 @@ namespace Tim_Xe.Data.Migrations
                     b.HasIndex("CardId")
                         .IsUnique()
                         .HasName("unique_cardid1")
-                        .HasFilter("[CardID] IS NOT NULL");
-
-                    b.HasIndex("CreateById");
+                        .HasFilter("([CardID] IS NOT NULL)");
 
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasName("unique_email1")
-                        .HasFilter("[Email] IS NOT NULL");
+                        .HasFilter("([Email] IS NOT NULL)");
+
+                    b.HasIndex("GroupId")
+                        .HasName("IX_Driver_CreateByID");
 
                     b.HasIndex("Phone")
                         .IsUnique()
                         .HasName("unique_phone1")
-                        .HasFilter("[Phone] IS NOT NULL");
+                        .HasFilter("([Phone] IS NOT NULL)");
 
                     b.ToTable("Driver");
                 });
@@ -311,7 +322,7 @@ namespace Tim_Xe.Data.Migrations
                         .HasMaxLength(200)
                         .IsUnicode(false);
 
-                    b.Property<int>("DriverId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("IsDelete")
@@ -325,9 +336,12 @@ namespace Tim_Xe.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookingId");
+
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("DriverId");
+                    b.HasIndex("GroupId")
+                        .HasName("IX_Feedbacks_DriverId");
 
                     b.ToTable("Feedbacks");
                 });
@@ -453,17 +467,17 @@ namespace Tim_Xe.Data.Migrations
                     b.HasIndex("CardId")
                         .IsUnique()
                         .HasName("unique_cardid")
-                        .HasFilter("[CardID] IS NOT NULL");
+                        .HasFilter("([CardID] IS NOT NULL)");
 
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasName("unique_email")
-                        .HasFilter("[Email] IS NOT NULL");
+                        .HasFilter("([Email] IS NOT NULL)");
 
                     b.HasIndex("Phone")
                         .IsUnique()
                         .HasName("unique_phone")
-                        .HasFilter("[Phone] IS NOT NULL");
+                        .HasFilter("([Phone] IS NOT NULL)");
 
                     b.HasIndex("RoleId");
 
@@ -633,7 +647,7 @@ namespace Tim_Xe.Data.Migrations
                     b.HasIndex("NameType")
                         .IsUnique()
                         .HasName("unique_nameTypes")
-                        .HasFilter("[NameType] IS NOT NULL");
+                        .HasFilter("([NameType] IS NOT NULL)");
 
                     b.ToTable("VehicleType");
                 });
@@ -686,24 +700,30 @@ namespace Tim_Xe.Data.Migrations
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Driver", b =>
                 {
-                    b.HasOne("Tim_Xe.Data.Repository.Entities.Manager", "CreateBy")
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Group", "Group")
                         .WithMany("Drivers")
-                        .HasForeignKey("CreateById")
-                        .HasConstraintName("FK_Driver_Manager");
+                        .HasForeignKey("GroupId")
+                        .HasConstraintName("FK_Driver_Group");
                 });
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Feedback", b =>
                 {
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Booking", "Booking")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("BookingId")
+                        .HasConstraintName("FK_Feedbacks_Booking")
+                        .IsRequired();
+
                     b.HasOne("Tim_Xe.Data.Repository.Entities.Customer", "Customer")
                         .WithMany("Feedbacks")
                         .HasForeignKey("CustomerId")
                         .HasConstraintName("FK_Feedbacks_Customer")
                         .IsRequired();
 
-                    b.HasOne("Tim_Xe.Data.Repository.Entities.Driver", "Driver")
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Group", "Group")
                         .WithMany("Feedbacks")
-                        .HasForeignKey("DriverId")
-                        .HasConstraintName("FK_Feedbacks_Driver")
+                        .HasForeignKey("GroupId")
+                        .HasConstraintName("FK_Feedbacks_Group")
                         .IsRequired();
                 });
 

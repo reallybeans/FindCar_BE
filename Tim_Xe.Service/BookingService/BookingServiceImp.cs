@@ -9,6 +9,7 @@ using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
 using Tim_Xe.Service.Shared;
+using static Tim_Xe.Data.Enum.DistanceUnit;
 
 namespace Tim_Xe.Service.BookingService
 {
@@ -16,10 +17,12 @@ namespace Tim_Xe.Service.BookingService
     {
         private readonly TimXeDBContext context;
         private readonly RemoveUnicode removeUnicode;
+        private readonly CaculatorDistanceGG caculatorDistanceGG;
         public BookingServiceImp()
         {
             context = new TimXeDBContext();
             removeUnicode = new RemoveUnicode();
+            caculatorDistanceGG = new CaculatorDistanceGG();
         }
         public async Task<IEnumerable<BookingDTO>> GetAllBookingsAsync(int id, int status)
         {
@@ -220,6 +223,31 @@ namespace Tim_Xe.Service.BookingService
                 foreach(Location x in location)
                     booking.Locations.Add(x);
 
+                //get list driver 
+                var listDrivers = await context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == groupExisted.Id).ToListAsync();
+                //double[] min = new double[listDrivers.Count];
+                //int count1 = 0;
+                //min[count1++] = distance;
+                //orther method list => toArray
+                double d1 = 0, d2 = 0;
+                int c1 = 0, c2 = 0;
+                foreach (Driver x in listDrivers)
+                {
+                  var distance = caculatorDistanceGG.HaversineDistance(x.Address, bookingCreateDTO.Schedule.Latlng.Origin, DistanceUnits.Kilometers);
+                    c2++;
+                    if (d1.Equals(0) && d2.Equals(0))
+                    {
+                        c1 = 0;
+                        d1 = distance;
+                        continue;
+                    } else d2 = distance;
+                    if (d1 < d2)
+                    {
+                        d1 = d2;
+                        c1 = c2;
+                    }
+                }
+               
             } 
             catch (Exception e) 
             { return false; }
