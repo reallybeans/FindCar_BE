@@ -19,7 +19,7 @@ namespace Tim_Xe.API.Controllers.V2
             _driverServiceImp = new DriverServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<DriverDTO>> GetAll()
+        public async Task<DriverListDataDTO> GetAll()
         {
             return await _driverServiceImp.GetAllDriversAsync();
         }

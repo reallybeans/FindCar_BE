@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using BCryptNet = BCrypt.Net.BCrypt;
 namespace Tim_Xe.Service.LoginService
 {
-    public class LoginServiceImp
+    public class LoginServiceImp : ILoginService
     {
         private readonly TimXeDBContext context;
         public LoginServiceImp()

@@ -21,7 +21,7 @@ namespace Tim_Xe.Service.DriverService
         {
             context = new TimXeDBContext();
         }
-        public async Task<IEnumerable<DriverDTO>> GetAllDriversAsync()
+        public async Task<DriverListDataDTO> GetAllDriversAsync()
         {
             var driverExisted = await context.Drivers.ToListAsync();
             List<DriverDTO> driverDTO = new List<DriverDTO>();
@@ -31,7 +31,11 @@ namespace Tim_Xe.Service.DriverService
                 if(existingVehicle != null)
                 driverDTO.Add(new DriverDTO(x , existingVehicle));
             }
-            return driverDTO;
+            if (driverDTO.Count() == 0)
+            {
+                return new DriverListDataDTO("list is empty", null, "empty");
+            }
+            else return new DriverListDataDTO("success", driverDTO, "success");
         }
         public async Task<IEnumerable<DriverDTO>> SearchDriverAsync(DriverSearchDTO paging)
         {

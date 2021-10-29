@@ -20,7 +20,7 @@ namespace Tim_Xe.API.Controllers.V1
             _priceTimeServiceImp = new PriceTimeServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<PriceTimeDTO>> GetAll()
+        public async Task<PriceTimeListDataDTO> GetAll()
         {
             return await _priceTimeServiceImp.GetAllPriceTimesAsync();
         }

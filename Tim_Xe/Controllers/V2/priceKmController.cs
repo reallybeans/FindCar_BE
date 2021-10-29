@@ -19,7 +19,7 @@ namespace Tim_Xe.API.Controllers.V2
             _priceKmServiceImp = new PriceKmServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<PriceKmDTO>> GetAll()
+        public async Task<PriceKmListDataDTO> GetAll()
         {
             return await _priceKmServiceImp.GetAllPriceKmsAsync();
         }

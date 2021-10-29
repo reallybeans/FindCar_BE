@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -19,9 +20,14 @@ namespace Tim_Xe.Service.NewsService
             context = new TimXeDBContext();
             newsMapping = new NewsMapping();
         }
-        public async Task<IEnumerable<NewsDTO>> GetAllNewsAsync()
+        public async Task<NewsListDataDTO> GetAllNewsAsync()
         {
-            return await context.News.ProjectTo<NewsDTO>(newsMapping.configNews).ToListAsync();
+            var result = await context.News.ProjectTo<NewsDTO>(newsMapping.configNews).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new NewsListDataDTO("list is empty", null, "empty");
+            }
+            else return new NewsListDataDTO("success", result, "success");
         }
         public async Task<NewsDataDTO> GetNewsByIdAsync(int id)
         {

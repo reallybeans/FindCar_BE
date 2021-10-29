@@ -6,6 +6,7 @@ namespace Tim_Xe.Data.Models
 {
     public class RoleDTO
     {
-        public string RoleName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

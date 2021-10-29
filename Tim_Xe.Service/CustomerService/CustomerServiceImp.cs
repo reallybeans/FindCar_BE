@@ -12,7 +12,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.CustomerService
 {
-     public class CustomerServiceImp
+     public class CustomerServiceImp : ICustomerService
     {
         private readonly TimXeDBContext context;
         private readonly CustomerMapping customerMapping;
@@ -21,9 +21,14 @@ namespace Tim_Xe.Service.CustomerService
             context = new TimXeDBContext();
             customerMapping = new CustomerMapping();
         }
-        public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
+        public async Task<CustomerListDataDTO> GetAllCustomersAsync()
         {
-            return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).ToListAsync();
+            var result = await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new CustomerListDataDTO("list is empty", null, "empty");
+            }
+            else return new CustomerListDataDTO("success", result, "success");
         }
         public async Task<CustomerDataDTO> GetCustomerByIdAsync(int id)
         {

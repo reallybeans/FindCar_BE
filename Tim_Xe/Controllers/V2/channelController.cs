@@ -19,7 +19,7 @@ namespace Tim_Xe.API.Controllers.V2
             _channelServiceImp = new ChannelServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<ChannelDTO>> GetAll()
+        public async Task<ChannelListDataDTO> GetAll()
         {
             return await _channelServiceImp.GetAllChannelsAsync();
         }

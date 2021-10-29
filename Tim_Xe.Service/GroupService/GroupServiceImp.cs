@@ -12,7 +12,7 @@ using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Service.GroupService
 {
-    public class GroupServiceImp
+    public class GroupServiceImp : IGroupService
     {
         private readonly TimXeDBContext context;
         private readonly GroupMapping groupMapping;
@@ -21,7 +21,7 @@ namespace Tim_Xe.Service.GroupService
             context = new TimXeDBContext();
             groupMapping = new GroupMapping();
         }
-        public async Task<IEnumerable<GroupDTO>> GetAllGroupsAsync()
+        public async Task<GroupListDataDTO> GetAllGroupsAsync()
         {
         var groupExisted =  await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
             List<GroupDTO> groupDTO= new List<GroupDTO>();
@@ -29,7 +29,11 @@ namespace Tim_Xe.Service.GroupService
             {
                 groupDTO.Add(new GroupDTO(x));
             }
-            return groupDTO;
+            if (groupDTO.Count() == 0)
+            {
+                return new GroupListDataDTO("list is empty", null, "empty");
+            }
+            else return new GroupListDataDTO("success", groupDTO, "success");
         }
         public async Task<GroupDataDTO> GetGroupByIdAsync(int id)
         {

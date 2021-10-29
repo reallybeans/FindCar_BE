@@ -19,7 +19,7 @@ namespace Tim_Xe.API.Controllers.V2
             _customerServiceImp = new CustomerServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<CustomerDTO>> GetAll()
+        public async Task<CustomerListDataDTO> GetAll()
         {
             return await _customerServiceImp.GetAllCustomersAsync();
         }

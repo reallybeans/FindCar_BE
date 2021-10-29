@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -10,7 +11,7 @@ using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Service.PriceKmService
 {
-    public class PriceKmServiceImp
+    public class PriceKmServiceImp : IPriceKmService
     {
         private readonly TimXeDBContext context;
         private readonly PriceKmMapping priceKmMapping;
@@ -19,9 +20,14 @@ namespace Tim_Xe.Service.PriceKmService
             context = new TimXeDBContext();
             priceKmMapping = new PriceKmMapping();
         }
-        public async Task<IEnumerable<PriceKmDTO>> GetAllPriceKmsAsync()
+        public async Task<PriceKmListDataDTO> GetAllPriceKmsAsync()
         {
-            return await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).ToListAsync();
+            var result= await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new PriceKmListDataDTO("list is empty", null, "empty");
+            }
+            else return new PriceKmListDataDTO("success", result, "success");
         }
         public async Task<PriceKmDataDTO> GetPriceKmByIdAsync(int id)
         {

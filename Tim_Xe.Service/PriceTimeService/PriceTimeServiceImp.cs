@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -10,7 +10,7 @@ using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Service.PriceTimeService
 {
-    public class PriceTimeServiceImp
+    public class PriceTimeServiceImp : IPriceTimeService
     {
         private readonly TimXeDBContext context;
         private readonly PriceTimeMapping priceTimeMapping;
@@ -19,9 +19,14 @@ namespace Tim_Xe.Service.PriceTimeService
             context = new TimXeDBContext();
             priceTimeMapping = new PriceTimeMapping();
         }
-        public async Task<IEnumerable<PriceTimeDTO>> GetAllPriceTimesAsync()
+        public async Task<PriceTimeListDataDTO> GetAllPriceTimesAsync()
         {
-            return await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).ToListAsync();
+            var result = await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).ToListAsync();        
+            if (result.Count()==0)
+            {
+                return new PriceTimeListDataDTO("list is empty", result, "empty");
+            }
+            else return new PriceTimeListDataDTO("success", result, "success");
         }
         public async Task<PriceTimeDataDTO> GetPriceTimeByIdAsync(int id)
         {

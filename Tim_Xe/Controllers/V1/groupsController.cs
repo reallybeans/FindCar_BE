@@ -21,7 +21,7 @@ namespace Tim_Xe.API.Controllers.V1
             _groupServiceImp = new GroupServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<GroupDTO>> GetAll()
+        public async Task<GroupListDataDTO> GetAll()
         {
             return await _groupServiceImp.GetAllGroupsAsync();
         }

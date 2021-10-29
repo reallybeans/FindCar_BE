@@ -19,7 +19,7 @@ namespace Tim_Xe.API.Controllers.V2
             _vehicleTypeServiceImp = new VehicleTypeServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<VehicleTypeDTO>> GetAll()
+        public async Task<VehicleTypeListDataDTO> GetAll()
         {
             return await _vehicleTypeServiceImp.GetAllVehicleTypesAsync();
         }

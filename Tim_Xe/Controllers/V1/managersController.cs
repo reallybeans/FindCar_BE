@@ -24,9 +24,14 @@ namespace Tim_Xe.API.Controllers.V1
             _managerServiceImp = new ManagerServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<ManagerDTO>> GetAll()
+        public async Task<ManagerListDataDTO> GetAllManagers()
         {
             return await _managerServiceImp.GetAllManagersAsync();
+        }
+        [HttpGet("group-owner")]
+        public async Task<ManagerListDataDTO> GetAllGroupOwner()
+        {
+            return await _managerServiceImp.GetAllGroupOwnersAsync();
         }
         [HttpGet("{id}")]
         public async Task<ManagerDataDTO> GetManagerById(int id)

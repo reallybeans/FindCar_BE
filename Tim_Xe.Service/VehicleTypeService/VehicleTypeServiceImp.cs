@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -10,7 +11,7 @@ using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Service.VehicleTypeService
 {
-    public class VehicleTypeServiceImp
+    public class VehicleTypeServiceImp : IVehicleTypeService
     {
         private readonly TimXeDBContext context;
         private readonly VehicleTypeMapping vehicleTypeMapping;
@@ -19,9 +20,14 @@ namespace Tim_Xe.Service.VehicleTypeService
             context = new TimXeDBContext();
             vehicleTypeMapping = new VehicleTypeMapping();
         }
-        public async Task<IEnumerable<VehicleTypeDTO>> GetAllVehicleTypesAsync()
+        public async Task<VehicleTypeListDataDTO> GetAllVehicleTypesAsync()
         {
-            return await context.VehicleTypes.ProjectTo<VehicleTypeDTO>(vehicleTypeMapping.configVehicleType).ToListAsync();
+            var result= await context.VehicleTypes.ProjectTo<VehicleTypeDTO>(vehicleTypeMapping.configVehicleType).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new VehicleTypeListDataDTO("list is empty", null, "empty");
+            }
+            else return new VehicleTypeListDataDTO("success", result, "success");
         }
         public async Task<VehicleTypeDTO> GetVehicleTypeByIdAsync(int id)
         {

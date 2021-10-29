@@ -12,7 +12,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.ManagerService
 {
-    public class ManagerServiceImp
+    public class ManagerServiceImp : IManagerService
     {
         private readonly TimXeDBContext context;
         private readonly ManagerMapping managerMapping;
@@ -21,9 +21,15 @@ namespace Tim_Xe.Service.ManagerService
             context = new TimXeDBContext();
             managerMapping = new ManagerMapping();
         }
-        public async Task<IEnumerable<ManagerDTO>> GetAllManagersAsync()
+
+        public async Task<ManagerListDataDTO> GetAllGroupOwnersAsync()
         {
-            return await context.Managers.Include(m => m.Role).Where(m => m.RoleId == 2).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+            var result = await context.Managers.Include(m => m.Role).Where(m => m.RoleId == 2).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new ManagerListDataDTO("list is empty", null, "empty");
+            }
+            else return new ManagerListDataDTO("success", result, "success");
         }
         public async Task<IEnumerable<ManagerDTO>> SearchManagersAsync(ManagerSearchDTO paging)
         {
@@ -119,6 +125,16 @@ namespace Tim_Xe.Service.ManagerService
             {
                 return false;
             }
+        }
+
+        public async Task<ManagerListDataDTO> GetAllManagersAsync()
+        {
+            var result = await context.Managers.ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+            if (result.Count() == 0)
+            {
+                return new ManagerListDataDTO("list is empty", null, "empty");
+            }
+            else return new ManagerListDataDTO("success", result, "success");
         }
     }
 }

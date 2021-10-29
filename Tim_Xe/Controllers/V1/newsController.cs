@@ -20,7 +20,7 @@ namespace Tim_Xe.API.Controllers.V1
             _newsServiceImp = new NewsSeviceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<NewsDTO>> GetAll()
+        public async Task<NewsListDataDTO> GetAll()
         {
             return await _newsServiceImp.GetAllNewsAsync();
         }

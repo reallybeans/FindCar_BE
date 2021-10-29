@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using Tim_Xe.Data.Models;
+
+namespace Tim_Xe.Service.CustomerService
+{
+    public interface ICustomerService
+    {
+        Task<CustomerListDataDTO> GetAllCustomersAsync();
+        Task<CustomerDataDTO> GetCustomerByIdAsync(int id);
+        Task<CustomerCreateDataDTO> CreateCustomer(CustomerCreateDTO customer);
+        Task<CustomerUpdateDataDTO> UpdateCustomer(CustomerUpdateDTO customer);
+        Task<bool> DeleteCustomerAsync(int id);
+        Task<IEnumerable<CustomerDTO>> SearchCustomerAsync(CustomerSearchDTO paging);
+    }
+}

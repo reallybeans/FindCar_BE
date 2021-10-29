@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Service.ChannelTypeService
 {
-    public class ChannelTypeServiceImp
+    public class ChannelTypeServiceImp : IChannelTypeService
     {
         private readonly TimXeDBContext context;
         private readonly ChannelTypeMapping channelTypeMapping;
@@ -20,9 +21,15 @@ namespace Tim_Xe.Service.ChannelTypeService
             context = new TimXeDBContext();
             channelTypeMapping = new ChannelTypeMapping();
         }
-        public async Task<IEnumerable<ChannelTypeDTO>> GetAllChannelTypesAsync()
+        public async Task<ChannelTypesListDataDTO> GetAllChannelTypesAsync()
         {
-            return await context.ChannelTypes.ProjectTo<ChannelTypeDTO>(channelTypeMapping.configChannelType).ToListAsync();
+            var result = await context.ChannelTypes.ProjectTo<ChannelTypeDTO>(channelTypeMapping.configChannelType).ToListAsync();
+
+            if (result.Count() == 0)
+            {
+                return new ChannelTypesListDataDTO("list is empty", null, "empty");
+            }
+            else return new ChannelTypesListDataDTO("success", result, "success");
         }
         public async Task<ChannelTypesDataDTO> GetChannelTypeByIdAsync(int id)
         {

@@ -22,9 +22,14 @@ namespace Tim_Xe.API.Controllers.V2
             _managerServiceImp = new ManagerServiceImp();
         }
         [HttpGet]
-        public async Task<IEnumerable<ManagerDTO>> GetAll()
+        public async Task<ManagerListDataDTO> GetAllManagers()
         {
             return await _managerServiceImp.GetAllManagersAsync();
+        }
+        [HttpGet("group-owner")]
+        public async Task<ManagerListDataDTO> GetAllGroupOwner()
+        {
+            return await _managerServiceImp.GetAllGroupOwnersAsync();
         }
         [HttpGet("{id}")]
         public async Task<ManagerDataDTO> GetManagerById(int id)
@@ -46,15 +51,21 @@ namespace Tim_Xe.API.Controllers.V2
         {
             if (id != 0)
             {
-            var status =  await _managerServiceImp.DeleteManagerAsync(id);
-                if(status)
-                return Ok("Delete Success!");
+                var status = await _managerServiceImp.DeleteManagerAsync(id);
+                if (status)
+                    return Ok("Delete Success!");
                 else
                     return NotFound("Delete Failed!");
             };
             return NotFound();
 
         }
+        [HttpPost("search")]
+        public async Task<IEnumerable<ManagerDTO>> GetManagerById(ManagerSearchDTO managerSearchDTO)
+        {
+            return await _managerServiceImp.SearchManagersAsync(managerSearchDTO);
+        }
+
     }
 }
         
