@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tim_Xe.Data.Migrations
 {
-    public partial class TimXeV21 : Migration
+    public partial class TimXeV31 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -276,7 +276,8 @@ namespace Tim_Xe.Data.Migrations
                     CreateAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     GroupId = table.Column<int>(nullable: true),
                     Revenue = table.Column<double>(nullable: true),
-                    DiviceId = table.Column<string>(maxLength: 50, nullable: true)
+                    DiviceId = table.Column<string>(maxLength: 50, nullable: true),
+                    ReviewScore = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -307,43 +308,6 @@ namespace Tim_Xe.Data.Migrations
                     table.ForeignKey(
                         name: "FK_News_Group",
                         column: x => x.IdGroup,
-                        principalTable: "Group",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Feedbacks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(nullable: false),
-                    GroupId = table.Column<int>(nullable: false),
-                    Ratting = table.Column<double>(nullable: false),
-                    PostDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    BookingId = table.Column<int>(nullable: false),
-                    IsDelete = table.Column<bool>(nullable: true),
-                    Description = table.Column<string>(unicode: false, maxLength: 200, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_Booking",
-                        column: x => x.BookingId,
-                        principalTable: "Booking",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_Customer",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_Group",
-                        column: x => x.GroupId,
                         principalTable: "Group",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -395,6 +359,50 @@ namespace Tim_Xe.Data.Migrations
                         name: "FK_Booking_Driver_Driver",
                         column: x => x.IdDriver,
                         principalTable: "Driver",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(nullable: true),
+                    GroupId = table.Column<int>(nullable: true),
+                    Ratting = table.Column<double>(nullable: false),
+                    PostDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    BookingId = table.Column<int>(nullable: true),
+                    IsDelete = table.Column<bool>(nullable: true),
+                    Description = table.Column<string>(unicode: false, maxLength: 200, nullable: true),
+                    DriverId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Booking",
+                        column: x => x.BookingId,
+                        principalTable: "Booking",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Customer",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Driver",
+                        column: x => x.DriverId,
+                        principalTable: "Driver",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Group",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -506,6 +514,11 @@ namespace Tim_Xe.Data.Migrations
                 name: "IX_Feedbacks_CustomerId",
                 table: "Feedbacks",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Feedbacks_DriverId1",
+                table: "Feedbacks",
+                column: "DriverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_DriverId",

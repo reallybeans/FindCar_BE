@@ -248,19 +248,21 @@ namespace Tim_Xe.Data.Repository
                 entity.HasOne(d => d.Booking)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.BookingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Feedbacks_Booking");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.CustomerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Feedbacks_Customer");
+
+                entity.HasOne(d => d.Driver)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.DriverId)
+                    .HasConstraintName("FK_Feedbacks_Driver");
 
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Feedbacks_Group");
             });
 
