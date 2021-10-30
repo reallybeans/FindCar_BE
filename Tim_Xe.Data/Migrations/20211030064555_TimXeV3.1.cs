@@ -66,7 +66,8 @@ namespace Tim_Xe.Data.Migrations
                 {
                     table.PrimaryKey("PK_Role", x => x.Id);
                 });
-
+            migrationBuilder.InsertData(table: "Role", column: "Name", value: "admin");
+            migrationBuilder.InsertData(table: "Role", column: "Name", value: "group");
             migrationBuilder.CreateTable(
                 name: "VehicleType",
                 columns: table => new

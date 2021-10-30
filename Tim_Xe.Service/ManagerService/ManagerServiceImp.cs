@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using Tim_Xe.Service.Shared;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.ManagerService
@@ -31,27 +32,36 @@ namespace Tim_Xe.Service.ManagerService
             }
             else return new ManagerListDataDTO("success", result, "success");
         }
-        public async Task<IEnumerable<ManagerDTO>> SearchManagersAsync(ManagerSearchDTO paging)
+        public async Task<ManagerSearchDataDTO> SearchManagersAsync(ManagerSearchDTO paging)
         {
-            if (paging.Pagination.SortOrder == "des")
+            try
             {
-                return await context.Managers.Include(m => m.Role)
-               .Where(m => m.Email.Contains(paging.Name)) // like
-               .OrderByDescending(m => m.Id) // search for descending with Softfield id
-               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-               .Take((int)paging.Pagination.Size)
-               .ProjectTo<ManagerDTO>(managerMapping.configManager)
-               .ToListAsync();
+                if (paging.Pagination.SortOrder == "des")
+                {
+                    var result = await context.Managers.Include(m => m.Role)
+                   .Where(m => m.Email.Contains(paging.Name)) // like
+                   .OrderByDescending(m => m.Id) // search for descending with Softfield id
+                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                   .Take((int)paging.Pagination.Size)
+                   .ProjectTo<ManagerDTO>(managerMapping.configManager)
+                   .ToListAsync();
+                    return new ManagerSearchDataDTO("success", result, "success");
+                }
+                else
+                {
+                    var result1 =  await context.Managers.Include(m => m.Role)
+                                   .Where(m => m.Email.Contains(paging.Name))
+                                   .OrderBy(m => m.Id)
+                                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                                   .Take((int)paging.Pagination.Size)
+                                   .ProjectTo<ManagerDTO>(managerMapping.configManager)
+                                   .ToListAsync();
+                    return new ManagerSearchDataDTO("success", result1, "successs");
+                }
             }
-            else
+            catch(Exception e)
             {
-                return await context.Managers.Include(m => m.Role)
-                               .Where(m => m.Email.Contains(paging.Name))
-                               .OrderBy(m => m.Id)
-                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-                               .Take((int)paging.Pagination.Size)
-                               .ProjectTo<ManagerDTO>(managerMapping.configManager)
-                               .ToListAsync();
+                return new ManagerSearchDataDTO("fail", null, "fail");
             }
            
         }
@@ -72,28 +82,37 @@ namespace Tim_Xe.Service.ManagerService
         {
             var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
-            context.Managers.Add(new Manager()
+            var validEmail = ValidateEmail.CheckEmail(manager.Email);
+            var validPhone = ValiDatePhone.CheckPhone(manager.Phone);
+            if (!validPhone) return new ManagerCreateDataDTO("Phone number is exist", null, "fail");
+            else if (!validEmail) return new ManagerCreateDataDTO("email is exist", null, "fail");
+            else
             {
-                Name = manager.Name,
-                Phone = manager.Phone,
-                Password = pwd,
-                Email = manager.Email,
-                RoleId = Int32.Parse(manager.Role),
-                Status = manager.Status,
-                CardId = manager.CardId,
-                CreateAt = DateTime.Now,
-                IsDeleted = false,
-                Img = manager.Img
-            });
-            await context.SaveChangesAsync();
-            return new ManagerCreateDataDTO("create success", manager, "success");
+                context.Managers.Add(new Manager()
+                {
+                    Name = manager.Name,
+                    Phone = manager.Phone,
+                    Password = pwd,
+                    Email = manager.Email,
+                    RoleId = Int32.Parse(manager.Role),
+                    Status = manager.Status,
+                    CardId = manager.CardId,
+                    CreateAt = DateTime.Now,
+                    IsDeleted = false,
+                    Img = manager.Img
+                });
+                await context.SaveChangesAsync();
+                return new ManagerCreateDataDTO("create success", manager, "success");
+            }          
         }        
         public async Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager)
         {
             var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             var existingAccount = await context.Managers.FirstOrDefaultAsync(a => a.Id == manager.Id);
-            if (existingAccount != null)
+            var validPhone = ValiDatePhone.CheckPhone(manager.Phone);
+            if (!validPhone) return new ManagerUpdateDataDTO("Phone number is exist", null, "fail");
+            else if (existingAccount != null)
             {
                 existingAccount.Name = manager.Name;
                 existingAccount.Password = pwd;

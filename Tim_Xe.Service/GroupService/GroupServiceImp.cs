@@ -114,27 +114,36 @@ namespace Tim_Xe.Service.GroupService
                 return false;
             }
         }
-        public async Task<IEnumerable<GroupDTO>> SearchGroupAsync(GroupSearchDTO paging)
+        public async Task<GroupSearchDataDTO> SearchGroupAsync(GroupSearchDTO paging)
         {
-            if (paging.Pagination.SortOrder == "des")
+            try
             {
-                return await context.Groups
-               .Where(m => m.Name.Contains(paging.Name))
-               .OrderByDescending(m => m.Id)
-               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-               .Take((int)paging.Pagination.Size)
-               .ProjectTo<GroupDTO>(groupMapping.configManager)
-               .ToListAsync();
+                if (paging.Pagination.SortOrder.Contains("des"))
+                {
+                    var result = await context.Groups
+                   .Where(m => m.Name.Contains(paging.Name))
+                   .OrderByDescending(m => m.Id)
+                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                   .Take((int)paging.Pagination.Size)
+                   .ProjectTo<GroupDTO>(groupMapping.configManager)
+                   .ToListAsync();
+                    return new GroupSearchDataDTO("success", result, "success");
+                }
+                else
+                {
+                    var result1 = await context.Groups
+                                   .Where(m => m.Name.Contains(paging.Name))
+                                   .OrderBy(m => m.Id)
+                                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                                   .Take((int)paging.Pagination.Size)
+                                   .ProjectTo<GroupDTO>(groupMapping.configManager)
+                                   .ToListAsync();
+                    return new GroupSearchDataDTO("success", result1, "success");
+                }
             }
-            else
+            catch(Exception e)
             {
-                return await context.Groups
-                               .Where(m => m.Name.Contains(paging.Name))
-                               .OrderBy(m => m.Id)
-                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-                               .Take((int)paging.Pagination.Size)
-                               .ProjectTo<GroupDTO>(groupMapping.configManager)
-                               .ToListAsync();
+                return new GroupSearchDataDTO("fail", null, "fail");
             }
 
         }

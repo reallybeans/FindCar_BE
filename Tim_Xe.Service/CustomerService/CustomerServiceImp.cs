@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using Tim_Xe.Service.Shared;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.CustomerService
@@ -45,19 +46,26 @@ namespace Tim_Xe.Service.CustomerService
             try
             {
                 var pwd = BCryptNet.HashPassword(customer.Password); // hash password
-                context.Customers.Add(new Customer()
+                var validEmail = ValidateEmail.CheckEmail(customer.Email);
+                var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
+                if(!validPhone) return new CustomerCreateDataDTO("Phone number is exist", null, "fail");
+                else if (!validEmail) return new CustomerCreateDataDTO("email is exist", null, "fail");
+                else
                 {
-                    Name = customer.Name,
-                    Phone = customer.Phone,
-                    Email = customer.Email,
-                    Password = pwd,
-                    Img = customer.Img,
-                    Status = customer.Status,
-                    CreateAt = DateTime.Now,
-                    IsDeleted = false,
-                }); ;
-                await context.SaveChangesAsync();
-                return new CustomerCreateDataDTO("create success", customer, "success");
+                    context.Customers.Add(new Customer()
+                    {
+                        Name = customer.Name,
+                        Phone = customer.Phone,
+                        Email = customer.Email,
+                        Password = pwd,
+                        Img = customer.Img,
+                        Status = customer.Status,
+                        CreateAt = DateTime.Now,
+                        IsDeleted = false,
+                    }); ;
+                    await context.SaveChangesAsync();
+                    return new CustomerCreateDataDTO("create success", customer, "success");
+                }               
             }
             catch (Exception e)
             {
@@ -70,7 +78,11 @@ namespace Tim_Xe.Service.CustomerService
             {
                 var pwd = BCryptNet.HashPassword(customer.Password); // hash password
                 var existingCustomer = await context.Customers.FirstOrDefaultAsync(c => c.Id == customer.Id);
-                if (existingCustomer != null)
+                var validEmail = ValidateEmail.CheckEmail(customer.Email);
+                var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
+                if (!validPhone) return new CustomerUpdateDataDTO("Phone number is exist", null, "fail");
+                else if (!validEmail) return new CustomerUpdateDataDTO("email is exist", null, "fail");
+                else if (existingCustomer != null)
                 {
                     existingCustomer.Name = customer.Name;
                     existingCustomer.Phone = customer.Phone;
@@ -109,27 +121,36 @@ namespace Tim_Xe.Service.CustomerService
                 return false;
             }
         }
-        public async Task<IEnumerable<CustomerDTO>> SearchCustomerAsync(CustomerSearchDTO paging)
+        public async Task<CustomerSearchDataDTO> SearchCustomerAsync(CustomerSearchDTO paging)
         {
-            if (paging.Pagination.SortOrder == "des")
+            try
             {
-                return await context.Customers
-               .Where(m => m.Name.Contains(paging.Name))
-               .OrderByDescending(m => m.Id)
-               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-               .Take((int)paging.Pagination.Size)
-               .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
-               .ToListAsync();
+                if (paging.Pagination.SortOrder == "des")
+                {
+                    var result = await context.Customers
+                   .Where(m => m.Name.Contains(paging.Name))
+                   .OrderByDescending(m => m.Id)
+                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                   .Take((int)paging.Pagination.Size)
+                   .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
+                   .ToListAsync();
+                    return new CustomerSearchDataDTO("success", result, "success");
+                }
+                else
+                {
+                    var result1 = await context.Customers
+                                   .Where(m => m.Name.Contains(paging.Name))
+                                   .OrderBy(m => m.Id)
+                                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                                   .Take((int)paging.Pagination.Size)
+                                   .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
+                                   .ToListAsync();
+                    return new CustomerSearchDataDTO("success", result1, "success");
+                }
             }
-            else
+            catch
             {
-                return await context.Customers
-                               .Where(m => m.Name.Contains(paging.Name))
-                               .OrderBy(m => m.Id)
-                               .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-                               .Take((int)paging.Pagination.Size)
-                               .ProjectTo<CustomerDTO>(customerMapping.configCustomer)
-                               .ToListAsync();
+                return new CustomerSearchDataDTO("fail", null, "fail");
             }
 
         }

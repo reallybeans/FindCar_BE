@@ -14,7 +14,7 @@ using Tim_Xe.Service.Shared;
 
 namespace Tim_Xe.Service.DriverService
 {
-    public class DriverServiceImp
+    public class DriverServiceImp : IDriverService
     {
         private readonly TimXeDBContext context;
         public DriverServiceImp()
@@ -55,35 +55,41 @@ namespace Tim_Xe.Service.DriverService
             }
             else return new DriverListDataDTO("success", driverDTO, "success");
         }
-        public async Task<IEnumerable<DriverDTO>> SearchDriverAsync(DriverSearchDTO paging)
+        public async Task<DriverSearchDataDTO> SearchDriverAsync(DriverSearchDTO paging)
         {
-            var driverExisted = new List<Driver>();
-            List<DriverDTO> driverDTO = new List<DriverDTO>();
+            try
+            {
+                var driverExisted = new List<Driver>();
+                List<DriverDTO> driverDTO = new List<DriverDTO>();
+                Type t = typeof(Driver);
+                PropertyInfo prop = t.GetProperty(paging.Pagination.SortField);
+                if (paging.Pagination.SortOrder == "des")
+                {
+                    driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
+                    .OrderByDescending(m => m.Id)
+                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                    .Take((int)paging.Pagination.Size).ToListAsync();
 
-            Type t = typeof(Driver);
-            PropertyInfo prop = t.GetProperty(paging.Pagination.SortField);
-            if (paging.Pagination.SortOrder == "des")
-            {
-              driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
-              .OrderByDescending(m => m.Id)
-              .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-              .Take((int)paging.Pagination.Size).ToListAsync();
-
+                }
+                else
+                {
+                    driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
+                   .OrderBy(m => m.Id)
+                   .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
+                   .Take((int)paging.Pagination.Size).ToListAsync();
+                }
+                foreach (Driver x in driverExisted)
+                {
+                    var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == x.Id);
+                    if (existingVehicle != null)
+                        driverDTO.Add(new DriverDTO(x, existingVehicle));
+                }
+                return new DriverSearchDataDTO("success", driverDTO, "success");
             }
-            else
+            catch(Exception e)
             {
-               driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
-              .OrderBy(m => m.Id)
-              .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
-              .Take((int)paging.Pagination.Size).ToListAsync();
+                return new DriverSearchDataDTO("fail", null, "fail");
             }
-            foreach (Driver x in driverExisted)
-            {
-                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == x.Id);
-                if (existingVehicle != null)
-                    driverDTO.Add(new DriverDTO(x, existingVehicle));
-            }
-            return driverDTO;
         }
         public async Task<DriverDataDTO> GetDriverByIdAsync(int id)
         {
@@ -104,6 +110,10 @@ namespace Tim_Xe.Service.DriverService
             try {
                 var groupExisted = context.Groups.FirstOrDefault(g => g.IdManager == driver.CreateById);
                 if (groupExisted == null) return new DriverCreateDataDTO("create fail", null, "fail");
+                var validEmail = ValidateEmail.CheckEmail(driver.Email);
+                var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
+                if (!validPhone) return new DriverCreateDataDTO("Phone number is exist", null, "fail");
+                else if (!validEmail) return new DriverCreateDataDTO("email is exist", null, "fail");
                 Driver drivers = new Driver();
                 drivers.Name = driver.Name;
                 drivers.Phone = driver.Phone;
@@ -144,7 +154,11 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
-                if (existingdrivers != null)
+                var validEmail = ValidateEmail.CheckEmail(driver.Email);
+                var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
+                if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
+                else if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
+                else if (existingdrivers != null)
                 {
                     existingdrivers.Name = driver.Name;
                     existingdrivers.Phone = driver.Phone;

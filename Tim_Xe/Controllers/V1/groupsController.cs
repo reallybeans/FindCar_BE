@@ -55,7 +55,7 @@ namespace Tim_Xe.API.Controllers.V1
 
         }
         [HttpPost("search")]
-        public async Task<IEnumerable<GroupDTO>> GetGroupPagingAsync(GroupSearchDTO groupSearchDTO)
+        public async Task<GroupSearchDataDTO> GetGroupPagingAsync(GroupSearchDTO groupSearchDTO)
         {
             return await _groupServiceImp.SearchGroupAsync(groupSearchDTO);
         }

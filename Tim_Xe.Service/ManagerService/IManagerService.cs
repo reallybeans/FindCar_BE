@@ -9,7 +9,7 @@ namespace Tim_Xe.Service.ManagerService
     public interface IManagerService
     {
         Task<ManagerListDataDTO> GetAllManagersAsync();
-        Task<IEnumerable<ManagerDTO>> SearchManagersAsync(ManagerSearchDTO paging);
+        Task<ManagerSearchDataDTO> SearchManagersAsync(ManagerSearchDTO paging);
         Task<ManagerDataDTO> GetManagerByIdAsync(int id);
         Task<ManagerCreateDataDTO> CreateManager(ManagerCreateDTO manager);
         Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager);
