@@ -39,7 +39,7 @@ namespace Tim_Xe.Service.ManagerService
                 if (paging.Pagination.SortOrder == "des")
                 {
                     var result = await context.Managers.Include(m => m.Role)
-                   .Where(m => m.Email.Contains(paging.Name)) // like
+                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower())) // like
                    .OrderByDescending(m => m.Id) // search for descending with Softfield id
                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                    .Take((int)paging.Pagination.Size)
@@ -49,8 +49,8 @@ namespace Tim_Xe.Service.ManagerService
                 }
                 else
                 {
-                    var result1 =  await context.Managers.Include(m => m.Role)
-                                   .Where(m => m.Email.Contains(paging.Name))
+                    var result1 = await context.Managers.Include(m => m.Role)
+                                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                                    .OrderBy(m => m.Id)
                                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                                    .Take((int)paging.Pagination.Size)
@@ -59,11 +59,11 @@ namespace Tim_Xe.Service.ManagerService
                     return new ManagerSearchDataDTO("success", result1, "successs");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ManagerSearchDataDTO("fail", null, "fail");
             }
-           
+
         }
         public async Task<ManagerDataDTO> GetManagerByIdAsync(int id)
         {
@@ -103,8 +103,8 @@ namespace Tim_Xe.Service.ManagerService
                 });
                 await context.SaveChangesAsync();
                 return new ManagerCreateDataDTO("create success", manager, "success");
-            }          
-        }        
+            }
+        }
         public async Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager)
         {
             var pwd = BCryptNet.HashPassword(manager.Password); // hash password

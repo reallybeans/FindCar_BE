@@ -128,7 +128,7 @@ namespace Tim_Xe.Service.CustomerService
                 if (paging.Pagination.SortOrder == "des")
                 {
                     var result = await context.Customers
-                   .Where(m => m.Name.Contains(paging.Name))
+                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                    .OrderByDescending(m => m.Id)
                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                    .Take((int)paging.Pagination.Size)
@@ -139,7 +139,7 @@ namespace Tim_Xe.Service.CustomerService
                 else
                 {
                     var result1 = await context.Customers
-                                   .Where(m => m.Name.Contains(paging.Name))
+                                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                                    .OrderBy(m => m.Id)
                                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                                    .Take((int)paging.Pagination.Size)

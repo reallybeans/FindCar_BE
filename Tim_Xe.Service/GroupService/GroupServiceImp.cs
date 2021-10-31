@@ -121,7 +121,7 @@ namespace Tim_Xe.Service.GroupService
                 if (paging.Pagination.SortOrder.Contains("des"))
                 {
                     var result = await context.Groups
-                   .Where(m => m.Name.Contains(paging.Name))
+                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                    .OrderByDescending(m => m.Id)
                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                    .Take((int)paging.Pagination.Size)
@@ -132,7 +132,7 @@ namespace Tim_Xe.Service.GroupService
                 else
                 {
                     var result1 = await context.Groups
-                                   .Where(m => m.Name.Contains(paging.Name))
+                                   .Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                                    .OrderBy(m => m.Id)
                                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                                    .Take((int)paging.Pagination.Size)

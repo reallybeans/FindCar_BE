@@ -65,7 +65,7 @@ namespace Tim_Xe.Service.DriverService
                 PropertyInfo prop = t.GetProperty(paging.Pagination.SortField);
                 if (paging.Pagination.SortOrder == "des")
                 {
-                    driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
+                    driverExisted = await context.Drivers.Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                     .OrderByDescending(m => m.Id)
                     .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                     .Take((int)paging.Pagination.Size).ToListAsync();
@@ -73,7 +73,7 @@ namespace Tim_Xe.Service.DriverService
                 }
                 else
                 {
-                    driverExisted = await context.Drivers.Where(m => m.Name.Contains(paging.Name))
+                    driverExisted = await context.Drivers.Where(m => m.Name.ToLower().Contains(paging.Name.ToLower()))
                    .OrderBy(m => m.Id)
                    .Skip((int)(paging.Pagination.Page * (paging.Pagination.Size)))
                    .Take((int)paging.Pagination.Size).ToListAsync();
