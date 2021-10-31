@@ -7,21 +7,18 @@ using System.Collections.Generic;
 
 namespace Tim_Xe.Data.Repository.Entities
 {
-    public partial class Feedback
+    public partial class Transaction
     {
         public int Id { get; set; }
+        public int? BookingDriverId { get; set; }
         public int? CustomerId { get; set; }
-        public double Ratting { get; set; }
-        public DateTime PostDate { get; set; }
-        public int? BookingId { get; set; }
-        public bool? IsDelete { get; set; }
-        public string Description { get; set; }
         public int? DriverId { get; set; }
-        public int? GroupId { get; set; }
+        public string Status { get; set; }
+        public DateTime? Date { get; set; }
+        public string Description { get; set; }
 
-        public virtual Booking Booking { get; set; }
+        public virtual BookingDriver BookingDriver { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual Driver Driver { get; set; }
-        public virtual Group Group { get; set; }
     }
 }

@@ -31,5 +31,10 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _bookingServiceImp.CreateBooking(bookingCreateDTO);
         }
+        [HttpPut("{id}/{status}")]
+        public async Task<ActionResult<bool>> UpdateBooking(int id, int status)
+        {
+            return await _bookingServiceImp.UpdateBooking(id, status);
+        }
     }
 }

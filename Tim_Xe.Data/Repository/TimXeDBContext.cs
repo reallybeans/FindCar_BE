@@ -35,6 +35,7 @@ namespace Tim_Xe.Data.Repository
         public virtual DbSet<PriceKm> PriceKms { get; set; }
         public virtual DbSet<PriceTime> PriceTimes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<Vehicle> Vehicles { get; set; }
         public virtual DbSet<VehicleType> VehicleTypes { get; set; }
 
@@ -42,7 +43,7 @@ namespace Tim_Xe.Data.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-IUPD5KL\\SQLEXPRESS;Initial Catalog=TimXeDB;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=timxedb.cbkygjlh5adw.us-east-2.rds.amazonaws.com;Database=TimXeDB;User Id=admin;Password=12345678");
             }
         }
 
@@ -59,6 +60,8 @@ namespace Tim_Xe.Data.Repository
                 entity.HasIndex(e => e.IdVehicleType);
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
+
+                entity.Property(e => e.EndAt).HasColumnType("datetime");
 
                 entity.Property(e => e.NameCustomer).HasMaxLength(50);
 
@@ -84,8 +87,6 @@ namespace Tim_Xe.Data.Repository
 
             modelBuilder.Entity<BookingDriver>(entity =>
             {
-                entity.HasKey(e => new { e.IdBooking, e.IdDriver });
-
                 entity.ToTable("Booking_Driver");
 
                 entity.HasIndex(e => e.IdDriver);
@@ -235,9 +236,6 @@ namespace Tim_Xe.Data.Repository
             modelBuilder.Entity<Feedback>(entity =>
             {
                 entity.HasIndex(e => e.CustomerId);
-
-                entity.HasIndex(e => e.GroupId)
-                    .HasName("IX_Feedbacks_DriverId");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(200)
@@ -405,6 +403,32 @@ namespace Tim_Xe.Data.Repository
                 entity.ToTable("Role");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.ToTable("Transaction");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).HasMaxLength(150);
+
+                entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.HasOne(d => d.BookingDriver)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.BookingDriverId)
+                    .HasConstraintName("FK_Transaction_Booking_Driver");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_Transaction_Customer");
+
+                entity.HasOne(d => d.Driver)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.DriverId)
+                    .HasConstraintName("FK_Transaction_Driver");
             });
 
             modelBuilder.Entity<Vehicle>(entity =>

@@ -23,6 +23,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public string PhoneCustomer { get; set; }
         public int? IdVehicleType { get; set; }
         public DateTime? StartAt { get; set; }
+        public DateTime? EndAt { get; set; }
         public int? TimeWait { get; set; }
         public double? PriceBooking { get; set; }
         public DateTime? CreateAt { get; set; }

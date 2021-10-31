@@ -10,7 +10,7 @@ using Tim_Xe.Service.ChannelTypeService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/channelTypes")]
+    [Route("api/v1/channel-types")]
     [ApiController]
     public class ChannelTypesController : ControllerBase
     {

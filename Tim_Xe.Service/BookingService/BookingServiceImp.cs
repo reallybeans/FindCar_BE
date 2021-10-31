@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -108,24 +109,12 @@ namespace Tim_Xe.Service.BookingService
 
             var totalKm = bookingCreatePriceDTO.Km;
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-                .Where(g => g.IdCityNavigation.CityName.Contains(bookingCreatePriceDTO.City))
+                .Where(g => g.IdCityNavigation.CityName.ToLower().Contains(bookingCreatePriceDTO.City.ToLower()))
                 .FirstOrDefaultAsync();
             if (groupExisted == null) return 0;
-            //            random Group to have booking
-            //            if (groupExisted == null)
-            //            {
-            //                var listGroupExisted = await context.Groups.Include(g => g.IdCityNavigation)
-            //.Where(g => g.IdCityNavigation.CityName == bookingCreatePriceDTO.City)
-            //.ToListAsync();
-            //                check lỗi ở đây
-            //                if (listGroupExisted == null) return 0;
-            //                var random = new Random();
-            //                int index = random.Next(listGroupExisted.Count);
-            //                groupExisted = listGroupExisted[index];
-            //            }
 
             string vehicleType = bookingCreatePriceDTO.VehicleType;
-            var vehicleTypes = await context.VehicleTypes.Include(v => v.PriceKms).Where(v => v.NameType == vehicleType).FirstOrDefaultAsync();
+            var vehicleTypes = await context.VehicleTypes.Include(v => v.PriceKms).Where(v => v.NameType.ToLower() == vehicleType.ToLower()).FirstOrDefaultAsync();
             var priceKm = await context.PriceKms.Where(v => v.IdVehicleType == vehicleTypes.Id).ToArrayAsync();
             double priceTotal = 0;
             foreach (PriceKm x in priceKm)
@@ -166,9 +155,9 @@ namespace Tim_Xe.Service.BookingService
 
             var groupExisted = await context.Groups.Include(g => g.IdCityNavigation)
                 .Where(g => g.IdCityNavigation.CityName == bookingCreateDTO.City)
-                .FirstOrDefaultAsync(); 
-            
-            if (groupExisted == null) return false; 
+                .FirstOrDefaultAsync();
+
+            if (groupExisted == null) return false;
 
             string vehicleType = bookingCreateDTO.VehicleType;
             var vehicleTypes = await context.VehicleTypes.Where(v => v.NameType == vehicleType).FirstOrDefaultAsync();
@@ -185,16 +174,17 @@ namespace Tim_Xe.Service.BookingService
                 booking.NameCustomer = bookingCreateDTO.NameCustomer;
                 booking.PhoneCustomer = bookingCreateDTO.PhoneCustomer;
                 booking.IdVehicleType = vehicleTypes.Id;
-                booking.StartAt = DateTime.Now;
+                booking.StartAt = bookingCreateDTO.StartAt;
+                booking.EndAt = bookingCreateDTO.StartAt.AddHours(bookingCreateDTO.TimeWait + bookingCreateDTO.TotalTime);
                 booking.TimeWait = bookingCreateDTO.TimeWait;
                 booking.PriceBooking = bookingCreateDTO.PriceBooking;
                 booking.CreateAt = DateTime.Now;
-                booking.Status = 0;
-                booking.Mode = true ;
+                booking.Status = 1;
+                booking.Mode = bookingCreateDTO.Mode;
                 List<Location> location = new List<Location>();
                 location.Add(new Location()
                 {
-                    LatLng = bookingCreateDTO.Schedule.Latlng.Origin,
+                    LatLng = Regex.Replace(bookingCreateDTO.Schedule.Latlng.Origin, @"\s+", ""),
                     Address = bookingCreateDTO.Schedule.Address.Origin,
                     PointTypeValue = 1,
                     OrderNumber = ++count,
@@ -202,11 +192,11 @@ namespace Tim_Xe.Service.BookingService
                 var wayadd = bookingCreateDTO.Schedule.Address.Waypoint;
                 var wayll = bookingCreateDTO.Schedule.Latlng.ListWaypoint;
                 //foreach (string wayPoints in bookingCreateDTO.Schedule.Address.Waypoint)
-                    if (bookingCreateDTO.Schedule.Address.Waypoint != null)
+                if (bookingCreateDTO.Schedule.Address.Waypoint != null)
                     for (var i = 0; i < bookingCreateDTO.Schedule.Address.Waypoint.Count; i++)
                         location.Add(new Location()
                         {
-                            LatLng = wayll[i],
+                            LatLng = Regex.Replace(wayll[i], @"\s+", ""),
                             Address = wayadd[i],
                             PointTypeValue = 2,
                             IdBooking = booking.Id,
@@ -214,44 +204,195 @@ namespace Tim_Xe.Service.BookingService
                         });
                 location.Add(new Location()
                 {
-                    LatLng = bookingCreateDTO.Schedule.Latlng.Destination,
+                    LatLng = Regex.Replace(bookingCreateDTO.Schedule.Latlng.Destination, @"\s+", ""),
                     Address = bookingCreateDTO.Schedule.Address.Destination,
                     PointTypeValue = 3,
                     IdBooking = booking.Id,
                     OrderNumber = ++count,
                 });
-                foreach(Location x in location)
+                foreach (Location x in location)
                     booking.Locations.Add(x);
 
-                //get list driver 
-                var listDrivers = await context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == groupExisted.Id).ToListAsync();
-                //double[] min = new double[listDrivers.Count];
-                //int count1 = 0;
-                //min[count1++] = distance;
-                //orther method list => toArray
-                double d1 = 0, d2 = 0;
-                int c1 = 0, c2 = 0;
-                foreach (Driver x in listDrivers)
+                var list = findListDriveActive(groupExisted.Id, booking.StartAt, booking.EndAt);
+                int adaptDriver = findDriver(bookingCreateDTO.Schedule.Latlng.Origin, 0, vehicleTypes.Id, list);
+                if (adaptDriver == 0) return false;
+
+                booking.BookingDrivers.Add(new BookingDriver()
                 {
-                  var distance = caculatorDistanceGG.HaversineDistance(x.Address, bookingCreateDTO.Schedule.Latlng.Origin, DistanceUnits.Kilometers);
-                    c2++;
-                    if (d1.Equals(0) && d2.Equals(0))
-                    {
-                        c1 = 0;
-                        d1 = distance;
-                        continue;
-                    } else d2 = distance;
-                    if (d1 < d2)
-                    {
-                        d1 = d2;
-                        c1 = c2;
-                    }
-                }
-               
-            } 
-            catch (Exception e) 
+                    IdDriver = adaptDriver,
+                    Status = "Đang xử lý",
+                    Note = bookingCreateDTO.Note,
+                    Notificatied = false,
+                });
+                context.Bookings.Add(booking);
+                context.SaveChanges();
+            }
+            catch (Exception e)
             { return false; }
             return true;
+        }
+        public double calculateTheFit(double distance, int review, int revenue)
+        {
+            return 5 * distance + 3 * revenue + 2 * review;
+        }
+
+        public async Task<bool> UpdateBooking(int idBooking, int status)
+        {
+            try
+            {
+                var bookingExisted = await context.Bookings.Include(b => b.Locations).FirstOrDefaultAsync(b => b.Id == idBooking);
+                if (bookingExisted == null)
+                    return false;
+
+                var bookingDriverExisted = await context.BookingDrivers.FirstOrDefaultAsync(b => b.IdBooking == bookingExisted.Id);
+                string statusStr = "";
+                string latlngOrign = "";
+                var list = findListDriveActive(bookingExisted.IdGroup, bookingExisted.StartAt, bookingExisted.EndAt);
+                foreach (Location x in bookingExisted.Locations)
+                {
+                    if (x.PointTypeValue == 1)
+                    {
+                        latlngOrign = x.LatLng;
+                        break;
+                    }
+                }
+                switch (status)
+                {
+                    case 1:
+                        statusStr = "Đang xử lý";
+                        bookingExisted.Status = status;
+                        bookingDriverExisted.Status = statusStr;
+                        break;
+                    case 2:
+                        statusStr = "Đã Nhận";
+                        bookingExisted.Status = status;
+                        bookingDriverExisted.Status = statusStr;
+                        break;
+
+                    case 3:
+                        statusStr = "Đã chạy";
+                        bookingExisted.Status = status;
+                        bookingDriverExisted.Status = statusStr;
+                        context.Transactions.Add(new Transaction()
+                        {
+                            BookingDriverId = bookingDriverExisted.Id,
+                            CustomerId = bookingExisted.IdCustomer,
+                            DriverId = bookingDriverExisted.IdDriver,
+                            Status = "Done",
+                            Date = DateTime.Now,
+                            Description = "Done"
+                        });
+                        break;
+                    case 4:
+                        statusStr = "Đang xử lý";
+                        bookingExisted.Status = 1;
+                        bookingDriverExisted.Status = statusStr;
+                        context.Transactions.Add(new Transaction()
+                        {
+                            BookingDriverId = bookingDriverExisted.Id,
+                            CustomerId = bookingExisted.IdCustomer,
+                            DriverId = bookingDriverExisted.IdDriver,
+                            Status = "Cancel",
+                            Date = DateTime.Now,
+                            Description = "Cancel"
+                        });
+                        await context.SaveChangesAsync();
+
+                        bookingDriverExisted.IdDriver = findDriver(latlngOrign, bookingDriverExisted.Id, bookingExisted.IdVehicleType, list);
+                        if (bookingDriverExisted.IdDriver == 0) return false;
+                        break;
+                    default:
+                        return false;
+                }
+
+                context.Update(bookingExisted);
+                context.Update(bookingDriverExisted);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public List<Driver> findListDriveActive(int? id, DateTime? start1, DateTime? end1)
+        {
+            var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id).ToList();
+            var listbooking = context.Bookings.Include(b => b.BookingDrivers).Where(d => ((start1 >= d.StartAt && start1 <= d.EndAt) ||
+    (end1 >= d.StartAt && end1 <= d.EndAt)) && d.Status == 2).ToList();
+            var list = new List<Driver>();
+            if (listbooking.Count != 0)
+            {
+                foreach (Driver x in listDrivers)
+                    foreach (Booking y in listbooking)
+                        foreach (BookingDriver z in y.BookingDrivers)
+                            if (z.IdDriver != x.Id)
+                                list.Add(x);
+            }
+            else foreach (Driver x in listDrivers)
+                    list.Add(x);
+
+
+            return list;
+        }
+        public int findDriver(string origin, int idBookingDriver, int? IdVehicleType, List<Driver> list)
+        {
+            //get list driver 
+            //var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id).ToList();
+            var listDrivers = list;
+
+
+            var listDriversCancel = context.Transactions
+                .Where(d => d.BookingDriverId == idBookingDriver)
+                .Select(d => d.DriverId).ToArray();
+
+            double d1 = 0, d2 = 0;
+            int c1 = 0, c2 = 0;
+            bool check = false;
+
+            foreach (Driver x in listDrivers)
+            {
+                check = false;
+
+                foreach (Vehicle y1 in x.Vehicles)
+                {
+                    if (y1.IdVehicleType != IdVehicleType)
+                    {
+                        check = true;
+                        continue;
+                    }
+                }
+                foreach (int y2 in listDriversCancel)
+                {
+                    if (y2 == x.Id)
+                    {
+                        check = true;
+                        continue;
+                    }
+
+                }
+                if (check)
+                    continue;
+                var distance = caculatorDistanceGG.HaversineDistance(x.Latlng, origin, DistanceUnits.Kilometers);
+                int review = (int)context.Drivers.Where(d => d.Id == x.Id).Select(d => d.ReviewScore).SingleOrDefault();
+                int revenue = (int)context.Drivers.Where(d => d.Id == x.Id).Select(d => d.Revenue).SingleOrDefault();
+                var rs = calculateTheFit(distance, review, revenue);
+                c2 = x.Id;
+                if (d1.Equals(0) && d2.Equals(0))
+                {
+                    c1 = x.Id;
+                    d1 = rs;
+                    continue;
+                }
+                else d2 = rs;
+                if (d1 < d2)
+                {
+                    d1 = d2;
+                    c1 = c2;
+                }
+            }
+            return c1;
         }
     }
 }

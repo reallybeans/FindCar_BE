@@ -13,6 +13,7 @@ namespace Tim_Xe.Data.Repository.Entities
         {
             Bookings = new HashSet<Booking>();
             Feedbacks = new HashSet<Feedback>();
+            Transactions = new HashSet<Transaction>();
         }
 
         public int Id { get; set; }
@@ -27,5 +28,6 @@ namespace Tim_Xe.Data.Repository.Entities
 
         public virtual ICollection<Booking> Bookings { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using Tim_Xe.Data.Repository;
 namespace Tim_Xe.Data.Migrations
 {
     [DbContext(typeof(TimXeDBContext))]
-    [Migration("20211030064555_TimXeV3.1")]
-    partial class TimXeV31
+    [Migration("20211031092738_TimXeV3.3")]
+    partial class TimXeV33
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,9 @@ namespace Tim_Xe.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreateAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("EndAt")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("IdCustomer")
@@ -76,6 +79,11 @@ namespace Tim_Xe.Data.Migrations
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.BookingDriver", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("IdBooking")
                         .HasColumnType("int");
 
@@ -93,7 +101,9 @@ namespace Tim_Xe.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.HasKey("IdBooking", "IdDriver");
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdBooking");
 
                     b.HasIndex("IdDriver");
 
@@ -346,11 +356,9 @@ namespace Tim_Xe.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("DriverId")
-                        .HasName("IX_Feedbacks_DriverId1");
+                    b.HasIndex("DriverId");
 
-                    b.HasIndex("GroupId")
-                        .HasName("IX_Feedbacks_DriverId");
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Feedbacks");
                 });
@@ -596,6 +604,44 @@ namespace Tim_Xe.Data.Migrations
                     b.ToTable("Role");
                 });
 
+            modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BookingDriverId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(150)")
+                        .HasMaxLength(150);
+
+                    b.Property<int?>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingDriverId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DriverId");
+
+                    b.ToTable("Transaction");
+                });
+
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Vehicle", b =>
                 {
                     b.Property<int>("Id")
@@ -791,6 +837,24 @@ namespace Tim_Xe.Data.Migrations
                         .WithMany("PriceTimes")
                         .HasForeignKey("IdVehicleType")
                         .HasConstraintName("FK_PriceTime_VehicleType");
+                });
+
+            modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Transaction", b =>
+                {
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.BookingDriver", "BookingDriver")
+                        .WithMany("Transactions")
+                        .HasForeignKey("BookingDriverId")
+                        .HasConstraintName("FK_Transaction_Booking_Driver");
+
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Customer", "Customer")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CustomerId")
+                        .HasConstraintName("FK_Transaction_Customer");
+
+                    b.HasOne("Tim_Xe.Data.Repository.Entities.Driver", "Driver")
+                        .WithMany("Transactions")
+                        .HasForeignKey("DriverId")
+                        .HasConstraintName("FK_Transaction_Driver");
                 });
 
             modelBuilder.Entity("Tim_Xe.Data.Repository.Entities.Vehicle", b =>

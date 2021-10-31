@@ -13,6 +13,7 @@ namespace Tim_Xe.Data.Repository.Entities
         {
             BookingDrivers = new HashSet<BookingDriver>();
             Feedbacks = new HashSet<Feedback>();
+            Transactions = new HashSet<Transaction>();
             Vehicles = new HashSet<Vehicle>();
         }
 
@@ -35,6 +36,7 @@ namespace Tim_Xe.Data.Repository.Entities
         public virtual Group Group { get; set; }
         public virtual ICollection<BookingDriver> BookingDrivers { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }

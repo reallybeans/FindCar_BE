@@ -9,18 +9,18 @@ using Tim_Xe.Service.FeedbackService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/feedback")]
+    [Route("api/v1/feedbacks")]
     [ApiController]
-    public class feedbacksController : ControllerBase
+    public class FeedbacksController : ControllerBase
     {
         private readonly FeedbackServiceImp _feedbackServiceImp;
-        public feedbacksController()
+        public FeedbacksController()
         {
             _feedbackServiceImp = new FeedbackServiceImp();
         }
         [HttpGet]
         public async Task<FeedbackListDataDTO> GetAll()
-        {
+        { 
             return await _feedbackServiceImp.GetAllFeedbackAsync();
         }
         [HttpGet("{id}")]

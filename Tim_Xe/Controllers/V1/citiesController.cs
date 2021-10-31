@@ -9,13 +9,13 @@ using Tim_Xe.Service.CityService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-    [Route("api/v1/city")]
+    [Route("api/v1/cities")]
     [ApiController]
-    public class citiesController : ControllerBase
+    public class CitiesController : ControllerBase
     {
         private readonly CityServiceImp _cityServiceImp;
 
-        public citiesController()
+        public CitiesController()
         {
             _cityServiceImp = new CityServiceImp();
         }

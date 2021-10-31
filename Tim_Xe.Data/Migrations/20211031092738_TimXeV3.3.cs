@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tim_Xe.Data.Migrations
 {
-    public partial class TimXeV31 : Migration
+    public partial class TimXeV33 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -200,6 +200,7 @@ namespace Tim_Xe.Data.Migrations
                     PhoneCustomer = table.Column<string>(maxLength: 15, nullable: true),
                     IdVehicleType = table.Column<int>(nullable: true),
                     StartAt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    EndAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     TimeWait = table.Column<int>(nullable: true),
                     PriceBooking = table.Column<double>(nullable: true),
                     CreateAt = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -341,6 +342,8 @@ namespace Tim_Xe.Data.Migrations
                 name: "Booking_Driver",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     IdDriver = table.Column<int>(nullable: false),
                     IdBooking = table.Column<int>(nullable: false),
                     Status = table.Column<string>(maxLength: 50, nullable: true),
@@ -349,7 +352,7 @@ namespace Tim_Xe.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Booking_Driver", x => new { x.IdBooking, x.IdDriver });
+                    table.PrimaryKey("PK_Booking_Driver", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Booking_Driver_Booking",
                         column: x => x.IdBooking,
@@ -371,13 +374,13 @@ namespace Tim_Xe.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(nullable: true),
-                    GroupId = table.Column<int>(nullable: true),
                     Ratting = table.Column<double>(nullable: false),
                     PostDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     BookingId = table.Column<int>(nullable: true),
                     IsDelete = table.Column<bool>(nullable: true),
                     Description = table.Column<string>(unicode: false, maxLength: 200, nullable: true),
-                    DriverId = table.Column<int>(nullable: true)
+                    DriverId = table.Column<int>(nullable: true),
+                    GroupId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -437,6 +440,42 @@ namespace Tim_Xe.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Transaction",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookingDriverId = table.Column<int>(nullable: true),
+                    CustomerId = table.Column<int>(nullable: true),
+                    DriverId = table.Column<int>(nullable: true),
+                    Status = table.Column<string>(maxLength: 50, nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Description = table.Column<string>(maxLength: 150, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transaction_Booking_Driver",
+                        column: x => x.BookingDriverId,
+                        principalTable: "Booking_Driver",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transaction_Customer",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transaction_Driver",
+                        column: x => x.DriverId,
+                        principalTable: "Driver",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_IdCustomer",
                 table: "Booking",
@@ -451,6 +490,11 @@ namespace Tim_Xe.Data.Migrations
                 name: "IX_Booking_IdVehicleType",
                 table: "Booking",
                 column: "IdVehicleType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Booking_Driver_IdBooking",
+                table: "Booking_Driver",
+                column: "IdBooking");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_Driver_IdDriver",
@@ -517,12 +561,12 @@ namespace Tim_Xe.Data.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_DriverId1",
+                name: "IX_Feedbacks_DriverId",
                 table: "Feedbacks",
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_DriverId",
+                name: "IX_Feedbacks_GroupId",
                 table: "Feedbacks",
                 column: "GroupId");
 
@@ -583,6 +627,21 @@ namespace Tim_Xe.Data.Migrations
                 column: "IdVehicleType");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transaction_BookingDriverId",
+                table: "Transaction",
+                column: "BookingDriverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_CustomerId",
+                table: "Transaction",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_DriverId",
+                table: "Transaction",
+                column: "DriverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vehicle_IdDriver",
                 table: "Vehicle",
                 column: "IdDriver");
@@ -603,9 +662,6 @@ namespace Tim_Xe.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Booking_Driver");
-
-            migrationBuilder.DropTable(
                 name: "Channel");
 
             migrationBuilder.DropTable(
@@ -624,10 +680,16 @@ namespace Tim_Xe.Data.Migrations
                 name: "PriceTime");
 
             migrationBuilder.DropTable(
+                name: "Transaction");
+
+            migrationBuilder.DropTable(
                 name: "Vehicle");
 
             migrationBuilder.DropTable(
                 name: "ChannelType");
+
+            migrationBuilder.DropTable(
+                name: "Booking_Driver");
 
             migrationBuilder.DropTable(
                 name: "Booking");
