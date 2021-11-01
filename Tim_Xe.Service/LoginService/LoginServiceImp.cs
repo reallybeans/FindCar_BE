@@ -84,7 +84,10 @@ namespace Tim_Xe.Service.LoginService
                 var email = tokenS.Claims.First(claim => claim.Type == "email").Value;
                 existingAccount = await context.Drivers.FirstOrDefaultAsync(d => d.Email == email
                       && d.IsDeleted == false);
-                userWithToken = new UserWithToken(null, existingAccount, null); ; ;
+                existingAccount.DiviceId = loginDriver.DiviceId;
+                userWithToken = new UserWithToken(null, existingAccount, null);
+                context.Update(existingAccount);
+                await context.SaveChangesAsync();
                 return new UserWithTokenDataDTO("login success", userWithToken, "success");
             }
             else if (loginDriver.Phone != null)
@@ -96,7 +99,10 @@ namespace Tim_Xe.Service.LoginService
                 }
                 else
                 {
-                    userWithToken = new UserWithToken(null, existingAccount,null);
+                    existingAccount.DiviceId = loginDriver.DiviceId;
+                    userWithToken = new UserWithToken(null, existingAccount, null);
+                    context.Update(existingAccount);
+                    await context.SaveChangesAsync();
                     return new UserWithTokenDataDTO("login success", userWithToken, "success");
                 }
             }

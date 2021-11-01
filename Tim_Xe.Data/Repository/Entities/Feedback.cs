@@ -11,8 +11,8 @@ namespace Tim_Xe.Data.Repository.Entities
     {
         public int Id { get; set; }
         public int? CustomerId { get; set; }
-        public double Ratting { get; set; }
-        public DateTime PostDate { get; set; }
+        public int? Ratting { get; set; }
+        public DateTime? PostDate { get; set; }
         public int? BookingId { get; set; }
         public bool? IsDelete { get; set; }
         public string Description { get; set; }

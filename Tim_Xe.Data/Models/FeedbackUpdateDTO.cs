@@ -12,7 +12,7 @@ namespace Tim_Xe.Data.Models
         public int? GroupId { get; set; }
         [Required(ErrorMessage = "Rating Number is required.")]
         [RegularExpression(@"^(([0-5]{1}[.])[05]{1})$", ErrorMessage = "Invalid Rating Number.")]
-        public double Ratting { get; set; }
+        public int Ratting { get; set; }
         public DateTime PostDate { get; set; }
         public int? BookingId { get; set; }
         public bool? IsDelete { get; set; }

@@ -120,7 +120,6 @@ namespace Tim_Xe.Service.DriverService
                 drivers.Email = driver.Email;
                 drivers.CardId = driver.CardId;
                 drivers.Img = driver.Img;
-                drivers.IsDeleted = true;
                 drivers.Status = driver.Status;
                 drivers.Address = driver.Address;
                 drivers.Latlng = driver.Latlng;
