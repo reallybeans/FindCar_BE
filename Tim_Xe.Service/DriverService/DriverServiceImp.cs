@@ -124,7 +124,7 @@ namespace Tim_Xe.Service.DriverService
                 drivers.Status = driver.Status;
                 drivers.Address = driver.Address;
                 drivers.Latlng = driver.Latlng;
-                drivers.IsDeleted = true;
+                drivers.IsDeleted = false;
                 drivers.CreateAt = DateTime.Now;
                 drivers.GroupId = groupExisted.Id;
                 Vehicle vehicle = new Vehicle();
@@ -154,17 +154,24 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
-                var validEmail = ValidateEmail.CheckEmail(driver.Email);
-                var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
-                if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
-                else if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
-                else if (existingdrivers != null)
+                if (!driver.Email.Contains(existingdrivers.Email))
+                {
+                    var validEmail = ValidateEmail.CheckEmail(driver.Email);
+                    if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
+                }
+                if (!driver.Phone.Contains(existingdrivers.Phone))
+                {
+                    var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
+                    if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
+                }                
+                if (existingdrivers != null)
                 {
                     existingdrivers.Name = driver.Name;
                     existingdrivers.Phone = driver.Phone;
                     existingdrivers.Email = driver.Email;
                     existingdrivers.CardId = driver.CardId;
                     existingdrivers.Img = driver.Img;
+                    existingdrivers.IsDeleted = driver.IsDeleted;
                     existingdrivers.Status = driver.Status;
                     existingdrivers.Address = driver.Address;
                     existingdrivers.Latlng = driver.Latlng;

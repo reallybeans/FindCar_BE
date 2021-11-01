@@ -110,9 +110,12 @@ namespace Tim_Xe.Service.ManagerService
             var pwd = BCryptNet.HashPassword(manager.Password); // hash password
             manager.Role = manager.Role == "Group Owner" ? "2" : "1";
             var existingAccount = await context.Managers.FirstOrDefaultAsync(a => a.Id == manager.Id);
-            var validPhone = ValiDatePhone.CheckPhone(manager.Phone);
-            if (!validPhone) return new ManagerUpdateDataDTO("Phone number is exist", null, "fail");
-            else if (existingAccount != null)
+            if (!manager.Phone.Contains(existingAccount.Phone))
+            {
+                var validPhone = ValiDatePhone.CheckPhone(manager.Phone);
+                if (!validPhone) return new ManagerUpdateDataDTO("Phone number is exist", null, "fail");
+            }
+            if (existingAccount != null)
             {
                 existingAccount.Name = manager.Name;
                 existingAccount.Password = pwd;

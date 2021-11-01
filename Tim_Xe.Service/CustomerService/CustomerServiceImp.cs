@@ -78,11 +78,17 @@ namespace Tim_Xe.Service.CustomerService
             {
                 var pwd = BCryptNet.HashPassword(customer.Password); // hash password
                 var existingCustomer = await context.Customers.FirstOrDefaultAsync(c => c.Id == customer.Id);
-                var validEmail = ValidateEmail.CheckEmail(customer.Email);
-                var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
-                if (!validPhone) return new CustomerUpdateDataDTO("Phone number is exist", null, "fail");
-                else if (!validEmail) return new CustomerUpdateDataDTO("email is exist", null, "fail");
-                else if (existingCustomer != null)
+                if (!customer.Email.Contains(existingCustomer.Email))
+                {
+                    var validEmail = ValidateEmail.CheckEmail(customer.Email);
+                    if (!validEmail) return new CustomerUpdateDataDTO("email is exist", null, "fail");
+                }
+                if (!customer.Phone.Contains(existingCustomer.Phone))
+                {
+                    var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
+                    if (!validPhone) return new CustomerUpdateDataDTO("Phone number is exist", null, "fail");
+                }            
+                if (existingCustomer != null)
                 {
                     existingCustomer.Name = customer.Name;
                     existingCustomer.Phone = customer.Phone;
