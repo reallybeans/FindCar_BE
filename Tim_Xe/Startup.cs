@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using Tim_Xe.Service.Shared;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
+using Tim_Xe.Service.NotificationService;
+using Tim_Xe.Service.NotificationService.Google;
 
 namespace Tim_Xe
 {
@@ -47,6 +49,10 @@ namespace Tim_Xe
             {
                 options.Conventions.Add(new GroupingByNamespaceConvention());
             });
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddHttpClient<FcmSender>();
+            var appSettingsSection = Configuration.GetSection("FcmNotification");
+            services.Configure<FcmNotificationSetting>(appSettingsSection);
 
 
             services.AddSwaggerGen(c =>
