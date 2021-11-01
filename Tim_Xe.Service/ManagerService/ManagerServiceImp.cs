@@ -25,7 +25,7 @@ namespace Tim_Xe.Service.ManagerService
 
         public async Task<ManagerListDataDTO> GetAllGroupOwnersAsync()
         {
-            var result = await context.Managers.Include(m => m.Role).Where(m => m.RoleId == 2).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+            var result = await context.Managers.Include(m => m.Role).Where(m => m.RoleId == 2 && m.IsDeleted == false).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
             if (result.Count() == 0)
             {
                 return new ManagerListDataDTO("list is empty", null, "empty");

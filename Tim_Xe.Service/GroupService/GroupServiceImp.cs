@@ -37,7 +37,7 @@ namespace Tim_Xe.Service.GroupService
         }
         public async Task<GroupDataDTO> GetGroupByIdAsync(int id)
         {
-            var result = await context.Groups.Include(g => g.IdCityNavigation)
+            var result = await context.Groups.Where(g => g.IsDeleted == false).Include(g => g.IdCityNavigation)
                 .FirstOrDefaultAsync(g => g.Id == id);
             if (result == null)
             {

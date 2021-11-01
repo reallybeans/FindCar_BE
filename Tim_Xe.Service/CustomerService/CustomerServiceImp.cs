@@ -24,7 +24,7 @@ namespace Tim_Xe.Service.CustomerService
         }
         public async Task<CustomerListDataDTO> GetAllCustomersAsync()
         {
-            var result = await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).ToListAsync();
+            var result = await context.Customers.Where(c => c.IsDeleted == false).ProjectTo<CustomerDTO>(customerMapping.configCustomer).ToListAsync();
             if (result.Count() == 0)
             {
                 return new CustomerListDataDTO("list is empty", null, "empty");

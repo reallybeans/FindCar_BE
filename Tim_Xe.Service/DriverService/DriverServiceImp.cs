@@ -23,7 +23,7 @@ namespace Tim_Xe.Service.DriverService
         }
         public async Task<DriverListDataDTO> GetAllDriversAsync()
         {
-            var driverExisted = await context.Drivers.ToListAsync();
+            var driverExisted = await context.Drivers.Where(d => d.IsDeleted == false).ToListAsync();
             List<DriverDTO> driverDTO = new List<DriverDTO>();
             foreach (Driver x in driverExisted)
             {
@@ -154,17 +154,11 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
-                if (!driver.Email.Contains(existingdrivers.Email))
-                {
-                    var validEmail = ValidateEmail.CheckEmail(driver.Email);
-                    if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
-                }
-                if (!driver.Phone.Contains(existingdrivers.Phone))
-                {
-                    var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
-                    if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
-                }                
-                if (existingdrivers != null)
+                var validEmail = ValidateEmail.CheckEmail(driver.Email);
+                var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
+                if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
+                else if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
+                else if (existingdrivers != null)
                 {
                     existingdrivers.Name = driver.Name;
                     existingdrivers.Phone = driver.Phone;

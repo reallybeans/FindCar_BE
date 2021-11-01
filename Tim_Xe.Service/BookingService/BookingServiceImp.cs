@@ -231,9 +231,10 @@ namespace Tim_Xe.Service.BookingService
             { return false; }
             return true;
         }
-        public double calculateTheFit(double distance, int review, int revenue)
+        public double calculateTheFit(double distance, int? review, double? revenue)
         {
-            return 5 * distance + 3 * revenue + 2 * review;
+            double x = (double)(5 * distance + 3 * revenue - 2 * Convert.ToDouble(review));
+            return x;
         }
 
         public async Task<bool> UpdateBooking(int idBooking, int status)
@@ -375,8 +376,9 @@ namespace Tim_Xe.Service.BookingService
                 if (check)
                     continue;
                 var distance = caculatorDistanceGG.HaversineDistance(x.Latlng, origin, DistanceUnits.Kilometers);
-                int review = (int)context.Drivers.Where(d => d.Id == x.Id).Select(d => d.ReviewScore).SingleOrDefault();
-                int revenue = (int)context.Drivers.Where(d => d.Id == x.Id).Select(d => d.Revenue).SingleOrDefault();
+                var driver = context.Drivers.Where(d => d.Id == x.Id).SingleOrDefault();
+                var review = (driver.ReviewScore != null ? driver.ReviewScore : 0);
+                var revenue =(driver.Revenue != null ? driver.Revenue : 0);
                 var rs = calculateTheFit(distance, review, revenue);
                 c2 = x.Id;
                 if (d1.Equals(0) && d2.Equals(0))

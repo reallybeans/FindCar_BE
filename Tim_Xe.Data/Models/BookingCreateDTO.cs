@@ -6,7 +6,7 @@ namespace Tim_Xe.Data.Models
 {
     public class BookingCreateDTO
     {   
-        public int IdCustomer { get; set; }
+        public int? IdCustomer { get; set; }
         public string NameCustomer { get; set; }
         public string PhoneCustomer { get; set; }
         public string City { get; set; }
