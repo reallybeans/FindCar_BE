@@ -81,9 +81,8 @@ namespace Tim_Xe.Service.VehicleTypeService
 
             if (existingVehicleType != null)
             {
-                existingVehicleType.IsDeleted = true;
+                context.VehicleTypes.Remove(existingVehicleType);
                 await context.SaveChangesAsync();
-
                 return true;
             }
             else

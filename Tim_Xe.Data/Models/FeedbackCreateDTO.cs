@@ -11,7 +11,7 @@ namespace Tim_Xe.Data.Models
         public int? CustomerId { get; set; }
         public int? GroupId { get; set; }
         [Required(ErrorMessage = "Rating Number is required.")]
-        [RegularExpression(@"^(([0-5]{1}[.])[05]{1})$", ErrorMessage = "Invalid Rating Number.")]
+        [RegularExpression(@"^([0-5]{1})$", ErrorMessage = "Invalid Rating Number.")]
         public int Ratting { get; set; }
         public DateTime PostDate { get; set; }
         public int? BookingId { get; set; }

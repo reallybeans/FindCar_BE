@@ -20,6 +20,7 @@ namespace Tim_Xe.Data.Models
                 CreateAt = driver.CreateAt;
                 GroupId = driver.GroupId;
                 Address = driver.Address;
+                ReviewScore = driver.ReviewScore;
             //foreach (Vehicle x in vehicle)
             //{
             //    Vehicles.Add(new VehicleDTO(x.Id, x.Name, x.LicensePlate,x.IdVehicleType, x.Status));
@@ -43,6 +44,7 @@ namespace Tim_Xe.Data.Models
         public string Status { get; set; }
         public DateTime? CreateAt { get; set; }
         public int? GroupId { get; set; }
+        public int? ReviewScore { get; set; }
         public string Address { get; set; }
     }
 }

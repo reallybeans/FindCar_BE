@@ -153,12 +153,18 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
-                var validEmail = ValidateEmail.CheckEmail(driver.Email);
-                var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
-                if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
-                else if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
-                else if (existingdrivers != null)
-                {
+                if (existingdrivers != null)
+                {                    
+                    if (!driver.Phone.Contains(existingdrivers.Phone))
+                    {
+                        var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
+                        if (!validPhone) return new DriverUpdateDataDTO("Phone number is exist", null, "fail");
+                    }
+                    if (!driver.Email.Contains(existingdrivers.Email))
+                    {
+                        var validEmail = ValidateEmail.CheckEmail(driver.Email);
+                        if (!validEmail) return new DriverUpdateDataDTO("email is exist", null, "fail");
+                    }
                     existingdrivers.Name = driver.Name;
                     existingdrivers.Phone = driver.Phone;
                     existingdrivers.Email = driver.Email;

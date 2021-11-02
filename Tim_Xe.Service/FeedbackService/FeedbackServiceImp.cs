@@ -45,6 +45,26 @@ namespace Tim_Xe.Service.FeedbackService
                 }
                 else
                 {
+                    switch (feedbackCreateDTO.Ratting){
+                        case 5:
+                            existingDriver.ReviewScore += 3;
+                            break;
+                        case 4:
+                            existingDriver.ReviewScore += 2;
+                            break;
+                        case 3:
+                            existingDriver.ReviewScore += 1;
+                            break;
+                        case 2:
+                            existingDriver.ReviewScore -= 1;
+                            break;
+                        case 1:
+                            existingDriver.ReviewScore -= 2;
+                            break;
+                        default: break;
+                    }
+                    context.Drivers.Update(existingDriver);
+                    await context.SaveChangesAsync();
                     context.Feedbacks.Add(new Feedback()
                     {
                         CustomerId = feedbackCreateDTO.CustomerId,
@@ -155,6 +175,46 @@ namespace Tim_Xe.Service.FeedbackService
                 }
                 else
                 {
+                    switch (existingFeedback.Ratting)
+                    {
+                        case 5:
+                            existingDriver.ReviewScore -= 3;
+                            break;
+                        case 4:
+                            existingDriver.ReviewScore -= 2;
+                            break;
+                        case 3:
+                            existingDriver.ReviewScore -= 1;
+                            break;
+                        case 2:
+                            existingDriver.ReviewScore += 1;
+                            break;
+                        case 1:
+                            existingDriver.ReviewScore += 2;
+                            break;
+                        default: break;
+                    }
+                    switch (feedbackUpdateDTO.Ratting)
+                    {
+                        case 5:
+                            existingDriver.ReviewScore += 3;
+                            break;
+                        case 4:
+                            existingDriver.ReviewScore += 2;
+                            break;
+                        case 3:
+                            existingDriver.ReviewScore += 1;
+                            break;
+                        case 2:
+                            existingDriver.ReviewScore -= 1;
+                            break;
+                        case 1:
+                            existingDriver.ReviewScore -= 2;
+                            break;
+                        default: break;
+                    }
+                    context.Drivers.Update(existingDriver);
+                    await context.SaveChangesAsync();
                     existingFeedback.CustomerId = feedbackUpdateDTO.CustomerId;
                     existingFeedback.GroupId = feedbackUpdateDTO.GroupId;
                     existingFeedback.Ratting = feedbackUpdateDTO.Ratting;
