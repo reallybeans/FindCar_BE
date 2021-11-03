@@ -209,7 +209,7 @@ namespace Tim_Xe.Data.Repository
 
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
-                entity.Property(e => e.DiviceId).HasMaxLength(50);
+                entity.Property(e => e.DiviceId).HasColumnType("text");
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
