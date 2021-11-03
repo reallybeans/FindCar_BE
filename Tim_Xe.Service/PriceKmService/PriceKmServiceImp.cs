@@ -103,7 +103,7 @@ namespace Tim_Xe.Service.PriceKmService
 
             if (existingPriceKm != null)
             {
-                existingPriceKm.IsDeleted = true;
+                context.PriceKms.Remove(existingPriceKm);
                 await context.SaveChangesAsync();
 
                 return true;

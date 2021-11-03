@@ -103,9 +103,8 @@ namespace Tim_Xe.Service.PriceTimeService
 
             if (existingPriceTime != null)
             {
-                existingPriceTime.IsDeleted = true;
+                context.PriceTimes.Remove(existingPriceTime);
                 await context.SaveChangesAsync();
-
                 return true;
             }
             else
