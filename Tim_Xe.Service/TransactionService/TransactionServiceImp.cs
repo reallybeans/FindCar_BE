@@ -52,9 +52,11 @@ namespace Tim_Xe.Service.TransactionService
                     transactionDTO.TimeWait = booking.TimeWait;
                     transactionDTO.CustomerName = booking.NameCustomer;
                     transactionDTO.StartDate = booking.StartAt;
+                    transactionDTO.PhoneCustomer = booking.PhoneCustomer;
+                    transactionDTO.Schedule.Total = booking.Locations.Count;
                     //Address
-                    
-                    foreach(Location l in locations)
+
+                    foreach (Location l in locations)
                     {
                         var origin = l.PointTypeValue == 1 ? l.Address : null;
                         var destination = l.PointTypeValue == 3 ? l.Address : null;
@@ -135,6 +137,8 @@ namespace Tim_Xe.Service.TransactionService
                     transactionDTO.TimeWait = booking.TimeWait;
                     transactionDTO.CustomerName = booking.NameCustomer;
                     transactionDTO.StartDate = booking.StartAt;
+                    transactionDTO.PhoneCustomer = booking.PhoneCustomer;
+                    transactionDTO.Schedule.Total = booking.Locations.Count;
                     //Address
 
                     foreach (Location l in locations)
@@ -219,6 +223,8 @@ namespace Tim_Xe.Service.TransactionService
                     transactionDTO.TimeWait = booking.TimeWait;
                     transactionDTO.CustomerName = booking.NameCustomer;
                     transactionDTO.StartDate = booking.StartAt;
+                    transactionDTO.PhoneCustomer = booking.PhoneCustomer;
+                    transactionDTO.Schedule.Total = booking.Locations.Count;
                     //Address
 
                     foreach (Location l in locations)

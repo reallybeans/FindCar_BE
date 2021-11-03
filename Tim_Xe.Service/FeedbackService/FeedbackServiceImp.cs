@@ -27,13 +27,14 @@ namespace Tim_Xe.Service.FeedbackService
                 var existingCustomer = context.Customers.FirstOrDefault(c => c.Id == feedbackCreateDTO.CustomerId);
                 var existingBooking = context.Bookings.FirstOrDefault(c => c.Id == feedbackCreateDTO.BookingId);
                 var existingDriver = context.Drivers.FirstOrDefault(d => d.Id == feedbackCreateDTO.DriverId);
+                if (existingDriver.ReviewScore == null) existingDriver.ReviewScore = 0;
                 if (existingGroup == null)
                 {
                     return new  FeedbackCreateDataDTO("group is not available", null, "fail");
                 }
                 else if (existingCustomer == null)
                 {
-                    return new FeedbackCreateDataDTO("cusstomer is not available", null, "fail");
+                    return new FeedbackCreateDataDTO("customer is not available", null, "fail");
                 }
                 else if (existingBooking == null)
                 {
@@ -153,6 +154,7 @@ namespace Tim_Xe.Service.FeedbackService
                 var existingBooking = context.Bookings.FirstOrDefault(c => c.Id == feedbackUpdateDTO.BookingId);
                 var existingDriver = context.Drivers.FirstOrDefault(d => d.Id == feedbackUpdateDTO.DriverId);
                 var existingFeedback = await context.Feedbacks.FirstOrDefaultAsync(c => c.Id == feedbackUpdateDTO.Id);
+                if (existingDriver.ReviewScore == null) existingDriver.ReviewScore = 0;
                 if (existingFeedback == null)
                 {
                     return new FeedbackUpdateDataDTO("feedback is not available", null, "update fail");
