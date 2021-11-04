@@ -28,8 +28,8 @@ namespace Tim_Xe.Service.DriverService
             foreach (Driver x in driverExisted)
             {
                 var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == x.Id);
-                if(existingVehicle != null)
-                driverDTO.Add(new DriverDTO(x , existingVehicle));
+                if (existingVehicle != null)
+                    driverDTO.Add(new DriverDTO(x, existingVehicle));
             }
             if (driverDTO.Count() == 0)
             {
@@ -86,7 +86,7 @@ namespace Tim_Xe.Service.DriverService
                 }
                 return new DriverSearchDataDTO("success", driverDTO, "success");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new DriverSearchDataDTO("fail", null, "fail");
             }
@@ -143,7 +143,7 @@ namespace Tim_Xe.Service.DriverService
                     context.Drivers.Add(drivers);
                     await context.SaveChangesAsync();
                     return new DriverCreateDataDTO("create success", driver, "success");
-                }                                
+                }
             } catch (Exception e) {
                 return new DriverCreateDataDTO("create fail", null, "fail");
             }
@@ -154,7 +154,7 @@ namespace Tim_Xe.Service.DriverService
             {
                 var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driver.Id);
                 if (existingdrivers != null)
-                {                    
+                {
                     if (!driver.Phone.Contains(existingdrivers.Phone))
                     {
                         var validPhone = ValiDatePhone.CheckPhone(driver.Phone);
@@ -180,7 +180,7 @@ namespace Tim_Xe.Service.DriverService
                         vehicle.LicensePlate = driver.LicensePlate;
                         vehicle.Status = driver.StatusVehicle;
                         var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
-                        if(VehicleType == null)
+                        if (VehicleType == null)
                         {
                             return new DriverUpdateDataDTO("update fail", null, "fail");
                         }
@@ -193,7 +193,7 @@ namespace Tim_Xe.Service.DriverService
                 }
                 context.Drivers.Update(existingdrivers);
                 await context.SaveChangesAsync();
-                return new DriverUpdateDataDTO("update succes",driver,"success");
+                return new DriverUpdateDataDTO("update succes", driver, "success");
             }
             catch (Exception e) {
                 return new DriverUpdateDataDTO("update fail", null, "fail");
@@ -213,6 +213,28 @@ namespace Tim_Xe.Service.DriverService
             else
             {
                 return false;
+            }
+        }
+
+        public async Task<DriverUpdateAddressDataDTO> UpdateAddress(DriverUpdateAddressDTO driverUpdateAddressDTO)
+        {
+            try
+            {
+                var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driverUpdateAddressDTO.Id);
+                if (existingdrivers != null)
+                {
+                    existingdrivers.Address = driverUpdateAddressDTO.Address;
+                    existingdrivers.Latlng = driverUpdateAddressDTO.Latlng;
+                    context.Drivers.Update(existingdrivers);
+                    await context.SaveChangesAsync();
+                }
+                context.Drivers.Update(existingdrivers);
+                await context.SaveChangesAsync();
+                return new DriverUpdateAddressDataDTO("update succes", driverUpdateAddressDTO, "success");
+            }
+            catch (Exception e)
+            {
+                return new DriverUpdateAddressDataDTO("update fail", null, "fail");
             }
         }
     }

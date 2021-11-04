@@ -15,5 +15,6 @@ namespace Tim_Xe.Service.DriverService
         Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver);
         Task<DriverUpdateDataDTO> UpdateDriver(DriverUpdateDTO driver);
         Task<bool> DeleteDriverAsync(int id);
+        Task<DriverUpdateAddressDataDTO> UpdateAddress(DriverUpdateAddressDTO driverUpdateAddressDTO);
     }
 }

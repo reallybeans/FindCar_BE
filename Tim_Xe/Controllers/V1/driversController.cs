@@ -44,6 +44,11 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _driverServiceImp.UpdateDriver(driver);
         }
+        [HttpPut("update-address")]
+        public async Task<DriverUpdateAddressDataDTO> UpdateAddressByIdAsync(DriverUpdateAddressDTO driver)
+        {
+            return await _driverServiceImp.UpdateAddress(driver);
+        }
         [HttpDelete("{id}")]
         public async Task<ActionResult<int>> DeleteAsync(int id)
         {
