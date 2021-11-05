@@ -6,9 +6,9 @@ namespace Tim_Xe.Data.Models
 {
     public class DriverDataDTO
     {
-        public String Message { get; set; }
+        public string Message { get; set; }
         public DriverDTO Data { get; set; }
-        public String Status { get; set; }
+        public string Status { get; set; }
 
         public DriverDataDTO(string message, DriverDTO data, string status)
         {

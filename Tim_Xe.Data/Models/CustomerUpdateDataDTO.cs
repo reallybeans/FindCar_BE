@@ -6,9 +6,9 @@ namespace Tim_Xe.Data.Models
 {
     public class CustomerUpdateDataDTO
     {
-        public String Message { get; set; }
+        public string Message { get; set; }
         public CustomerUpdateDTO Data { get; set; }
-        public String Status { get; set; }
+        public string Status { get; set; }
 
         public CustomerUpdateDataDTO(string message, CustomerUpdateDTO data, string status)
         {

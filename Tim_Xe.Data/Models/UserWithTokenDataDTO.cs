@@ -6,9 +6,9 @@ namespace Tim_Xe.Data.Models
 {
     public class UserWithTokenDataDTO
     {
-        public String Message { get; set; }
+        public string Message { get; set; }
         public UserWithToken Data { get; set; }
-        public String Status { get; set; }
+        public string Status { get; set; }
 
         public UserWithTokenDataDTO(string message, UserWithToken data, string status)
         {

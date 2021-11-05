@@ -6,9 +6,9 @@ namespace Tim_Xe.Data.Models
 {
     public class ChannelDataDTO
     {
-        public String Message { get; set; }
+        public string Message { get; set; }
         public ChannelDTO Data { get; set; }
-        public String Status { get; set; }
+        public string Status { get; set; }
 
         public ChannelDataDTO(string message, ChannelDTO data, string status)
         {
