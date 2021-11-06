@@ -118,5 +118,55 @@ namespace Tim_Xe.Service.VehiclesService
             }
             return list;
         }
+        public async Task<VehicleUpdateStatusDataDTO> UpdateStatusVehiclesAsync(int id, string status)
+        {
+            try
+            {   
+                var existingVehicles = context.Vehicles.Where(v => v.Id == id).FirstOrDefault();
+                if (existingVehicles != null)
+                {
+                    var listVehicles = await context.Vehicles.Where(v => v.IdVehicleType == existingVehicles.IdVehicleType).ToListAsync();
+                    foreach (Vehicle v in listVehicles)
+                    {
+                        v.Status = "unuse";
+                        context.Vehicles.Update(v);
+                    }
+                    if (status.Equals("inuse") == true)
+                    {
+                        existingVehicles.Status = status;
+                        context.Vehicles.Update(existingVehicles);
+                    }
+                    await context.SaveChangesAsync();
+                    var vehiclesTypes = context.VehicleTypes.Where(v => v.Id == existingVehicles.IdVehicleType).FirstOrDefault();
+                    VehicleUpdateStatusDTO dto = new VehicleUpdateStatusDTO(id, existingVehicles.Name, existingVehicles.LicensePlate, vehiclesTypes.NameType, existingVehicles.Status);
+                    return new VehicleUpdateStatusDataDTO("update success", dto, "success");
+                }
+                else return new VehicleUpdateStatusDataDTO("update fail", null, "fail");
+            }
+            catch(Exception e)
+            {
+                return new VehicleUpdateStatusDataDTO("update fail", null, "fail");
+            }
+        }
+        public async Task<VehiclesUpdateDataDTO> DeleteAsync(int id)
+        {
+            try
+            {
+                var existingVehicles = context.Vehicles.Where(v => v.Id == id).FirstOrDefault();
+                if (existingVehicles != null)
+                {
+                    var vehiclesTypes = context.VehicleTypes.Where(v => v.Id == existingVehicles.IdVehicleType).FirstOrDefault();
+                    existingVehicles.IsDelete = true;
+                    context.Vehicles.Update(existingVehicles);                   
+                    VehiclesUpdateDTO dto = new VehiclesUpdateDTO(id, existingVehicles.Name, existingVehicles.LicensePlate, vehiclesTypes.NameType, existingVehicles.IsDelete);
+                    return new VehiclesUpdateDataDTO("delete success", dto, "success");
+                }
+                else return new VehiclesUpdateDataDTO("delete fail", null, "fail");
+            }
+            catch(Exception e)
+            {
+                return new VehiclesUpdateDataDTO("delete fail", null, "fail");
+            }
+        }
     }
 }

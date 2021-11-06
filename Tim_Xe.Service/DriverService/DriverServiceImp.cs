@@ -236,5 +236,24 @@ namespace Tim_Xe.Service.DriverService
                 return new DriverUpdateAddressDataDTO("update fail", null, "fail");
             }
         }
+        public async Task<DriverUpdateStatusDataDTO> UpdateStatus(DriverUpdateStatusDTO driverUpdate)
+        {
+            try
+            {
+                var existingdrivers = await context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.Id == driverUpdate.Id);
+                if (existingdrivers != null)
+                {
+                    existingdrivers.Status = driverUpdate.Status;
+                    context.Drivers.Update(existingdrivers);
+                    await context.SaveChangesAsync();
+                    return new DriverUpdateStatusDataDTO("update success", driverUpdate, "success");
+                }
+                else return new DriverUpdateStatusDataDTO("update fail", null, "fail");
+            }
+            catch (Exception e)
+            {
+                return new DriverUpdateStatusDataDTO("update fail", null, "fail");
+            }
+        }
     }
 }

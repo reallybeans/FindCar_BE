@@ -37,5 +37,15 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _vehiclesServiceImp.EditVehicle(vehiclesUpdateDTO);
         }
+        [HttpPut("update-status")]
+        public async Task<VehicleUpdateStatusDataDTO> UpdateStatus(int id, string status)
+        {
+            return await _vehiclesServiceImp.UpdateStatusVehiclesAsync(id, status);
+        }
+        [HttpDelete]
+        public async Task<VehiclesUpdateDataDTO> DeleteAsync(int id)
+        {
+            return await _vehiclesServiceImp.DeleteAsync(id);
+        }
     }
 }

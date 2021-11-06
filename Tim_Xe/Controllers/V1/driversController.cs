@@ -69,5 +69,10 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _driverServiceImp.SearchDriverAsync(driverSearchDTO);
         }
+        [HttpPut("update-status")]
+        public async Task<DriverUpdateStatusDataDTO> UpdateStatusByIdAsync(DriverUpdateStatusDTO driver)
+        {
+            return await _driverServiceImp.UpdateStatus(driver);
+        }
     }
 }
