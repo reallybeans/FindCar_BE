@@ -120,7 +120,7 @@ namespace Tim_Xe.Service.DriverService
                 drivers.Email = driver.Email;
                 drivers.CardId = driver.CardId;
                 drivers.Img = driver.Img;
-                drivers.Status = driver.Status;
+                drivers.Status = "off";
                 drivers.Address = driver.Address;
                 drivers.Latlng = driver.Latlng;
                 drivers.IsDeleted = false;
@@ -129,7 +129,8 @@ namespace Tim_Xe.Service.DriverService
                 Vehicle vehicle = new Vehicle();
                 vehicle.Name = driver.NameVehicle;
                 vehicle.LicensePlate = driver.LicensePlate;
-                vehicle.Status = driver.StatusVehicle;
+                vehicle.Status = "inuse";
+                vehicle.IsDelete = false;
                 var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
                 vehicle.IdVehicleType = VehicleType.Id;
 
@@ -171,14 +172,12 @@ namespace Tim_Xe.Service.DriverService
                     existingdrivers.CardId = driver.CardId;
                     existingdrivers.Img = driver.Img;
                     existingdrivers.IsDeleted = driver.IsDeleted;
-                    existingdrivers.Status = driver.Status;
                     existingdrivers.Address = driver.Address;
                     existingdrivers.Latlng = driver.Latlng;
                     foreach (Vehicle vehicle in existingdrivers.Vehicles)
                     {
                         vehicle.Name = driver.NameVehicle;
                         vehicle.LicensePlate = driver.LicensePlate;
-                        vehicle.Status = driver.StatusVehicle;
                         var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
                         if (VehicleType == null)
                         {
