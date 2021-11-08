@@ -125,7 +125,8 @@ namespace Tim_Xe.Service.VehiclesService
                 var existingVehicles = context.Vehicles.Where(v => v.Id == id).FirstOrDefault();
                 if (existingVehicles != null)
                 {
-                    var listVehicles = await context.Vehicles.Where(v => v.IdVehicleType == existingVehicles.IdVehicleType).ToListAsync();
+                    var driver =  context.Drivers.Where(d => d.Id == existingVehicles.IdDriver).FirstOrDefault();
+                    var listVehicles = await context.Vehicles.Where(v => v.IdVehicleType == existingVehicles.IdVehicleType && v.IdDriver==driver.Id).ToListAsync();
                     foreach (Vehicle v in listVehicles)
                     {
                         v.Status = "unuse";
