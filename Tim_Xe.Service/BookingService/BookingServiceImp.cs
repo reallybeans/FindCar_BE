@@ -284,7 +284,7 @@ namespace Tim_Xe.Service.BookingService
         }
         public List<Driver> findListDriveActive(int? id, DateTime? start1, DateTime? end1)
         {
-            var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id).ToList();
+            var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id  && d.Status == "on").ToList();
             var listbooking = context.Bookings.Include(b => b.BookingDrivers).Where(d => ((start1 >= d.StartAt && start1 <= d.EndAt) ||
     (end1 >= d.StartAt && end1 <= d.EndAt)) && d.Status == 2 || d.Status == 1).ToList();
             var list = new List<Driver>();
