@@ -40,10 +40,10 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _bookingServiceImp.FindLastBookingCode();
         }
-        [HttpGet("get-booking-by-code/{code}")]
+        [HttpGet("get-status-by-code/{code}")]
         public async Task<int> GetIdBookingByCode(string code)
         {
-            return await _bookingServiceImp.FindBookingByCodeBooking(code);
+            return await _bookingServiceImp.CheckStatusByCode(code);
         }
         [HttpPost("caculator-price")]
         public async Task<ActionResult<double>> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO)

@@ -163,9 +163,9 @@ namespace Tim_Xe.Service.BookingService
                 foreach (Location x in location)
                     booking.Locations.Add(x);
 
-                var list = findListDriveActive(groupExisted.Id, booking.StartAt, booking.EndAt);
+                var list = FindListDriveActive(groupExisted.Id, booking.StartAt, booking.EndAt);
                 if (list.Count == 0) return false;
-                int adaptDriver = await findDriverAsync(bookingCreateDTO.Schedule.Latlng.Origin, 0, vehicleTypes.Id, list, MESS);
+                int adaptDriver = await FindDriverAsync(bookingCreateDTO.Schedule.Latlng.Origin, 0, vehicleTypes.Id, list, MESS);
                 if (adaptDriver == 0) return false;
 
                 booking.BookingDrivers.Add(new BookingDriver()
@@ -187,7 +187,6 @@ namespace Tim_Xe.Service.BookingService
             double x = (double)(5 * distance + 3 * revenue - 2 * Convert.ToDouble(review));
             return x;
         }
-
         public async Task<bool> UpdateBooking(int idBooking, int status)
         {
             try
@@ -199,7 +198,7 @@ namespace Tim_Xe.Service.BookingService
                 var bookingDriverExisted = await context.BookingDrivers.FirstOrDefaultAsync(b => b.IdBooking == bookingExisted.Id);
                 string statusStr = "";
                 string latlngOrign = "";
-                var list = findListDriveActive(bookingExisted.IdGroup, bookingExisted.StartAt, bookingExisted.EndAt);
+                var list = FindListDriveActive(bookingExisted.IdGroup, bookingExisted.StartAt, bookingExisted.EndAt);
 
                 foreach (Location x in bookingExisted.Locations)
                 {
@@ -251,15 +250,22 @@ namespace Tim_Xe.Service.BookingService
                             Description = "Cancel"
                         });
                         await context.SaveChangesAsync();
-                        if(list.Count == 0)
+                        if (list.Count == 0)
                         {
                             statusStr = "Hủy";
                             bookingExisted.Status = 4;
                             bookingDriverExisted.Status = statusStr;
                             break;
                         }
-                        bookingDriverExisted.IdDriver = await findDriverAsync(latlngOrign, bookingDriverExisted.Id, bookingExisted.IdVehicleType, list, MESS);
-                        if (bookingDriverExisted.IdDriver == 0) return false;
+                        int driverId = await FindDriverAsync(latlngOrign, bookingDriverExisted.Id, bookingExisted.IdVehicleType, list, MESS);
+                        if (driverId == 0)
+                        {
+                            statusStr = "Hủy";
+                            bookingExisted.Status = 4;
+                            bookingDriverExisted.Status = statusStr;
+                            break;
+                        }
+                        else bookingDriverExisted.IdDriver = driverId;
                         break;
                     case 5:
                         statusStr = "Hủy";
@@ -282,9 +288,9 @@ namespace Tim_Xe.Service.BookingService
 
             return true;
         }
-        public List<Driver> findListDriveActive(int? id, DateTime? start1, DateTime? end1)
+        public List<Driver> FindListDriveActive(int? id, DateTime? start1, DateTime? end1)
         {
-            var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id  && d.Status == "on").ToList();
+            var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id && d.Status == "on").ToList();
             var listbooking = context.Bookings.Include(b => b.BookingDrivers).Where(d => ((start1 >= d.StartAt && start1 <= d.EndAt) ||
     (end1 >= d.StartAt && end1 <= d.EndAt)) && d.Status == 2 || d.Status == 1).ToList();
             var list = new List<Driver>();
@@ -299,11 +305,11 @@ namespace Tim_Xe.Service.BookingService
                             {
                                 check = true;
                             }
-                           
+
                     if (check) continue;
                     else
                     {
-                        if(list.Count == 0)
+                        if (list.Count == 0)
                         {
                             list.Add(z);
                             continue;
@@ -330,7 +336,7 @@ namespace Tim_Xe.Service.BookingService
 
             return list;
         }
-        public async Task<int> findDriverAsync(string origin, int idBookingDriver, int? IdVehicleType, List<Driver> list, string mess)
+        public async Task<int> FindDriverAsync(string origin, int idBookingDriver, int? IdVehicleType, List<Driver> list, string mess)
         {
             //get list driver 
             //var listDrivers = context.Drivers.Include(d => d.Vehicles).Where(d => d.GroupId == id).ToList();
@@ -413,19 +419,6 @@ namespace Tim_Xe.Service.BookingService
             catch (Exception e)
             {
                 return "0";
-            }
-        }
-
-        public async Task<int> FindBookingByCodeBooking(string code)
-        {
-            try
-            {
-                var bookingExisted = await context.Bookings.FirstOrDefaultAsync(b => b.Code == code);
-                return bookingExisted == null ? 0 : bookingExisted.Id;
-            }
-            catch (Exception e)
-            {
-                return 0;
             }
         }
 
@@ -606,6 +599,13 @@ namespace Tim_Xe.Service.BookingService
                 response.Message = "Something went wrong";
                 return response;
             }
+        }
+
+        public async Task<int> CheckStatusByCode(string code)
+        {
+            int bookingExisted = (int)await context.Bookings.Where(b => b.Code == code).Select(b => b.Status).FirstOrDefaultAsync();
+            if (bookingExisted != 0) return bookingExisted;
+            return 0;
         }
     }
 }

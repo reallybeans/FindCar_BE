@@ -16,7 +16,7 @@ namespace Tim_Xe.Service.BookingService
         Task<bool> UpdateBooking(int idBooking, int status);
         Task<bool> CancelBookingByAns(string code);
         Task<string> FindLastBookingCode();
-        Task<int> FindBookingByCodeBooking(string code);
+        Task<int> CheckStatusByCode(string code);
         Task<ResponseModel> SendNotification(NotificationModel notificationModel);
     }
 }
