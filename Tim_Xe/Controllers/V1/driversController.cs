@@ -74,5 +74,15 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _driverServiceImp.UpdateStatus(driver);
         }
+        [HttpPost("search-by-name")]
+        public async Task<DriverOnlySearchDataDTO> SearchByName(string name)
+        {
+            return await _driverServiceImp.SearchByName(name);
+        }
+        [HttpPost("search-by-phone")]
+        public async Task<DriverOnlySearchDataDTO> SearchByPhone(string phone)
+        {
+            return await _driverServiceImp.SearchByPhone(phone);
+        }
     }
 }

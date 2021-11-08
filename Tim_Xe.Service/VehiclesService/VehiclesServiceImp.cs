@@ -25,7 +25,7 @@ namespace Tim_Xe.Service.VehiclesService
         {
             try
             {
-                vehicleCreateDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(vehicleCreateDTO.VehicleType);
+                //vehicleCreateDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(vehicleCreateDTO.VehicleType);
                 var driverExisted = context.Drivers.Include(d => d.Vehicles).Where(d => d.Id == vehicleCreateDTO.DriverId).FirstOrDefault();
                 if (driverExisted == null) return new VehiclesCreateDataDTO("driver not existed", null, "fail");
                 driverExisted.Vehicles.Add(new Vehicle()
@@ -166,6 +166,38 @@ namespace Tim_Xe.Service.VehiclesService
             catch(Exception e)
             {
                 return new VehiclesUpdateDataDTO("delete fail", null, "fail");
+            }
+        }
+        public async Task<VehiclesDataDTO> getVehiclesByDriverId(int id)
+        {
+            try
+            {
+                var existingDriver = context.Vehicles.Where(v => v.IdDriver == id).FirstOrDefault();
+                if(existingDriver == null)
+                {
+                    return new VehiclesDataDTO("driver is not available", null, "false");
+                }
+                else
+                {
+                    List<VehiclesDTO> list = new List<VehiclesDTO>();
+                    var existingVehicle = await context.Vehicles.Where((v => v.IdDriver == id)).ToListAsync();
+                    foreach(Vehicle v in existingVehicle)
+                    {
+                        VehiclesDTO dto = new VehiclesDTO();
+                        dto.Id = v.Id;
+                        dto.DriverName = context.Drivers.Where(d => d.Id == id).Select(d => d.Name).FirstOrDefault();
+                        dto.VehicleName = v.Name;
+                        dto.LicensePlate = v.LicensePlate;
+                        dto.VehicleType = context.VehicleTypes.Where(d => d.Id == v.IdVehicleType).Select(d => d.NameType).FirstOrDefault();
+                        dto.Status = v.Status;
+                        list.Add(dto);
+                    }
+                    return new VehiclesDataDTO("success", list, "success");
+                }
+            }
+            catch
+            {
+                return new VehiclesDataDTO("fail", null, "false");
             }
         }
     }

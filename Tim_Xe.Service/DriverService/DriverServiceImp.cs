@@ -93,15 +93,15 @@ namespace Tim_Xe.Service.DriverService
         }
         public async Task<DriverDataDTO> GetDriverByIdAsync(int id)
         {
-            var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);
-            var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
-            DriverDTO driverDTO = new DriverDTO(driverExisted, existingVehicle);
+            var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);          
             if (driverExisted == null)
             {
                 return new DriverDataDTO("fail", null, "not available");
             }
             else
             {
+                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
+                DriverDTO driverDTO = new DriverDTO(driverExisted, existingVehicle);
                 return new DriverDataDTO("success", driverDTO, driverExisted.Status);
             }
         }
@@ -255,6 +255,48 @@ namespace Tim_Xe.Service.DriverService
             catch (Exception e)
             {
                 return new DriverUpdateStatusDataDTO("update fail", null, "fail");
+            }
+        }
+        public async Task<DriverOnlySearchDataDTO> SearchByName(string name)
+        {
+            try
+            {
+                List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
+                var driverExisted = await context.Drivers.Where(d => d.Name.ToLower().Contains(name)).ToListAsync();
+                if (driverExisted.Count() != 0)
+                {
+                    foreach(Driver x in driverExisted)
+                    {
+                        driverDTO.Add(new DriverOnlyDTO(x));
+                    }
+                    return new DriverOnlySearchDataDTO("success", driverDTO, "success");
+                }
+                else return new DriverOnlySearchDataDTO("list is empty", null, "success");
+            }
+            catch (Exception e)
+            {
+                return new DriverOnlySearchDataDTO("fail", null, "fail");
+            }
+        }
+        public async Task<DriverOnlySearchDataDTO> SearchByPhone(string phone)
+        {
+            try
+            {
+                List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
+                var driverExisted = await context.Drivers.Where(d => d.Phone.Contains(phone)).ToListAsync();
+                if (driverExisted.Count() != 0)
+                {
+                    foreach (Driver x in driverExisted)
+                    {
+                        driverDTO.Add(new DriverOnlyDTO(x));
+                    }
+                    return new DriverOnlySearchDataDTO("success", driverDTO, "success");
+                }
+                else return new DriverOnlySearchDataDTO("list is empty", null, "success");
+            }
+            catch (Exception e)
+            {
+                return new DriverOnlySearchDataDTO("fail", null, "fail");
             }
         }
     }

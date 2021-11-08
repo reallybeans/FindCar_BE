@@ -47,5 +47,10 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _vehiclesServiceImp.DeleteAsync(id);
         }
+        [HttpGet("get-by-driver-id/{id}")]
+        public async Task<VehiclesDataDTO> getVehiclesByDriverId(int id)
+        {
+            return await _vehiclesServiceImp.getVehiclesByDriverId(id);
+        }
     }
 }
