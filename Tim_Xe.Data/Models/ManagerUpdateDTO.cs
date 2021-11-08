@@ -22,5 +22,6 @@ namespace Tim_Xe.Data.Models
         public string? Img { get; set; }
         public string? Status { get; set; }
         public string? Role { get; set; }
+        public string CardId { get; set; }
     }
 }

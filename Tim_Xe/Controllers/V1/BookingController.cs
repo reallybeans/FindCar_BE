@@ -10,17 +10,41 @@ namespace Tim_Xe.API.Controllers.V1
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly BookingServiceImp _bookingServiceImp;
-        public BookingController()
+        private readonly IBookingService _bookingServiceImp;
+        public BookingController(IBookingService bookingService)
         {
-            _bookingServiceImp = new BookingServiceImp();
+            _bookingServiceImp = bookingService;
         }
         [HttpGet("{id}/{status}")]
-        public async Task<IEnumerable<BookingDTO>> GetBooking(int id, int status)
+        public IEnumerable<BookingDTO> GetBookingByDriver(int id, int status)
         {
-            return await _bookingServiceImp.GetAllBookingsAsync(id, status);
+            return _bookingServiceImp.GetBookingByDriver(id, status);
         }
-
+        [HttpPut("cancel-booking-by-customer/{code}")]
+        public Task<bool> CancelBookingByCus(string code)
+        {
+            return _bookingServiceImp.CancelBookingByAns(code);
+        }
+        [HttpGet("get-booking-admin")]
+        public IEnumerable<BookingDTO> GetByAdminBooking()
+        {
+            return _bookingServiceImp.GetAllBookingByAdmin();
+        }
+        [HttpGet("get-booking-group-owner/{id}")]
+        public IEnumerable<BookingDTO> GetByGroupOwnerBooking(int id)
+        {
+            return _bookingServiceImp.GetAllBookingByManager(id);
+        }
+        [HttpGet("get-code-booking")]
+        public async Task<string> GetCodeBooking()
+        {
+            return await _bookingServiceImp.FindLastBookingCode();
+        }
+        [HttpGet("get-booking-by-code/{code}")]
+        public async Task<int> GetIdBookingByCode(string code)
+        {
+            return await _bookingServiceImp.FindBookingByCodeBooking(code);
+        }
         [HttpPost("caculator-price")]
         public async Task<ActionResult<double>> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO)
         {

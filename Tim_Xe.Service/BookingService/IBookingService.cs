@@ -8,9 +8,15 @@ namespace Tim_Xe.Service.BookingService
 {
     public interface IBookingService
     {
-        Task<IEnumerable<BookingDTO>> GetAllBookingsAsync(int idDriver, int status);
+        IEnumerable<BookingDTO> GetBookingByDriver(int idDriver, int status);
+        IEnumerable<BookingDTO> GetAllBookingByAdmin();
+        IEnumerable<BookingDTO> GetAllBookingByManager(int idManager);
         Task<double> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO);
         Task<bool> CreateBooking(BookingCreateDTO bookingCreateDTO);
         Task<bool> UpdateBooking(int idBooking, int status);
+        Task<bool> CancelBookingByAns(string code);
+        Task<string> FindLastBookingCode();
+        Task<int> FindBookingByCodeBooking(string code);
+        Task<ResponseModel> SendNotification(NotificationModel notificationModel);
     }
 }

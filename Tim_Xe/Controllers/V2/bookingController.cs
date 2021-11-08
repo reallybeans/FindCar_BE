@@ -14,7 +14,6 @@ namespace Tim_Xe.API.Controllers.V2
         private readonly BookingServiceImp _bookingServiceImp;
         public bookingController()
         {
-            _bookingServiceImp = new BookingServiceImp();
         }
     }
 }

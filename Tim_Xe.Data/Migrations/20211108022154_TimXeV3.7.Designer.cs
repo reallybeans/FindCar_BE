@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tim_Xe.Data.Repository;
 
 namespace Tim_Xe.Data.Migrations
 {
     [DbContext(typeof(TimXeDBContext))]
-    partial class TimXeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20211108022154_TimXeV3.7")]
+    partial class TimXeV37
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

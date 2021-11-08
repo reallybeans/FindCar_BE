@@ -126,6 +126,8 @@ namespace Tim_Xe.Service.DriverService
                 drivers.IsDeleted = false;
                 drivers.CreateAt = DateTime.Now;
                 drivers.GroupId = groupExisted.Id;
+                drivers.Revenue = 0;
+                drivers.ReviewScore = 0;
                 Vehicle vehicle = new Vehicle();
                 vehicle.Name = driver.NameVehicle;
                 vehicle.LicensePlate = driver.LicensePlate;

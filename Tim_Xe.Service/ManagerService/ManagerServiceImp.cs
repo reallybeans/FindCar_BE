@@ -121,6 +121,7 @@ namespace Tim_Xe.Service.ManagerService
                 existingAccount.Password = pwd;
                 existingAccount.Phone = manager.Phone;
                 existingAccount.RoleId = Int32.Parse(manager.Role);
+                existingAccount.CardId = manager.CardId;
                 existingAccount.Status = manager.Status;
                 existingAccount.Img = manager.Img;
                 context.Managers.Update(existingAccount);

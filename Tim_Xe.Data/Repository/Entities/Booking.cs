@@ -29,6 +29,8 @@ namespace Tim_Xe.Data.Repository.Entities
         public DateTime? CreateAt { get; set; }
         public int? Status { get; set; }
         public bool? Mode { get; set; }
+        public string Code { get; set; }
+        public int? IdVehicle { get; set; }
 
         public virtual Customer IdCustomerNavigation { get; set; }
         public virtual Group IdGroupNavigation { get; set; }

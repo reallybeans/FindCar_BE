@@ -21,6 +21,7 @@ using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Service.NotificationService;
 using Tim_Xe.Service.NotificationService.Google;
+using Tim_Xe.Service.BookingService;
 
 namespace Tim_Xe
 {
@@ -50,6 +51,7 @@ namespace Tim_Xe
                 options.Conventions.Add(new GroupingByNamespaceConvention());
             });
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IBookingService, BookingServiceImp>();
             services.AddHttpClient<FcmSender>();
             var appSettingsSection = Configuration.GetSection("FcmNotification");
             services.Configure<FcmNotificationSetting>(appSettingsSection);

@@ -17,6 +17,7 @@ namespace Tim_Xe.Data.Models
         public double PriceBooking { get; set; }
         public string Note { get; set; }
         public string VehicleType { get; set; }
+        public string Code { get; set; }
         public ScheduleDTO Schedule { get; set; }
     }
 }

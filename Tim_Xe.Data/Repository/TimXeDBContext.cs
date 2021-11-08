@@ -59,6 +59,8 @@ namespace Tim_Xe.Data.Repository
 
                 entity.HasIndex(e => e.IdVehicleType);
 
+                entity.Property(e => e.Code).HasMaxLength(10);
+
                 entity.Property(e => e.CreateAt).HasColumnType("datetime");
 
                 entity.Property(e => e.EndAt).HasColumnType("datetime");
