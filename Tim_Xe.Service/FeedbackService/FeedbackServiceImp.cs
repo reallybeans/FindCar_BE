@@ -22,17 +22,12 @@ namespace Tim_Xe.Service.FeedbackService
         }
         public async Task<FeedbackCreateDataDTO> CreateFeedbackAsync(FeedbackCreateDTO feedbackCreateDTO)
         {
-            try {
-                var existingGroup = context.Groups.FirstOrDefault(g => g.Id == feedbackCreateDTO.GroupId);
+            try {              
                 var existingCustomer = context.Customers.FirstOrDefault(c => c.Id == feedbackCreateDTO.CustomerId);
                 var existingBooking = context.Bookings.FirstOrDefault(c => c.Id == feedbackCreateDTO.BookingId);
                 var existingDriver = context.Drivers.FirstOrDefault(d => d.Id == feedbackCreateDTO.DriverId);
                 if (existingDriver.ReviewScore == null) existingDriver.ReviewScore = 0;
-                if (existingGroup == null)
-                {
-                    return new  FeedbackCreateDataDTO("group is not available", null, "fail");
-                }
-                else if (existingCustomer == null)
+                if (existingCustomer == null)
                 {
                     return new FeedbackCreateDataDTO("customer is not available", null, "fail");
                 }
@@ -69,7 +64,7 @@ namespace Tim_Xe.Service.FeedbackService
                     context.Feedbacks.Add(new Feedback()
                     {
                         CustomerId = feedbackCreateDTO.CustomerId,
-                        GroupId = feedbackCreateDTO.GroupId,
+                        GroupId = context.Drivers.Where(d => d.Id == feedbackCreateDTO.DriverId).Select(d => d.GroupId).FirstOrDefault(),
                         Ratting = feedbackCreateDTO.Ratting,
                         PostDate = DateTime.Now,
                         BookingId = feedbackCreateDTO.BookingId,

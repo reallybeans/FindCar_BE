@@ -25,7 +25,7 @@ namespace Tim_Xe.Service.VehiclesService
         {
             try
             {
-                //vehicleCreateDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(vehicleCreateDTO.VehicleType);
+                vehicleCreateDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(vehicleCreateDTO.VehicleType);
                 var driverExisted = context.Drivers.Include(d => d.Vehicles).Where(d => d.Id == vehicleCreateDTO.DriverId).FirstOrDefault();
                 if (driverExisted == null) return new VehiclesCreateDataDTO("driver not existed", null, "fail");
                 driverExisted.Vehicles.Add(new Vehicle()

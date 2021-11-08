@@ -9,7 +9,6 @@ namespace Tim_Xe.Data.Models
     public class FeedbackCreateDTO
     {
         public int? CustomerId { get; set; }
-        public int? GroupId { get; set; }
         [Required(ErrorMessage = "Rating Number is required.")]
         [RegularExpression(@"^([0-5]{1})$", ErrorMessage = "Invalid Rating Number.")]
         public int Ratting { get; set; }
