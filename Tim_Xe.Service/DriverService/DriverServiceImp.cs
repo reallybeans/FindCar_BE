@@ -262,7 +262,15 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
-                var driverExisted = await context.Drivers.Where(d => d.Name.ToLower().Contains(name)).ToListAsync();
+                var driverExisted = new List<Driver>();
+                if (name == null)
+                {
+                    driverExisted = await context.Drivers.ToListAsync();
+                }
+                else
+                {
+                    driverExisted = await context.Drivers.Where(d => d.Name.ToLower().Contains(name)).ToListAsync();
+                }
                 if (driverExisted.Count() != 0)
                 {
                     foreach(Driver x in driverExisted)
@@ -283,7 +291,14 @@ namespace Tim_Xe.Service.DriverService
             try
             {
                 List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
-                var driverExisted = await context.Drivers.Where(d => d.Phone.Contains(phone)).ToListAsync();
+                var driverExisted = new List<Driver>();
+                if (phone != null) {
+                   driverExisted = await context.Drivers.Where(d => d.Phone.Contains(phone)).ToListAsync();
+                }
+                else
+                {
+                    driverExisted = await context.Drivers.ToListAsync();
+                }
                 if (driverExisted.Count() != 0)
                 {
                     foreach (Driver x in driverExisted)
