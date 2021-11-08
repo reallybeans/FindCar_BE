@@ -21,21 +21,19 @@ namespace Tim_Xe.Service.DriverService
         {
             context = new TimXeDBContext();
         }
-        public async Task<DriverListDataDTO> GetAllDriversAsync()
+        public async Task<DriverOnlySearchDataDTO> GetAllDriversAsync()
         {
             var driverExisted = await context.Drivers.Where(d => d.IsDeleted == false).ToListAsync();
-            List<DriverDTO> driverDTO = new List<DriverDTO>();
-            foreach (Driver x in driverExisted)
+            List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
+            if (driverExisted.Count() != 0)
             {
-                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == x.Id);
-                if (existingVehicle != null)
-                    driverDTO.Add(new DriverDTO(x, existingVehicle));
+                foreach (Driver x in driverExisted)
+                {
+                    driverDTO.Add(new DriverOnlyDTO(x));
+                }
+                return new DriverOnlySearchDataDTO("success", driverDTO, "success");
             }
-            if (driverDTO.Count() == 0)
-            {
-                return new DriverListDataDTO("list is empty", null, "empty");
-            }
-            else return new DriverListDataDTO("success", driverDTO, "success");
+            else return new DriverOnlySearchDataDTO("list is empty", null, "success");
         }
         public async Task<DriverListDataDTO> GetAllDriversByIdManagerAsync(int id)
         {
@@ -175,22 +173,7 @@ namespace Tim_Xe.Service.DriverService
                     existingdrivers.Img = driver.Img;
                     existingdrivers.IsDeleted = driver.IsDeleted;
                     existingdrivers.Address = driver.Address;
-                    existingdrivers.Latlng = driver.Latlng;
-                    foreach (Vehicle vehicle in existingdrivers.Vehicles)
-                    {
-                        vehicle.Name = driver.NameVehicle;
-                        vehicle.LicensePlate = driver.LicensePlate;
-                        var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
-                        if (VehicleType == null)
-                        {
-                            return new DriverUpdateDataDTO("update fail", null, "fail");
-                        }
-                        else
-                        {
-                            vehicle.IdVehicleType = VehicleType.Id;
-                            context.Vehicles.Update(vehicle);
-                        }
-                    }
+                    existingdrivers.Latlng = driver.Latlng;                   
                 }
                 context.Drivers.Update(existingdrivers);
                 await context.SaveChangesAsync();

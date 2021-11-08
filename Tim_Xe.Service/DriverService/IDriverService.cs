@@ -8,7 +8,7 @@ namespace Tim_Xe.Service.DriverService
 {
     public interface IDriverService
     {
-        Task<DriverListDataDTO> GetAllDriversAsync();
+        Task<DriverOnlySearchDataDTO> GetAllDriversAsync();
         Task<DriverListDataDTO> GetAllDriversByIdManagerAsync(int id);
         Task<DriverSearchDataDTO> SearchDriverAsync(DriverSearchDTO paging);
         Task<DriverDataDTO> GetDriverByIdAsync(int id);

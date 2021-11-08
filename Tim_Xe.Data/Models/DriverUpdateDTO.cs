@@ -23,8 +23,5 @@ namespace Tim_Xe.Data.Models
         public bool? IsDeleted { get; set; }
         public string Address { get; set; }
         public string Latlng { get; set; }
-        public string NameVehicle { get; set; }
-        public string LicensePlate { get; set; }
-        public string? VehicleType { get; set; }
     }
 }
