@@ -13,6 +13,7 @@ namespace Tim_Xe.Data.Models
         public DateTime StartAt { get; set; }
         public int TimeWait { get; set; }
         public int TotalTime { get; set; }
+        public double Km { get; set; }
         public bool Mode { get; set; }
         public double PriceBooking { get; set; }
         public string Note { get; set; }

@@ -526,7 +526,8 @@ namespace Tim_Xe.Service.BookingService
                             latlng.Waypoint += waypoints + "|";
                         }
                     }
-                    latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
+                    if (latlng.Waypoint != null)
+                        latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
                     bookingDTO.Schedule.Address = address;
                     bookingDTO.Schedule.Latlng = latlng;
                     list.Add(bookingDTO);
