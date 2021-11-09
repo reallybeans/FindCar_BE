@@ -149,24 +149,26 @@ namespace Tim_Xe.Service.VehiclesService
                 return new VehicleUpdateStatusDataDTO("update fail", null, "fail");
             }
         }
-        public async Task<VehiclesUpdateDataDTO> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                var existingVehicles = context.Vehicles.Where(v => v.Id == id).FirstOrDefault();
-                if (existingVehicles != null)
+                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
+                if (existingVehicle != null)
                 {
-                    var vehiclesTypes = context.VehicleTypes.Where(v => v.Id == existingVehicles.IdVehicleType).FirstOrDefault();
-                    existingVehicles.IsDelete = true;
-                    context.Vehicles.Update(existingVehicles);                   
-                    VehiclesUpdateDTO dto = new VehiclesUpdateDTO(id, existingVehicles.Name, existingVehicles.LicensePlate, vehiclesTypes.NameType, existingVehicles.IsDelete);
-                    return new VehiclesUpdateDataDTO("delete success", dto, "success");
+                    existingVehicle.IsDelete = true;
+                    context.Vehicles.Update(existingVehicle);
+                    await context.SaveChangesAsync();
+                    return true;
                 }
-                else return new VehiclesUpdateDataDTO("delete fail", null, "fail");
+                else
+                {
+                    return false;
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return new VehiclesUpdateDataDTO("delete fail", null, "fail");
+                return false;
             }
         }
         public async Task<VehiclesDataDTO> getVehiclesByDriverId(int id)

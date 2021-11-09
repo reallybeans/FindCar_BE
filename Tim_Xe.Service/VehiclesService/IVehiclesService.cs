@@ -13,7 +13,7 @@ namespace Tim_Xe.Service.VehiclesService
         Task<VehiclesCreateDataDTO> AddVehicle(VehicleCreateDTO vehicleCreateDTO);
         Task<VehiclesUpdateDataDTO> EditVehicle(VehiclesUpdateDTO vehiclesUpdateDTO);
         Task<VehicleUpdateStatusDataDTO> UpdateStatusVehiclesAsync(int id, string status);
-        Task<VehiclesUpdateDataDTO> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
         //Task<VehiclesDataDTO> DeleteVehicle();
     }
 }

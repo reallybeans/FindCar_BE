@@ -43,7 +43,7 @@ namespace Tim_Xe.API.Controllers.V1
             return await _vehiclesServiceImp.UpdateStatusVehiclesAsync(id, status);
         }
         [HttpDelete("{id}")]
-        public async Task<VehiclesUpdateDataDTO> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             return await _vehiclesServiceImp.DeleteAsync(id);
         }
