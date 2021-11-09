@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using static Tim_Xe.Data.Enum.DistanceUnit;
 
 namespace Tim_Xe.Service.Shared

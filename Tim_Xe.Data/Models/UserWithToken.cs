@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tim_Xe.Data.Repository.Entities;
+﻿using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Data.Models
 {
     public class UserWithToken : LoginDTO
     {
         public string AccessToken { get; set; }
-        public UserWithToken(Manager manager, Driver driver,Customer customer)
+        public UserWithToken(Manager manager, Driver driver, Customer customer)
         {
             if (manager != null)
             {
@@ -21,7 +18,8 @@ namespace Tim_Xe.Data.Models
                 this.Status = manager.Status;
 
                 this.Role = manager.Role.Name;
-            }else if (customer != null)
+            }
+            else if (customer != null)
             {
                 this.Id = customer.Id;
                 this.Email = customer.Email;
@@ -44,7 +42,7 @@ namespace Tim_Xe.Data.Models
 
                 this.Role = "driver";
             }
-            
+
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tim_Xe.Data.Models
 {
@@ -13,7 +11,7 @@ namespace Tim_Xe.Data.Models
         public string CustomerName { get; set; }
         public string? PhoneCustomer { get; set; }
         public bool? Mode { get; set; }
-        public double? Price{ get; set; }
+        public double? Price { get; set; }
         public int? TimeWait { get; set; }
         public string Status { get; set; }
         public DateTime? Date { get; set; }

@@ -30,6 +30,11 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return _bookingServiceImp.GetAllBookingByAdmin();
         }
+        [HttpGet("get-booking-by-status/{status}")]
+        public IEnumerable<BookingDTO> GetByAdminBooking(int status)
+        {
+            return _bookingServiceImp.GetListBookingByStatus(status);
+        }
         [HttpGet("get-booking-group-owner/{id}")]
         public IEnumerable<BookingDTO> GetByGroupOwnerBooking(int id)
         {

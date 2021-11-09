@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
-using Tim_Xe.Data.Repository.Entities;
 using Tim_Xe.Service.LoginService;
 
 namespace TimXe.Present.Controllers.V1
@@ -32,7 +27,7 @@ namespace TimXe.Present.Controllers.V1
         [HttpPost("login-web")]
         public async Task<UserWithTokenDataDTO> LoginAsync([FromBody] Login login)
         {
-           // UserWithToken userWithToken = new UserWithToken(null);
+            // UserWithToken userWithToken = new UserWithToken(null);
             var userWithToken = await _loginServiceImp.LoginAsync(login);
             //sign your token here here..
             if (userWithToken.Data != null)
@@ -40,12 +35,12 @@ namespace TimXe.Present.Controllers.V1
                 userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
             }
             return userWithToken;
-        } 
+        }
         //POST: api/Accounts
         [HttpPost("login-web-customer")]
         public async Task<UserWithTokenDataDTO> LoginCustomerAsync([FromBody] Login login)
         {
-           // UserWithToken userWithToken = new UserWithToken(null);
+            // UserWithToken userWithToken = new UserWithToken(null);
             var userWithToken = await _loginServiceImp.LoginCustomerAsync(login);
             //sign your token here here..
             if (userWithToken.Data != null)
@@ -75,7 +70,7 @@ namespace TimXe.Present.Controllers.V1
                 userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
             }
             //sign your token here here..
-            
+
             return userWithToken;
         }
         private string GenerateAccessToken(UserWithToken accounts)

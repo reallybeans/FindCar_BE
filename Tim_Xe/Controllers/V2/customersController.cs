@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.CustomerService;
 
 namespace Tim_Xe.API.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+
+    [Authorize(Roles = "group, admin, customer")]
+    [Route("api/v2/customers")]
     [ApiController]
-    public class customersController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly CustomerServiceImp _customerServiceImp;
-        public customersController()
+        public CustomersController()
         {
             _customerServiceImp = new CustomerServiceImp();
         }
@@ -57,6 +57,11 @@ namespace Tim_Xe.API.Controllers.V2
         public async Task<CustomerSearchDataDTO> GetCustomerPagingAsync(CustomerSearchDTO customerSearchDTO)
         {
             return await _customerServiceImp.SearchCustomerAsync(customerSearchDTO);
+        }
+        [HttpPost("searchs")]
+        public async Task<IEnumerable<CustomerDTO>> SearchCustomers(string search)
+        {
+            return await _customerServiceImp.SearchCustomersAsync(search);
         }
     }
 }

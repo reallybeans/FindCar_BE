@@ -1,9 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -30,7 +28,7 @@ namespace Tim_Xe.Service.CityService
                     IsDeleted = false,
                 });
                 await context.SaveChangesAsync();
-                return new CityCreateDataDTO("create success",cityCreateDTO , "success");
+                return new CityCreateDataDTO("create success", cityCreateDTO, "success");
             }
             catch (Exception e)
             {
@@ -93,6 +91,6 @@ namespace Tim_Xe.Service.CityService
                 return new CityUpdateDataDTO("update fail", null, "fail");
             }
         }
-        
+
     }
 }

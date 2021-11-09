@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tim_Xe.Data.Models
 {
     public class BookingCreateDTO
-    {   
+    {
         public int? IdCustomer { get; set; }
         public string NameCustomer { get; set; }
         public string PhoneCustomer { get; set; }
@@ -22,4 +20,3 @@ namespace Tim_Xe.Data.Models
         public ScheduleDTO Schedule { get; set; }
     }
 }
- 

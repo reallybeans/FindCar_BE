@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -23,9 +22,9 @@ namespace Tim_Xe.Service.GroupService
         }
         public async Task<GroupListDataDTO> GetAllGroupsAsync()
         {
-            var groupExisted =  await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
-            List<GroupDTO> groupDTO= new List<GroupDTO>();
-            foreach(Group x in groupExisted)
+            var groupExisted = await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
+            List<GroupDTO> groupDTO = new List<GroupDTO>();
+            foreach (Group x in groupExisted)
             {
                 groupDTO.Add(new GroupDTO(x));
             }
@@ -52,11 +51,12 @@ namespace Tim_Xe.Service.GroupService
         public async Task<GroupCreateDataDTO> CreateGroup(GroupCreateDTO group)
         {
             var city = await context.Cities.FirstOrDefaultAsync(c => c.CityName == group.City);
-            if(city == null)
+            if (city == null)
             {
                 return new GroupCreateDataDTO("create fail", null, "fail");
             }
-            try {
+            try
+            {
                 context.Groups.Add(new Group()
                 {
                     Name = group.Name,
@@ -69,7 +69,8 @@ namespace Tim_Xe.Service.GroupService
                 });
                 await context.SaveChangesAsync();
                 return new GroupCreateDataDTO("create success", group, "success");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return new GroupCreateDataDTO("create fail", null, "fail");
             }
@@ -79,8 +80,8 @@ namespace Tim_Xe.Service.GroupService
             try
             {
                 var existingGroup = await context.Groups.FirstOrDefaultAsync(g => g.Id == group.Id);
-            if (existingGroup != null)
-            {
+                if (existingGroup != null)
+                {
                     existingGroup.Name = group.Name;
                     existingGroup.Address = group.Address;
                     existingGroup.IdManager = group.IdManager;
@@ -90,7 +91,7 @@ namespace Tim_Xe.Service.GroupService
                     await context.SaveChangesAsync();
                     return new GroupUpdateDataDTO("update success", group, "success");
                 }
-            else
+                else
                     return new GroupUpdateDataDTO("update fail", null, "fail");
             }
             catch (Exception e)
@@ -141,7 +142,7 @@ namespace Tim_Xe.Service.GroupService
                     return new GroupSearchDataDTO("success", result1, "success");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new GroupSearchDataDTO("fail", null, "fail");
             }
@@ -174,7 +175,7 @@ namespace Tim_Xe.Service.GroupService
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }

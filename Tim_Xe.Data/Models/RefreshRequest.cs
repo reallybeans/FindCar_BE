@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Tim_Xe.Data.Models
+﻿namespace Tim_Xe.Data.Models
 {
     public class RefreshRequests
     {

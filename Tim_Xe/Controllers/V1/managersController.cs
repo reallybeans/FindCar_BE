@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
-using Tim_Xe.Data.Repository.Entities;
 using Tim_Xe.Service.ManagerService;
 
 
@@ -53,9 +48,9 @@ namespace Tim_Xe.API.Controllers.V1
         {
             if (id != 0)
             {
-            var status =  await _managerServiceImp.DeleteManagerAsync(id);
-                if(status)
-                return Ok("Delete Success!");
+                var status = await _managerServiceImp.DeleteManagerAsync(id);
+                if (status)
+                    return Ok("Delete Success!");
                 else
                     return NotFound("Delete Failed!");
             };
@@ -74,8 +69,8 @@ namespace Tim_Xe.API.Controllers.V1
         }
     }
 }
-        
 
 
-         
-        
+
+
+

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.ManagerService;
@@ -11,13 +9,13 @@ using Tim_Xe.Service.ManagerService;
 namespace Tim_Xe.API.Controllers.V2
 {
     [Authorize(Roles = "group, admin")]
-    [Route("api/v2/[controller]")]
+    [Route("api/v2/managers")]
     [ApiController]
-    public class managersController : ControllerBase
+    public class ManagersController : ControllerBase
     {
         private readonly ManagerServiceImp _managerServiceImp;
 
-        public managersController()
+        public ManagersController()
         {
             _managerServiceImp = new ManagerServiceImp();
         }
@@ -65,11 +63,15 @@ namespace Tim_Xe.API.Controllers.V2
         {
             return await _managerServiceImp.SearchManagersAsync(managerSearchDTO);
         }
-
+        [HttpPost("searchs")]
+        public async Task<IEnumerable<ManagerDTO>> Searchs(string search)
+        {
+            return await _managerServiceImp.Searchs(search);
+        }
     }
 }
-        
 
 
-         
-        
+
+
+

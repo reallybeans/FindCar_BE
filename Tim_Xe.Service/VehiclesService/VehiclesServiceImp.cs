@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -66,11 +65,12 @@ namespace Tim_Xe.Service.VehiclesService
                         context.Vehicles.Update(vehicleExisted);
                         await context.SaveChangesAsync();
                         return new VehiclesUpdateDataDTO("update success", vehiclesUpdateDTO, "success");
-                    }                   
+                    }
                 }
 
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return new VehiclesUpdateDataDTO("Failure to update vehicle", null, "false");
             }
         }
@@ -100,13 +100,13 @@ namespace Tim_Xe.Service.VehiclesService
                     .ThenInclude(g => g.Drivers)
                     .ThenInclude(d => d.Vehicles)
                     .FirstOrDefaultAsync();
-                if(ManagerExisted != null)
+                if (ManagerExisted != null)
                 {
                     foreach (Driver x in ManagerExisted.Groups.ElementAt(0).Drivers)
                         foreach (Vehicle y in x.Vehicles)
                             if ((bool)!y.IsDelete)
                                 VehiclesExisted.Add(y);
-                }               
+                }
             }
             else
                 VehiclesExisted = await context.Vehicles.Where(v => v.IsDelete == false).ToListAsync();
@@ -132,12 +132,12 @@ namespace Tim_Xe.Service.VehiclesService
         public async Task<VehicleUpdateStatusDataDTO> UpdateStatusVehiclesAsync(int id, string status)
         {
             try
-            {   
+            {
                 var existingVehicles = context.Vehicles.Where(v => v.Id == id).FirstOrDefault();
                 if (existingVehicles != null)
                 {
-                    var driver =  context.Drivers.Where(d => d.Id == existingVehicles.IdDriver).FirstOrDefault();
-                    var listVehicles = await context.Vehicles.Where(v => v.IdVehicleType == existingVehicles.IdVehicleType && v.IdDriver==driver.Id).ToListAsync();
+                    var driver = context.Drivers.Where(d => d.Id == existingVehicles.IdDriver).FirstOrDefault();
+                    var listVehicles = await context.Vehicles.Where(v => v.IdVehicleType == existingVehicles.IdVehicleType && v.IdDriver == driver.Id).ToListAsync();
                     foreach (Vehicle v in listVehicles)
                     {
                         v.Status = "unuse";
@@ -155,7 +155,7 @@ namespace Tim_Xe.Service.VehiclesService
                 }
                 else return new VehicleUpdateStatusDataDTO("update fail", null, "fail");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new VehicleUpdateStatusDataDTO("update fail", null, "fail");
             }
@@ -187,7 +187,7 @@ namespace Tim_Xe.Service.VehiclesService
             try
             {
                 var existingDriver = context.Vehicles.Where(v => v.IdDriver == id).FirstOrDefault();
-                if(existingDriver == null)
+                if (existingDriver == null)
                 {
                     return new VehiclesDataDTO("driver is not available", null, "false");
                 }
@@ -195,7 +195,7 @@ namespace Tim_Xe.Service.VehiclesService
                 {
                     List<VehiclesDTO> list = new List<VehiclesDTO>();
                     var existingVehicle = await context.Vehicles.Where((v => v.IdDriver == id)).ToListAsync();
-                    foreach(Vehicle v in existingVehicle)
+                    foreach (Vehicle v in existingVehicle)
                     {
                         VehiclesDTO dto = new VehiclesDTO();
                         dto.Id = v.Id;

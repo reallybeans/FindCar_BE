@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.VehiclesService;
@@ -26,7 +23,7 @@ namespace Tim_Xe.API.Controllers.V1
         public async Task<VehiclesDataDTO> GetAllByIdManager(int id)
         {
             return await _vehiclesServiceImp.GetAllVehicleByIdManager(id);
-        }        
+        }
         [HttpPost]
         public async Task<VehiclesCreateDataDTO> AddVehicle(VehicleCreateDTO vehicleCreateDTO)
         {

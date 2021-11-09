@@ -1,10 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -70,7 +67,7 @@ namespace Tim_Xe.Service.ChannelService
                     return new ChannelCreateDataDTO("create success", channel, "success");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ChannelCreateDataDTO("create fail", null, "fail");
             }
@@ -102,7 +99,7 @@ namespace Tim_Xe.Service.ChannelService
                     return new ChannelUpdateDataDTO("update fail", null, "fail");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ChannelUpdateDataDTO("update fail", null, "fail");
             }

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using Tim_Xe.Data.Repository.Entities;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.

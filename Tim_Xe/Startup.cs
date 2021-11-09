@@ -1,27 +1,19 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Tim_Xe.Service.Shared;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
+using Tim_Xe.Service.BookingService;
 using Tim_Xe.Service.NotificationService;
 using Tim_Xe.Service.NotificationService.Google;
-using Tim_Xe.Service.BookingService;
+using Tim_Xe.Service.Shared;
 
 namespace Tim_Xe
 {
@@ -118,7 +110,7 @@ namespace Tim_Xe
             app.UseDeveloperExceptionPage();
 
             app.UseSwagger();
-            
+
             app.UseSwaggerUI(config =>
             {
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "TimXeAPI v1");

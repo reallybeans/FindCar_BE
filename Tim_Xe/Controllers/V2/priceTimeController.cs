@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.PriceTimeService;
 
 namespace Tim_Xe.API.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+    [Authorize(Roles = "group, admin")]
+    [Route("api/v2/price-time")]
     [ApiController]
-    public class priceTimeController : ControllerBase
+    public class PriceTimeController : ControllerBase
     {
         private readonly PriceTimeServiceImp _priceTimeServiceImp;
-        public priceTimeController()
+        public PriceTimeController()
         {
             _priceTimeServiceImp = new PriceTimeServiceImp();
         }

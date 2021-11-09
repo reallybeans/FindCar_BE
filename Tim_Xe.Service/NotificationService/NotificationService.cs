@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.NotificationService.Google;

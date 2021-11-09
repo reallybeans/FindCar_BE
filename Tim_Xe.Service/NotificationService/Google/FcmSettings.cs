@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tim_Xe.Service.NotificationService.Google
+﻿namespace Tim_Xe.Service.NotificationService.Google
 {
     public class FcmSettings
     {

@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.VehicleTypeService;
 
 namespace Tim_Xe.API.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+    [Authorize(Roles = "group, admin, driver")]
+    [Route("api/v2/vehicle-types")]
     [ApiController]
-    public class vehicleTypesController : ControllerBase
+    public class VehicleTypesController : ControllerBase
     {
         private readonly VehicleTypeServiceImp _vehicleTypeServiceImp;
-        public vehicleTypesController()
+        public VehicleTypesController()
         {
             _vehicleTypeServiceImp = new VehicleTypeServiceImp();
         }

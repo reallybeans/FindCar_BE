@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.NewsService;
 
 namespace Tim_Xe.API.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+    [Authorize(Roles = "group, admin, driver")]
+    [Route("api/v2/news")]
     [ApiController]
-    public class newsController : ControllerBase
+    public class NewsController : ControllerBase
     {
         private readonly NewsSeviceImp _newsServiceImp;
-        public newsController()
+        public NewsController()
         {
             _newsServiceImp = new NewsSeviceImp();
         }

@@ -1,9 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -22,7 +20,8 @@ namespace Tim_Xe.Service.FeedbackService
         }
         public async Task<FeedbackCreateDataDTO> CreateFeedbackAsync(FeedbackCreateDTO feedbackCreateDTO)
         {
-            try {              
+            try
+            {
                 var existingCustomer = context.Customers.FirstOrDefault(c => c.Id == feedbackCreateDTO.CustomerId);
                 var existingBooking = context.Bookings.FirstOrDefault(c => c.Id == feedbackCreateDTO.BookingId);
                 var existingDriver = context.Drivers.FirstOrDefault(d => d.Id == feedbackCreateDTO.DriverId);
@@ -41,7 +40,8 @@ namespace Tim_Xe.Service.FeedbackService
                 }
                 else
                 {
-                    switch (feedbackCreateDTO.Ratting){
+                    switch (feedbackCreateDTO.Ratting)
+                    {
                         case 5:
                             existingDriver.ReviewScore += 3;
                             break;
@@ -77,7 +77,7 @@ namespace Tim_Xe.Service.FeedbackService
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new FeedbackCreateDataDTO("create fail", null, "fail");
             }
@@ -222,7 +222,7 @@ namespace Tim_Xe.Service.FeedbackService
                     context.Feedbacks.Update(existingFeedback);
                     await context.SaveChangesAsync();
                     return new FeedbackUpdateDataDTO("update success", feedbackUpdateDTO, "success");
-                }            
+                }
             }
             catch (Exception e)
             {

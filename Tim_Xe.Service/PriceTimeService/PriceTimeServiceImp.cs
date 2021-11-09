@@ -1,7 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
@@ -21,8 +20,8 @@ namespace Tim_Xe.Service.PriceTimeService
         }
         public async Task<PriceTimeListDataDTO> GetAllPriceTimesAsync()
         {
-            var result = await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).ToListAsync();        
-            if (result.Count()==0)
+            var result = await context.PriceTimes.ProjectTo<PriceTimeDTO>(priceTimeMapping.configPriceTime).ToListAsync();
+            if (result.Count() == 0)
             {
                 return new PriceTimeListDataDTO("list is empty", result, "empty");
             }
@@ -47,7 +46,7 @@ namespace Tim_Xe.Service.PriceTimeService
                 var existingVehicleType = await context.VehicleTypes.FindAsync(priceTime.IdVehicleType);
                 if (existingVehicleType == null)
                 {
-                    return new PriceTimeCreateDataDTO("fail", null,"create fail");
+                    return new PriceTimeCreateDataDTO("fail", null, "create fail");
                 }
                 else
                 {
@@ -62,7 +61,8 @@ namespace Tim_Xe.Service.PriceTimeService
                     return new PriceTimeCreateDataDTO("success", priceTime, "create success");
                 }
             }
-            catch(Exception e) {
+            catch (Exception e)
+            {
                 return new PriceTimeCreateDataDTO("fail", null, "create fail");
             }
         }
@@ -84,14 +84,14 @@ namespace Tim_Xe.Service.PriceTimeService
                     existingPriceTime.IsDeleted = priceTime.IsDeleted;
                     context.PriceTimes.Update(existingPriceTime);
                     await context.SaveChangesAsync();
-                    return new PriceTimeUpdateDataDTO("success", priceTime, "update success");                  
+                    return new PriceTimeUpdateDataDTO("success", priceTime, "update success");
                 }
                 else
                 {
                     return new PriceTimeUpdateDataDTO("fail", null, "update fail");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new PriceTimeUpdateDataDTO("fail", null, "update fail");
             }

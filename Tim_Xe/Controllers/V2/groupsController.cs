@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.GroupService;
@@ -10,12 +8,12 @@ using Tim_Xe.Service.GroupService;
 namespace Tim_Xe.API.Controllers.V2
 {
     [Authorize(Roles = "group, admin")]
-    [Route("api/v2/[controller]")]
+    [Route("api/v2/groups")]
     [ApiController]
-    public class groupsController : ControllerBase
+    public class GroupsController : ControllerBase
     {
         private readonly GroupServiceImp _groupServiceImp;
-        public groupsController()
+        public GroupsController()
         {
             _groupServiceImp = new GroupServiceImp();
         }
@@ -57,6 +55,11 @@ namespace Tim_Xe.API.Controllers.V2
         public async Task<GroupSearchDataDTO> GetGroupPagingAsync(GroupSearchDTO groupSearchDTO)
         {
             return await _groupServiceImp.SearchGroupAsync(groupSearchDTO);
+        }
+        [HttpPost("searchs")]
+        public async Task<IEnumerable<GroupDTO>> SearchsAsync(string search)
+        {
+            return await _groupServiceImp.SearchsAsync(search);
         }
     }
 }

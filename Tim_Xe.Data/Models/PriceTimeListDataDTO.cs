@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Tim_Xe.Data.Models
 {
-    public class PriceTimeListDataDTO 
+    public class PriceTimeListDataDTO
     {
         public string Message { get; set; }
         public IEnumerable<PriceTimeDTO> Data { get; set; }

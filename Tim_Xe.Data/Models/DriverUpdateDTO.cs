@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Tim_Xe.Data.Models
 {
@@ -13,7 +10,7 @@ namespace Tim_Xe.Data.Models
         public string Name { get; set; }
         [Required(ErrorMessage = "Mobile Number is required.")]
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number.")]
-        
+
         public string? Phone { get; set; }
         [Required(ErrorMessage = "Field can't be empty")]
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]

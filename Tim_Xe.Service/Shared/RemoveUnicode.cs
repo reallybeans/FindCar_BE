@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tim_Xe.Service.Shared
+﻿namespace Tim_Xe.Service.Shared
 {
     public class RemoveUnicode
     {
-           
-            private static readonly string[] VietnameseSigns = new string[]
 
-        {
+        private static readonly string[] VietnameseSigns = new string[]
+
+    {
 
         "aAeEoOuUiIdDyY",
 
@@ -41,27 +37,27 @@ namespace Tim_Xe.Service.Shared
 
         "ÝỲỴỶỸ"
 
-        };
+    };
 
 
 
-            public string RemoveSign4VietnameseString(string str)
+        public string RemoveSign4VietnameseString(string str)
+
+        {
+
+            for (int i = 1; i < VietnameseSigns.Length; i++)
 
             {
 
-                for (int i = 1; i < VietnameseSigns.Length; i++)
+                for (int j = 0; j < VietnameseSigns[i].Length; j++)
 
-                {
-
-                    for (int j = 0; j < VietnameseSigns[i].Length; j++)
-
-                        str = str.Replace(VietnameseSigns[i][j], VietnameseSigns[0][i - 1]);
-
-                }
-
-                return str;
+                    str = str.Replace(VietnameseSigns[i][j], VietnameseSigns[0][i - 1]);
 
             }
-        
+
+            return str;
+
+        }
+
     }
 }

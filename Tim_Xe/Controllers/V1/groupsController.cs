@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.GroupService;
 
 namespace Tim_Xe.API.Controllers.V1
 {
-//    [Authorize(Roles = "group, admin")]
+    //    [Authorize(Roles = "group, admin")]
     [Route("api/v1/groups")]
     [ApiController]
     public class GroupsController : ControllerBase

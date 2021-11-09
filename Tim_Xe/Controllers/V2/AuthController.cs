@@ -2,27 +2,23 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
-using Tim_Xe.Data.Repository.Entities;
 using Tim_Xe.Service.LoginService;
 
 namespace TimXe.Present.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+    [Route("api/v2/auth")]
     [ApiController]
-    public class loginsController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly LoginServiceImp _loginServiceImp;
 
         private readonly JWTSettings _jwtsettings;
-        public loginsController(IOptions<JWTSettings> jwtsettings)
+        public AuthController(IOptions<JWTSettings> jwtsettings)
         {
             _loginServiceImp = new LoginServiceImp();
             _jwtsettings = jwtsettings.Value;
@@ -33,6 +29,19 @@ namespace TimXe.Present.Controllers.V2
         {
             // UserWithToken userWithToken = new UserWithToken(null);
             var userWithToken = await _loginServiceImp.LoginAsync(login);
+            //sign your token here here..
+            if (userWithToken.Data != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
+            return userWithToken;
+        }
+        //POST: api/Accounts
+        [HttpPost("login-web-customer")]
+        public async Task<UserWithTokenDataDTO> LoginCustomerAsync([FromBody] Login login)
+        {
+            // UserWithToken userWithToken = new UserWithToken(null);
+            var userWithToken = await _loginServiceImp.LoginCustomerAsync(login);
             //sign your token here here..
             if (userWithToken.Data != null)
             {
@@ -51,6 +60,19 @@ namespace TimXe.Present.Controllers.V2
             }
             return userWithToken;
         }
+        [HttpPost("login-web-with-token")]
+        public async Task<UserWithTokenDataDTO> LoginWithTokenWebAsync(string token)
+        {
+
+            var userWithToken = await _loginServiceImp.LoginWithTokenWeb(token);
+            if (userWithToken != null)
+            {
+                userWithToken.Data.AccessToken = GenerateAccessToken(userWithToken.Data);
+            }
+            //sign your token here here..
+
+            return userWithToken;
+        }
         private string GenerateAccessToken(UserWithToken accounts)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -62,7 +84,7 @@ namespace TimXe.Present.Controllers.V2
                     new Claim("email", Convert.ToString(accounts.Email)),
                     new Claim("role", Convert.ToString(accounts.Role))
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
             };

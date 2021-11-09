@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Service.ChannelService;
 
 namespace Tim_Xe.API.Controllers.V2
 {
-    [Route("api/v2/[controller]")]
+    [Authorize(Roles = "group, admin, driver, customer")]
+    [Route("api/v2/channel")]
     [ApiController]
-    public class channelController : ControllerBase
+    public class ChannelController : ControllerBase
     {
         private readonly ChannelServiceImp _channelServiceImp;
-        public channelController()
+        public ChannelController()
         {
             _channelServiceImp = new ChannelServiceImp();
         }

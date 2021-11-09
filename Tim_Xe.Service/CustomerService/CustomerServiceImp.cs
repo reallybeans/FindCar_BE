@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -13,7 +12,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Tim_Xe.Service.CustomerService
 {
-     public class CustomerServiceImp : ICustomerService
+    public class CustomerServiceImp : ICustomerService
     {
         private readonly TimXeDBContext context;
         private readonly CustomerMapping customerMapping;
@@ -42,13 +41,13 @@ namespace Tim_Xe.Service.CustomerService
         }
         public async Task<CustomerCreateDataDTO> CreateCustomer(CustomerCreateDTO customer)
         {
-            
+
             try
             {
                 var pwd = BCryptNet.HashPassword(customer.Password); // hash password
                 var validEmail = ValidateEmail.CheckEmail(customer.Email);
                 var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
-                if(!validPhone) return new CustomerCreateDataDTO("Phone number is exist", null, "fail");
+                if (!validPhone) return new CustomerCreateDataDTO("Phone number is exist", null, "fail");
                 else if (!validEmail) return new CustomerCreateDataDTO("email is exist", null, "fail");
                 else
                 {
@@ -65,7 +64,7 @@ namespace Tim_Xe.Service.CustomerService
                     }); ;
                     await context.SaveChangesAsync();
                     return new CustomerCreateDataDTO("create success", customer, "success");
-                }               
+                }
             }
             catch (Exception e)
             {
@@ -87,7 +86,7 @@ namespace Tim_Xe.Service.CustomerService
                 {
                     var validPhone = ValiDatePhone.CheckPhone(customer.Phone);
                     if (!validPhone) return new CustomerUpdateDataDTO("Phone number is exist", null, "fail");
-                }            
+                }
                 if (existingCustomer != null)
                 {
                     existingCustomer.Name = customer.Name;
@@ -103,10 +102,10 @@ namespace Tim_Xe.Service.CustomerService
                 }
                 else
                 {
-                    return new CustomerUpdateDataDTO("update fail", null,"fail");
+                    return new CustomerUpdateDataDTO("update fail", null, "fail");
                 }
-            }           
-            catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return new CustomerUpdateDataDTO("update fail", null, "fail");
             }
@@ -165,13 +164,13 @@ namespace Tim_Xe.Service.CustomerService
         {
             try
             {
-                if (search == null) return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => c.IsDeleted==false).ToListAsync();
+                if (search == null) return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => c.IsDeleted == false).ToListAsync();
                 else
                 {
                     return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => (c.IsDeleted == false) && (c.Name.Contains(search.ToLower()) || c.Phone.Contains(search))).ToListAsync();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }

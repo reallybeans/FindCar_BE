@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tim_Xe.Data.Models
 {
@@ -15,7 +13,7 @@ namespace Tim_Xe.Data.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         public bool IsDeleted { get; set; }
-       
+
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public string? img { get; set; }
         public string? Status { get; set; }

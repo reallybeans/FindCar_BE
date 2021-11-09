@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Tim_Xe.Data.Repository.Entities;
 
 namespace Tim_Xe.Data.Models
@@ -9,28 +7,28 @@ namespace Tim_Xe.Data.Models
     {
         public DriverDTO(Driver driver, Vehicle vehicle)
         {
-                Id = driver.Id;
-                Name = driver.Name;
-                Phone = driver.Phone;
-                Email = driver.Email;
-                CardId = driver.CardId;
-                Img = driver.Img;
-                IsDeleted = driver.IsDeleted;
-                Status = driver.Status;
-                CreateAt = driver.CreateAt;
-                GroupId = driver.GroupId;
-                Address = driver.Address;
-                ReviewScore = driver.ReviewScore;
+            Id = driver.Id;
+            Name = driver.Name;
+            Phone = driver.Phone;
+            Email = driver.Email;
+            CardId = driver.CardId;
+            Img = driver.Img;
+            IsDeleted = driver.IsDeleted;
+            Status = driver.Status;
+            CreateAt = driver.CreateAt;
+            GroupId = driver.GroupId;
+            Address = driver.Address;
+            ReviewScore = driver.ReviewScore;
             //foreach (Vehicle x in vehicle)
             //{
             //    Vehicles.Add(new VehicleDTO(x.Id, x.Name, x.LicensePlate,x.IdVehicleType, x.Status));
             //}
-       
-                IdVehicle = vehicle.Id;
-                NameVehicle = vehicle.Name;
-                LicensePlate = vehicle.LicensePlate;
-                IdVehicleType = vehicle.IdVehicleType;
-                StatusVehicle = vehicle.Status;
+
+            IdVehicle = vehicle.Id;
+            NameVehicle = vehicle.Name;
+            LicensePlate = vehicle.LicensePlate;
+            IdVehicleType = vehicle.IdVehicleType;
+            StatusVehicle = vehicle.Status;
 
         }
 

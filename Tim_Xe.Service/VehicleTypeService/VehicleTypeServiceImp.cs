@@ -1,9 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -22,7 +20,7 @@ namespace Tim_Xe.Service.VehicleTypeService
         }
         public async Task<VehicleTypeListDataDTO> GetAllVehicleTypesAsync()
         {
-            var result= await context.VehicleTypes.ProjectTo<VehicleTypeDTO>(vehicleTypeMapping.configVehicleType).ToListAsync();
+            var result = await context.VehicleTypes.ProjectTo<VehicleTypeDTO>(vehicleTypeMapping.configVehicleType).ToListAsync();
             if (result.Count() == 0)
             {
                 return new VehicleTypeListDataDTO("list is empty", null, "empty");
@@ -46,7 +44,7 @@ namespace Tim_Xe.Service.VehicleTypeService
                     IsDeleted = false
                 }); ;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return 0;
             }

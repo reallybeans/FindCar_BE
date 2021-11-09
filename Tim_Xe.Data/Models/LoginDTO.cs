@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace Tim_Xe.Data.Models
+﻿namespace Tim_Xe.Data.Models
 {
     public class LoginDTO
     {
@@ -13,10 +8,10 @@ namespace Tim_Xe.Data.Models
         public string Phone { get; set; }
 
         public string Email { get; set; }
-        public string  Role { get; set; }
-        public string  Img { get; set; }
-        public string  CardId { get; set; }
-        public string  Status { get; set; }
+        public string Role { get; set; }
+        public string Img { get; set; }
+        public string CardId { get; set; }
+        public string Status { get; set; }
 
     }
 }

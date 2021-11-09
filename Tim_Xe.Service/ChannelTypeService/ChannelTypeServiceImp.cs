@@ -1,10 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -51,12 +48,12 @@ namespace Tim_Xe.Service.ChannelTypeService
                 await context.SaveChangesAsync();
                 return new ChannelTypeCreateDataDTO("create success", channelType, "success");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ChannelTypeCreateDataDTO("create fail", null, "fail");
             }
         }
-        public async Task<ChannelTypeUpdateDataDTO> UpdateChannelType (ChannelTypeUpdateDTO channelType)
+        public async Task<ChannelTypeUpdateDataDTO> UpdateChannelType(ChannelTypeUpdateDTO channelType)
         {
             try
             {
@@ -73,7 +70,7 @@ namespace Tim_Xe.Service.ChannelTypeService
                     return new ChannelTypeUpdateDataDTO("update fail", null, "fail");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new ChannelTypeUpdateDataDTO("update fail", null, "fail");
             }

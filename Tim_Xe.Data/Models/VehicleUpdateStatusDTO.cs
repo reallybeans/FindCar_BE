@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace Tim_Xe.Data.Models
+﻿namespace Tim_Xe.Data.Models
 {
     public class VehicleUpdateStatusDTO
     {

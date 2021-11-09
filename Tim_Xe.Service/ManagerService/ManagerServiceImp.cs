@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -164,7 +163,7 @@ namespace Tim_Xe.Service.ManagerService
         {
             try
             {
-                if(search == null)
+                if (search == null)
                 {
                     return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
                 }
@@ -173,7 +172,7 @@ namespace Tim_Xe.Service.ManagerService
                     return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false && ((m.Name.Contains(search.ToLower())) || (m.Phone.Contains(search)))).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }

@@ -2,19 +2,17 @@
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
 using Tim_Xe.Data.Repository.Entities;
+using Tim_Xe.Service.NotificationService.Google;
 using Tim_Xe.Service.Shared;
 using static Tim_Xe.Data.Enum.DistanceUnit;
-using Tim_Xe.Service.NotificationService.Google;
 using static Tim_Xe.Data.Models.GoogleNotification;
 
 namespace Tim_Xe.Service.BookingService
@@ -49,6 +47,12 @@ namespace Tim_Xe.Service.BookingService
         {
             List<BookingDTO> bookingDTOs = new List<BookingDTO>();
             bookingDTOs = GetListBookingAsync(idManager, 0);
+            return bookingDTOs;
+        }
+        public IEnumerable<BookingDTO> GetListBookingByStatus(int status)
+        {
+            List<BookingDTO> bookingDTOs = new List<BookingDTO>();
+            bookingDTOs = GetListBookingAsync(0, status);
             return bookingDTOs;
         }
         public async Task<double> CaculatorBooking(BookingCreatePriceDTO bookingCreatePriceDTO)
@@ -462,6 +466,12 @@ namespace Tim_Xe.Service.BookingService
                     .Include(b => b.BookingDrivers)
                     .Where(b => b.IdGroup == managerExisted.Groups.ElementAt(0).Id).ToList();
                 }
+                else if (id == 0 && status != 0)
+                {
+                    bookingExisted = context.Bookings.OrderBy(b => b.CreateAt).Include(b => b.Locations)
+                    .Include(b => b.BookingDrivers)
+                    .Where(b => b.Status == status).ToList();
+                }
                 else
                 {
                     bookingExisted = context.Bookings.OrderBy(b => b.CreateAt).Include(b => b.Locations)
@@ -483,7 +493,11 @@ namespace Tim_Xe.Service.BookingService
                     bookingDTO.Status = x.Status;
                     bookingDTO.Schedule.Total = x.Locations.Count;
                     bookingDTO.PriceBooking = (double)x.PriceBooking;
-
+                    bookingDTO.DateEnd = x.EndAt;
+                    var city = context.Groups.Include(g => g.IdCityNavigation).Where(g => g.Id == x.IdGroup).FirstOrDefault();
+                    bookingDTO.City = city.IdCityNavigation.CityName;
+                    bookingDTO.Code = x.Code;
+                    bookingDTO.TypeVehicle = (int)context.VehicleTypes.Where(v => v.Id == x.IdVehicleType).Select(v => v.NumOfSeat).FirstOrDefault();
 
                     AddressDTO address = new AddressDTO();
                     address.Waypoint = new List<string>();
@@ -491,7 +505,6 @@ namespace Tim_Xe.Service.BookingService
                     foreach (Location y in x.Locations)
                     {
                         //Address
-
                         var origin = y.PointTypeValue == 1 ? y.Address : null;
                         var destination = y.PointTypeValue == 3 ? y.Address : null;
                         var waypoint = y.PointTypeValue == 2 ? y.Address : null;
@@ -608,5 +621,7 @@ namespace Tim_Xe.Service.BookingService
             if (bookingExisted != 0) return bookingExisted;
             return 0;
         }
+
+
     }
 }

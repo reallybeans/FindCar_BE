@@ -1,11 +1,8 @@
-﻿using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -91,7 +88,7 @@ namespace Tim_Xe.Service.DriverService
         }
         public async Task<DriverOnlyDataDTO> GetDriverByIdAsync(int id)
         {
-            var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);          
+            var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);
             if (driverExisted == null)
             {
                 return new DriverOnlyDataDTO("fail", null, "not available");
@@ -99,12 +96,13 @@ namespace Tim_Xe.Service.DriverService
             else
             {
                 DriverOnlyDTO dto = new DriverOnlyDTO(driverExisted);
-                return new DriverOnlyDataDTO("success", dto,"success");
+                return new DriverOnlyDataDTO("success", dto, "success");
             }
         }
         public async Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver)
         {
-            try {
+            try
+            {
                 var groupExisted = context.Groups.FirstOrDefault(g => g.IdManager == driver.CreateById);
                 if (groupExisted == null) return new DriverCreateDataDTO("create fail", null, "fail");
                 var validEmail = ValidateEmail.CheckEmail(driver.Email);
@@ -128,7 +126,9 @@ namespace Tim_Xe.Service.DriverService
                 context.Drivers.Add(drivers);
                 await context.SaveChangesAsync();
                 return new DriverCreateDataDTO("create success", driver, "success");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return new DriverCreateDataDTO("create fail", null, "fail");
             }
         }
@@ -156,13 +156,14 @@ namespace Tim_Xe.Service.DriverService
                     existingdrivers.Img = driver.Img;
                     existingdrivers.IsDeleted = driver.IsDeleted;
                     existingdrivers.Address = driver.Address;
-                    existingdrivers.Latlng = driver.Latlng;                   
+                    existingdrivers.Latlng = driver.Latlng;
                 }
                 context.Drivers.Update(existingdrivers);
                 await context.SaveChangesAsync();
                 return new DriverUpdateDataDTO("update succes", driver, "success");
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return new DriverUpdateDataDTO("update fail", null, "fail");
             }
         }
@@ -239,7 +240,7 @@ namespace Tim_Xe.Service.DriverService
                 }
                 if (driverExisted.Count() != 0)
                 {
-                    foreach(Driver x in driverExisted)
+                    foreach (Driver x in driverExisted)
                     {
                         driverDTO.Add(new DriverOnlyDTO(x));
                     }
@@ -258,8 +259,9 @@ namespace Tim_Xe.Service.DriverService
             {
                 List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
                 var driverExisted = new List<Driver>();
-                if (phone != null) {
-                   driverExisted = await context.Drivers.Where(d => d.Phone.Contains(phone)).ToListAsync();
+                if (phone != null)
+                {
+                    driverExisted = await context.Drivers.Where(d => d.Phone.Contains(phone)).ToListAsync();
                 }
                 else
                 {
@@ -287,7 +289,7 @@ namespace Tim_Xe.Service.DriverService
             {
                 List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
                 var driverExisted = new List<Driver>();
-                if (search == null)  driverExisted = await context.Drivers.Where(d => d.IsDeleted == false).ToListAsync();
+                if (search == null) driverExisted = await context.Drivers.Where(d => d.IsDeleted == false).ToListAsync();
                 else
                 {
                     driverExisted = await context.Drivers.Where(d => (d.IsDeleted == false) && ((d.Name.Contains(search.ToLower())) || (d.Phone.Contains(search)))).ToListAsync();
@@ -297,7 +299,7 @@ namespace Tim_Xe.Service.DriverService
                     foreach (Driver x in driverExisted)
                     {
                         driverDTO.Add(new DriverOnlyDTO(x));
-                    }                 
+                    }
                 }
                 return driverDTO;
             }

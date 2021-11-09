@@ -1,9 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -22,7 +20,7 @@ namespace Tim_Xe.Service.PriceKmService
         }
         public async Task<PriceKmListDataDTO> GetAllPriceKmsAsync()
         {
-            var result= await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).ToListAsync();
+            var result = await context.PriceKms.ProjectTo<PriceKmDTO>(priceKmMapping.configPriceKm).ToListAsync();
             if (result.Count() == 0)
             {
                 return new PriceKmListDataDTO("list is empty", null, "empty");
@@ -61,7 +59,7 @@ namespace Tim_Xe.Service.PriceKmService
                     return new PriceKmCreateDataDTO("success", priceKm, "create success");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new PriceKmCreateDataDTO("fail", null, "create fail");
             }
@@ -92,7 +90,7 @@ namespace Tim_Xe.Service.PriceKmService
                     return new PriceKmUpdateDataDTO("fail", null, "update fail");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new PriceKmUpdateDataDTO("fail", null, "update fail");
             }

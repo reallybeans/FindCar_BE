@@ -1,9 +1,7 @@
-﻿using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tim_Xe.Data.Models;
 using Tim_Xe.Data.Repository;
@@ -26,7 +24,7 @@ namespace Tim_Xe.Service.TransactionService
             try
             {
                 var transactionExist = await context.Transactions.ToListAsync();
-                foreach(Transaction x in transactionExist)
+                foreach (Transaction x in transactionExist)
                 {
                     TransactionDTO transactionDTO = new TransactionDTO();
                     transactionDTO.Schedule = new ScheduleDTO();
@@ -94,12 +92,12 @@ namespace Tim_Xe.Service.TransactionService
                         //latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
                         transactionDTO.Schedule.Address = address;
                         transactionDTO.Schedule.Latlng = latlng;
-                    }    
+                    }
                     transactionDTOs.Add(transactionDTO);
                 }
                 return new TransactionListDataDTO("success", transactionDTOs, "success");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new TransactionListDataDTO("fail", null, "fail");
             }
@@ -178,7 +176,7 @@ namespace Tim_Xe.Service.TransactionService
                         }
                         //latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
                         transactionDTO.Schedule.Address = address;
-                        transactionDTO.Schedule.Latlng = latlng;                       
+                        transactionDTO.Schedule.Latlng = latlng;
                     }
                     transactionDTOs.Add(transactionDTO);
                 }
@@ -264,7 +262,7 @@ namespace Tim_Xe.Service.TransactionService
                         }
                         //latlng.Waypoint = latlng.Waypoint.Remove(latlng.Waypoint.Length - 1);
                         transactionDTO.Schedule.Address = address;
-                        transactionDTO.Schedule.Latlng = latlng;                      
+                        transactionDTO.Schedule.Latlng = latlng;
                     }
                     transactionDTOs.Add(transactionDTO);
                 }
