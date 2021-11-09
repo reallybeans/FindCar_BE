@@ -297,5 +297,31 @@ namespace Tim_Xe.Service.DriverService
                 return new DriverOnlySearchDataDTO("fail", null, "fail");
             }
         }
+
+        public async Task<IEnumerable<DriverOnlyDTO>> SearchDrivers(string search)
+        {
+            try
+            {
+                List<DriverOnlyDTO> driverDTO = new List<DriverOnlyDTO>();
+                var driverExisted = new List<Driver>();
+                if (search == null)  driverExisted = await context.Drivers.Where(d => d.IsDeleted == false).ToListAsync();
+                else
+                {
+                    driverExisted = await context.Drivers.Where(d => (d.IsDeleted == false) && ((d.Name.Contains(search.ToLower())) || (d.Phone.Contains(search)))).ToListAsync();
+                }
+                if (driverExisted.Count() != 0)
+                {
+                    foreach (Driver x in driverExisted)
+                    {
+                        driverDTO.Add(new DriverOnlyDTO(x));
+                    }                 
+                }
+                return driverDTO;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

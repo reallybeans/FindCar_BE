@@ -14,5 +14,6 @@ namespace Tim_Xe.Service.CustomerService
         Task<CustomerUpdateDataDTO> UpdateCustomer(CustomerUpdateDTO customer);
         Task<bool> DeleteCustomerAsync(int id);
         Task<CustomerSearchDataDTO> SearchCustomerAsync(CustomerSearchDTO paging);
+        Task<IEnumerable<CustomerDTO>> SearchCustomersAsync(string search);
     }
 }

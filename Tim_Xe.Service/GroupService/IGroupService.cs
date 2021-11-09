@@ -14,5 +14,6 @@ namespace Tim_Xe.Service.GroupService
         Task<GroupUpdateDataDTO> UpdateGroup(GroupUpdateDTO group);
         Task<bool> DeleteGroupAsync(int id);
         Task<GroupSearchDataDTO> SearchGroupAsync(GroupSearchDTO paging);
+        Task<IEnumerable<GroupDTO>> SearchsAsync(string search);
     }
 }

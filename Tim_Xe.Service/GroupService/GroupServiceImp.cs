@@ -23,7 +23,7 @@ namespace Tim_Xe.Service.GroupService
         }
         public async Task<GroupListDataDTO> GetAllGroupsAsync()
         {
-        var groupExisted =  await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
+            var groupExisted =  await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
             List<GroupDTO> groupDTO= new List<GroupDTO>();
             foreach(Group x in groupExisted)
             {
@@ -146,6 +146,38 @@ namespace Tim_Xe.Service.GroupService
                 return new GroupSearchDataDTO("fail", null, "fail");
             }
 
+        }
+
+        public async Task<IEnumerable<GroupDTO>> SearchsAsync(string search)
+        {
+            try
+            {
+                if (search == null)
+                {
+                    var groupExisted = await context.Groups.Include(g => g.IdCityNavigation).ToListAsync();
+                    List<GroupDTO> groupDTO = new List<GroupDTO>();
+                    foreach (Group x in groupExisted)
+                    {
+                        groupDTO.Add(new GroupDTO(x));
+                    }
+                    return groupDTO;
+                }
+                else
+                {
+                    var groupExisted = await context.Groups.Include(g => g.IdCityNavigation).Where(g => g.Name.Contains(search.ToLower())).ToListAsync();
+                    List<GroupDTO> groupDTO = new List<GroupDTO>();
+                    foreach (Group x in groupExisted)
+                    {
+                        groupDTO.Add(new GroupDTO(x));
+                    }
+                    return groupDTO;
+                }
+
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
         }
     }
 }

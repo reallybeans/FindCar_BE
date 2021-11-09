@@ -18,5 +18,6 @@ namespace Tim_Xe.Service.DriverService
         Task<DriverUpdateAddressDataDTO> UpdateAddress(DriverUpdateAddressDTO driverUpdateAddressDTO);
         Task<DriverOnlySearchDataDTO> SearchByName(string name);
         Task<DriverOnlySearchDataDTO> SearchByPhone(string phone);
+        Task<IEnumerable<DriverOnlyDTO>> SearchDrivers(string search);
     }
 }

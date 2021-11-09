@@ -15,5 +15,6 @@ namespace Tim_Xe.Service.ManagerService
         Task<ManagerUpdateDataDTO> UpdateManager(ManagerUpdateDTO manager);
         Task<bool> DeleteManagerAsync(int id);
         Task<ManagerListDataDTO> GetAllGroupOwnersAsync();
+        Task<IEnumerable<ManagerDTO>> Searchs(string search);
     }
 }

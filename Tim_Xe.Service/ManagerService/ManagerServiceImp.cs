@@ -159,5 +159,24 @@ namespace Tim_Xe.Service.ManagerService
             }
             else return new ManagerListDataDTO("success", result, "success");
         }
+
+        public async Task<IEnumerable<ManagerDTO>> Searchs(string search)
+        {
+            try
+            {
+                if(search == null)
+                {
+                    return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                }
+                else
+                {
+                    return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false && ((m.Name.Contains(search.ToLower())) || (m.Phone.Contains(search)))).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                }
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

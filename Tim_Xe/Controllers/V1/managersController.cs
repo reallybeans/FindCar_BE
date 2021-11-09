@@ -67,7 +67,11 @@ namespace Tim_Xe.API.Controllers.V1
         {
             return await _managerServiceImp.SearchManagersAsync(managerSearchDTO);
         }
-
+        [HttpPost("searchs")]
+        public async Task<IEnumerable<ManagerDTO>> Searchs(string search)
+        {
+            return await _managerServiceImp.Searchs(search);
+        }
     }
 }
         

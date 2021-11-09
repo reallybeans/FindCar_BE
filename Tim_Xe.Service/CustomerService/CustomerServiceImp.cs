@@ -160,5 +160,21 @@ namespace Tim_Xe.Service.CustomerService
             }
 
         }
+
+        public async Task<IEnumerable<CustomerDTO>> SearchCustomersAsync(string search)
+        {
+            try
+            {
+                if (search == null) return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => c.IsDeleted==false).ToListAsync();
+                else
+                {
+                    return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => (c.IsDeleted == false) && (c.Name.Contains(search.ToLower()) || c.Phone.Contains(search))).ToListAsync();
+                }
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
