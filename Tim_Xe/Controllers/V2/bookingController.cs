@@ -15,6 +15,8 @@ namespace Tim_Xe.API.Controllers.V2
         {
             _bookingServiceImp = bookingService;
         }
+
+        [Authorize(Roles = "group, admin, driver")]
         [HttpGet("{id}/{status}")]
         public IEnumerable<BookingDTO> GetBookingByDriver(int id, int status)
         {
@@ -25,16 +27,20 @@ namespace Tim_Xe.API.Controllers.V2
         {
             return _bookingServiceImp.CancelBookingByAns(code);
         }
+        [Authorize(Roles = "admin")]
         [HttpGet("get-booking-admin")]
         public IEnumerable<BookingDTO> GetByAdminBooking()
         {
             return _bookingServiceImp.GetAllBookingByAdmin();
         }
+        [Authorize(Roles = "group, admin, driver")]
         [HttpGet("get-booking-by-status/{status}")]
         public IEnumerable<BookingDTO> GetByAdminBooking(int status)
         {
             return _bookingServiceImp.GetListBookingByStatus(status);
         }
+
+        [Authorize(Roles = "group, admin, driver")]
         [HttpGet("get-booking-group-owner/{id}")]
         public IEnumerable<BookingDTO> GetByGroupOwnerBooking(int id)
         {
@@ -45,6 +51,8 @@ namespace Tim_Xe.API.Controllers.V2
         {
             return await _bookingServiceImp.FindLastBookingCode();
         }
+
+        [Authorize(Roles = "group, admin, driver")]
         [HttpGet("get-status-by-code/{code}")]
         public async Task<int> GetIdBookingByCode(string code)
         {
@@ -60,6 +68,8 @@ namespace Tim_Xe.API.Controllers.V2
         {
             return await _bookingServiceImp.CreateBooking(bookingCreateDTO);
         }
+
+        [Authorize(Roles = "group, admin, driver")]
         [HttpPut("{id}/{status}")]
         public async Task<ActionResult<bool>> UpdateBooking(int id, int status)
         {
