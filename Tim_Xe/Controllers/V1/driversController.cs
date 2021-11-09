@@ -25,7 +25,7 @@ namespace Tim_Xe.API.Controllers.V1
             return await _driverServiceImp.GetAllDriversAsync();
         }
         [HttpGet("{id}")]
-        public async Task<DriverDataDTO> GetDriverById(int id)
+        public async Task<DriverOnlyDataDTO> GetDriverByIdAsync(int id)
         {
             return await _driverServiceImp.GetDriverByIdAsync(id);
         }

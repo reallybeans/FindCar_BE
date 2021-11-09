@@ -11,7 +11,7 @@ namespace Tim_Xe.Service.DriverService
         Task<DriverOnlySearchDataDTO> GetAllDriversAsync();
         Task<DriverListDataDTO> GetAllDriversByIdManagerAsync(int id);
         Task<DriverSearchDataDTO> SearchDriverAsync(DriverSearchDTO paging);
-        Task<DriverDataDTO> GetDriverByIdAsync(int id);
+        Task<DriverOnlyDataDTO> GetDriverByIdAsync(int id);
         Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver);
         Task<DriverUpdateDataDTO> UpdateDriver(DriverUpdateDTO driver);
         Task<bool> DeleteDriverAsync(int id);

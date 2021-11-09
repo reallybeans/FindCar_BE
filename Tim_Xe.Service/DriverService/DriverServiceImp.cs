@@ -89,18 +89,17 @@ namespace Tim_Xe.Service.DriverService
                 return new DriverSearchDataDTO("fail", null, "fail");
             }
         }
-        public async Task<DriverDataDTO> GetDriverByIdAsync(int id)
+        public async Task<DriverOnlyDataDTO> GetDriverByIdAsync(int id)
         {
             var driverExisted = await context.Drivers.FirstOrDefaultAsync(m => m.Id == id);          
             if (driverExisted == null)
             {
-                return new DriverDataDTO("fail", null, "not available");
+                return new DriverOnlyDataDTO("fail", null, "not available");
             }
             else
             {
-                var existingVehicle = await context.Vehicles.FirstOrDefaultAsync(g => g.Id == driverExisted.Id);
-                DriverDTO driverDTO = new DriverDTO(driverExisted, existingVehicle);
-                return new DriverDataDTO("success", driverDTO, driverExisted.Status);
+                DriverOnlyDTO dto = new DriverOnlyDTO(driverExisted);
+                return new DriverOnlyDataDTO("success", dto,"success");
             }
         }
         public async Task<DriverCreateDataDTO> CreateDriver(DriverCreateDTO driver)
@@ -126,25 +125,9 @@ namespace Tim_Xe.Service.DriverService
                 drivers.GroupId = groupExisted.Id;
                 drivers.Revenue = 0;
                 drivers.ReviewScore = 0;
-                Vehicle vehicle = new Vehicle();
-                vehicle.Name = driver.NameVehicle;
-                vehicle.LicensePlate = driver.LicensePlate;
-                vehicle.Status = "inuse";
-                vehicle.IsDelete = false;
-                var VehicleType = await context.VehicleTypes.FirstOrDefaultAsync(d => d.NameType == driver.VehicleType);
-                vehicle.IdVehicleType = VehicleType.Id;
-
-                if (VehicleType == null)
-                {
-                    return new DriverCreateDataDTO("create fail", null, "fail");
-                }
-                else
-                {
-                    drivers.Vehicles.Add(vehicle);
-                    context.Drivers.Add(drivers);
-                    await context.SaveChangesAsync();
-                    return new DriverCreateDataDTO("create success", driver, "success");
-                }
+                context.Drivers.Add(drivers);
+                await context.SaveChangesAsync();
+                return new DriverCreateDataDTO("create success", driver, "success");
             } catch (Exception e) {
                 return new DriverCreateDataDTO("create fail", null, "fail");
             }

@@ -21,10 +21,7 @@ namespace Tim_Xe.Data.Models
         public string CardId { get; set; }
         public string Img { get; set; }
         public int? CreateById { get; set; }
-        public string NameVehicle { get; set; }
         public string Latlng { get; set; }
         public string Address { get; set; }
-        public string LicensePlate { get; set; }
-        public string? VehicleType { get; set; }
     }
 }

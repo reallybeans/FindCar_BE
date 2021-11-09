@@ -33,7 +33,7 @@ namespace Tim_Xe.API.Controllers.V1
             return await _vehiclesServiceImp.AddVehicle(vehicleCreateDTO);
         }
         [HttpPut]
-        public async Task<VehiclesUpdateDataDTO> AddVehicle(VehiclesUpdateDTO vehiclesUpdateDTO)
+        public async Task<VehiclesUpdateDataDTO> EditVehicle(VehiclesUpdateDTO vehiclesUpdateDTO)
         {
             return await _vehiclesServiceImp.EditVehicle(vehiclesUpdateDTO);
         }

@@ -10,15 +10,6 @@ namespace Tim_Xe.Data.Models
         public string VehicleName { get; set; }
         public string LicensePlate { get; set; }
         public string VehicleType { get; set; }
-        public bool? IsDelete { get; set; }
-
-        public VehiclesUpdateDTO(int id, string vehicleName, string licensePlate, string vehicleType, bool? isDelete)
-        {
-            Id = id;
-            VehicleName = vehicleName;
-            LicensePlate = licensePlate;
-            VehicleType = vehicleType;
-            IsDelete = isDelete;
-        }
+        public int DriverId { get; set; }
     }
 }

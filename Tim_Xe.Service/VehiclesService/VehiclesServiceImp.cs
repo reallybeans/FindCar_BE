@@ -50,21 +50,29 @@ namespace Tim_Xe.Service.VehiclesService
             try
             {
                 vehiclesUpdateDTO.VehicleType = removeUnicode.RemoveSign4VietnameseString(vehiclesUpdateDTO.VehicleType);
-                var vehicleExisted = context.Vehicles.Where(d => d.Id == vehiclesUpdateDTO.Id).FirstOrDefault();
+                var vehicleExisted = await context.Vehicles.Where(d => d.Id == vehiclesUpdateDTO.Id).FirstOrDefaultAsync();
                 if (vehicleExisted == null) return new VehiclesUpdateDataDTO("Failure to get vehicle", null, "false");
-                vehicleExisted.Name = vehiclesUpdateDTO.VehicleName;
-                vehicleExisted.LicensePlate = vehiclesUpdateDTO.LicensePlate;
-                vehicleExisted.IdVehicleType = context.VehicleTypes.Where(v => v.NameType == vehiclesUpdateDTO.VehicleType).Select(v => v.Id).FirstOrDefault();
-                vehicleExisted.IsDelete = vehiclesUpdateDTO.IsDelete;
-                context.Update(vehicleExisted);
-                context.SaveChanges();
+                else
+                {
+                    var existingDriver = await context.Drivers.Where(d => d.Id == vehiclesUpdateDTO.DriverId).FirstOrDefaultAsync();
+                    var existingVehicleType = await context.VehicleTypes.Where(v => v.NameType.Contains(vehiclesUpdateDTO.VehicleType.ToLower())).FirstOrDefaultAsync();
+                    if (existingVehicleType == null || existingDriver == null) return new VehiclesUpdateDataDTO("update fail", null, "false");
+                    else
+                    {
+                        vehicleExisted.Name = vehiclesUpdateDTO.VehicleName;
+                        vehicleExisted.LicensePlate = vehiclesUpdateDTO.LicensePlate;
+                        vehicleExisted.IdVehicleType = existingVehicleType.Id;
+                        vehicleExisted.IdDriver = existingDriver.Id;
+                        context.Vehicles.Update(vehicleExisted);
+                        await context.SaveChangesAsync();
+                        return new VehiclesUpdateDataDTO("update success", vehiclesUpdateDTO, "success");
+                    }                   
+                }
+
             }
             catch (Exception e) {
                 return new VehiclesUpdateDataDTO("Failure to update vehicle", null, "false");
             }
-           
-
-            return new VehiclesUpdateDataDTO("update success", vehiclesUpdateDTO, "success");
         }
 
         public async Task<VehiclesDataDTO> GetAllVehicle()
@@ -92,10 +100,13 @@ namespace Tim_Xe.Service.VehiclesService
                     .ThenInclude(g => g.Drivers)
                     .ThenInclude(d => d.Vehicles)
                     .FirstOrDefaultAsync();
-                foreach (Driver x in ManagerExisted.Groups.ElementAt(0).Drivers)
-                    foreach (Vehicle y in x.Vehicles)
-                        if ((bool)!y.IsDelete)
-                            VehiclesExisted.Add(y);
+                if(ManagerExisted != null)
+                {
+                    foreach (Driver x in ManagerExisted.Groups.ElementAt(0).Drivers)
+                        foreach (Vehicle y in x.Vehicles)
+                            if ((bool)!y.IsDelete)
+                                VehiclesExisted.Add(y);
+                }               
             }
             else
                 VehiclesExisted = await context.Vehicles.Where(v => v.IsDelete == false).ToListAsync();
