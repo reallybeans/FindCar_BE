@@ -159,22 +159,32 @@ namespace Tim_Xe.Service.ManagerService
             else return new ManagerListDataDTO("success", result, "success");
         }
 
-        public async Task<IEnumerable<ManagerDTO>> Searchs(string search)
+        public async Task<ManagerListDataDTO> Searchs(string search)
         {
             try
             {
                 if (search == null)
                 {
-                    return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                    var result = await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                    if (result.Count() == 0)
+                    {
+                        return new ManagerListDataDTO("list is empty", null, "empty");
+                    }
+                    else return new ManagerListDataDTO("success", result, "success");
                 }
                 else
                 {
-                    return await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false && ((m.Name.Contains(search.ToLower())) || (m.Phone.Contains(search)))).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                    var result1 = await context.Managers.Include(m => m.Role).Where(m => m.IsDeleted == false && ((m.Name.Contains(search.ToLower())) || (m.Phone.Contains(search)))).ProjectTo<ManagerDTO>(managerMapping.configManager).ToListAsync();
+                    if (result1.Count() == 0)
+                    {
+                        return new ManagerListDataDTO("list is empty", null, "empty");
+                    }
+                    else return new ManagerListDataDTO("success", result1, "success");
                 }
             }
             catch (Exception e)
             {
-                return null;
+                return new ManagerListDataDTO("fail", null, "fail");
             }
         }
     }

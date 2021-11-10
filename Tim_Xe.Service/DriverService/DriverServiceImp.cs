@@ -283,7 +283,7 @@ namespace Tim_Xe.Service.DriverService
             }
         }
 
-        public async Task<IEnumerable<DriverOnlyDTO>> SearchDrivers(string search)
+        public async Task<DriverOnlySearchDataDTO> SearchDrivers(string search)
         {
             try
             {
@@ -299,13 +299,13 @@ namespace Tim_Xe.Service.DriverService
                     foreach (Driver x in driverExisted)
                     {
                         driverDTO.Add(new DriverOnlyDTO(x));
-                    }
+                    }                    
                 }
-                return driverDTO;
+                return new DriverOnlySearchDataDTO("success", driverDTO, "success");
             }
             catch (Exception e)
             {
-                return null;
+                return new DriverOnlySearchDataDTO("fail", null, "fail");
             }
         }
     }

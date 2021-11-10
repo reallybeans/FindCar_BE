@@ -85,7 +85,7 @@ namespace Tim_Xe.API.Controllers.V2
             return await _driverServiceImp.SearchByPhone(phone);
         }
         [HttpPost("searchs")]
-        public async Task<IEnumerable<DriverOnlyDTO>> SearchDrivers(string search)
+        public async Task<DriverOnlySearchDataDTO> SearchDrivers(string search)
         {
             return await _driverServiceImp.SearchDrivers(search);
         }

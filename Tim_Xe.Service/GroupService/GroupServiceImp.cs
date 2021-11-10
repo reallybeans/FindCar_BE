@@ -149,7 +149,7 @@ namespace Tim_Xe.Service.GroupService
 
         }
 
-        public async Task<IEnumerable<GroupDTO>> SearchsAsync(string search)
+        public async Task<GroupListDataDTO> SearchsAsync(string search)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace Tim_Xe.Service.GroupService
                     {
                         groupDTO.Add(new GroupDTO(x));
                     }
-                    return groupDTO;
+                    return new GroupListDataDTO("success", groupDTO, "success");
                 }
                 else
                 {
@@ -171,13 +171,13 @@ namespace Tim_Xe.Service.GroupService
                     {
                         groupDTO.Add(new GroupDTO(x));
                     }
-                    return groupDTO;
+                    return new GroupListDataDTO("success", groupDTO, "success");
                 }
 
             }
             catch (Exception e)
             {
-                return null;
+                return new GroupListDataDTO("fail", null, "fail");
             }
         }
     }

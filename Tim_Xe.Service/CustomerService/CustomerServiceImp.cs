@@ -160,15 +160,27 @@ namespace Tim_Xe.Service.CustomerService
 
         }
 
-        public async Task<IEnumerable<CustomerDTO>> SearchCustomersAsync(string search)
+        public async Task<CustomerListDataDTO> SearchCustomersAsync(string search)
         {
             try
             {
-                if (search == null) return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => c.IsDeleted == false).ToListAsync();
+                if (search == null) {
+                    var re = await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => c.IsDeleted == false).ToListAsync();
+                    if (re.Count() == 0)
+                    {
+                        return new CustomerListDataDTO("list is empty", null, "empty");
+                    }
+                    else return new CustomerListDataDTO("success", re, "success");
+                }
                 else
                 {
-                    return await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => (c.IsDeleted == false) && (c.Name.Contains(search.ToLower()) || c.Phone.Contains(search))).ToListAsync();
-                }
+                    var result = await context.Customers.ProjectTo<CustomerDTO>(customerMapping.configCustomer).Where(c => (c.IsDeleted == false) && (c.Name.Contains(search.ToLower()) || c.Phone.Contains(search))).ToListAsync();
+                    if (result.Count() == 0)
+                    {
+                        return new CustomerListDataDTO("list is empty", null, "empty");
+                    }
+                    else return new CustomerListDataDTO("success", result, "success");
+                }                
             }
             catch (Exception e)
             {

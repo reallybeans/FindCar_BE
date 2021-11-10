@@ -56,7 +56,7 @@ namespace Tim_Xe.API.Controllers.V1
             return await _groupServiceImp.SearchGroupAsync(groupSearchDTO);
         }
         [HttpPost("searchs")]
-        public async Task<IEnumerable<GroupDTO>> SearchsAsync(string search)
+        public async Task<GroupListDataDTO> SearchsAsync(string search)
         {
             return await _groupServiceImp.SearchsAsync(search);
         }

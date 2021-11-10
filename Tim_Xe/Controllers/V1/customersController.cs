@@ -56,7 +56,7 @@ namespace Tim_Xe.API.Controllers.V1
             return await _customerServiceImp.SearchCustomerAsync(customerSearchDTO);
         }
         [HttpPost("searchs")]
-        public async Task<IEnumerable<CustomerDTO>> SearchCustomers(string search)
+        public async Task<CustomerListDataDTO> SearchCustomers(string search)
         {
             return await _customerServiceImp.SearchCustomersAsync(search);
         }
